@@ -1,0 +1,271 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+        integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+    <link href="styles/index.css" rel="stylesheet" type="text/css" />
+    <title>CarHealth</title>
+</head>
+
+<body>
+
+    <div class="app-container">
+
+        <div class="main-block-menu" id="menu">
+            <div class="menu" id="menu">
+                <a href="#" class="menu-item active" data-route-link="dashboard">
+                    <span>Menu</span>
+                </a>
+                <a href="#" class="menu-item" data-route-link="car-details">
+                    <span>All car details</span>
+                </a>
+                <a href="#" class="menu-item" data-route-link="service-life">
+                    <span>Details service life </span>
+                </a>
+
+                <a href="#" class="menu-item js-logout-button">
+                    <span class="js-logout-button-text">Logout</span>
+                </a>
+
+                <div class="ride-input-container menu-item">
+                    <form name="RideForm">
+                        <input type="text" placeholder="Total ride" name="ride" size="11">
+                    </form>
+                    <div class="send-ride-button">
+                        <span class="send-ride-button-text">Send</span>
+                    </div>
+                </div>
+
+                <div class="total-ride-container menu-item">
+                        <span >Cars total mileage: </span>
+                        <span class="js-menu-car-total-ride">  </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-block" id="mainBlock">
+
+            <div class="menu-page-container active" data-route="dashboard">
+                <div class="dashboard-container">
+                    <!-- <h2 class="main-title">Dashboard</h2> -->
+                    <div class="info-container">
+                        <div class="info-row">
+                            <p class="brend-name">
+                               CarHealth
+                            </p>
+                            <img class="info-image info-image--top" src="images/brending/2.png" alt="" />
+                        </div>
+                        <div class="info-row">
+                            <p>
+                                    Track the status and time of replacement parts for your car
+                            </p>
+
+                        </div>
+                        <div class="info-row">
+
+                            <div>
+                                <img class="info-image" src="images/brending/1.png" alt="" />
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-page-container" data-route="car-details">
+                <div class="item-list-container js-item-list-container">
+                    <div class="item-list-add-button-container">
+                        <div class="item-list-pager__add-button">
+                            <i class="fas fa-plus-circle"></i>
+                        </div>
+                    </div>
+                    <!-- Template el -->
+
+                    <div class="list-item list-item--hidden js-list-item-template">
+
+                        <div class="list-item-container js-item-container">
+
+                            <div class="list-item-title">
+                                <span class="list-item-title-text list-item-text-span"></span>
+                            </div>
+
+                            <div class="list-item-ride-container ">
+                                <div class="list-item-ride-total">
+                                    <span class=" list-item-text-span">Проехано: </span>
+                                    <span class="list-item-ride-total-text list-item-text-span"></span>
+                                    <span class=" list-item-text-span"> км</span>
+                                </div>
+
+                                <div class="list-item-change-ride ">
+                                    <span class=" list-item-text-span">Заменить на: </span>
+                                    <span class="list-item-change-ride-text list-item-text-span"></span>
+                                    <span class=" list-item-text-span"> км</span>
+                                </div>
+                            </div>
+
+                            <div class="list-item-price-date-container">
+                                <div class="list-item-price">
+                                    <span class="list-item-price-text list-item-text-span"></span>
+                                    <span class=" list-item-text-span"> &#8372</span>
+                                </div>
+
+                                <div class="list-item-date">
+                                    <span class="list-item-date-text list-item-text-span"> </span>
+                                </div>
+                            </div>
+
+                            <div class="list-item-recomended-replace">
+                                <span class="list-item-recomended-replace-text list-item-text-span"></span>
+                            </div>
+
+                        </div>
+
+                        <div class="container-edit-icon">
+                            <div class="list-item-icon-delete">
+                                <i class="far fa-trash-alt edit-picture"></i>
+                            </div>
+                            <div class="list-item-icon-put">
+                                <i class="fas fa-pencil-alt edit-picture"></i>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="item-list js-item-list">
+                        <!-- Items will be inserted dynamically -->
+                    </div>
+
+                    <div class="modal-window">
+
+                        <dialog class="form-dialog">
+
+                            <form method="post" class="put-word-form" name="NewCarItem">
+                                <div class="form-container">
+                                    <input class="input-field-title" type="text" name="name" placeholder="Name">
+                                    <div class="price-date-container">
+                                        <input class="input-field-price" type="text" name="price" placeholder="Price">
+                                        <span class="price-date-text"> by </span>
+                                        <input class="input-field-date" type="text" name="date"
+                                            placeholder="yyyy-mm-dd">
+
+                                    </div>
+                                    <input class="input-field-recomend" type="text" name="totalRace"
+                                        placeholder="Total mileage during replacement">
+                                    <input class="input-field-recomend" type="text" name="recomendation"
+                                        placeholder="Replace ride">
+
+                                </div>
+
+                                <div class="form-button-container">
+                                    <input type="button" class="form-control-button js-put-button hidden" value="Put" />
+                                    <input type="button" class="form-control-button js-add-button hidden" value="Add" />
+                                    <input class="reset-button" type="reset" value="reset">
+
+                                </div>
+                            </form>
+
+                            <button class="modal-window-close-button" id="close">Close</button>
+                        </dialog>
+                    </div>
+
+                    <div class="item-list-pager" id="dataItemsButtonBlock">
+                        <div class="item-list-pager__button js-first-page-button">
+                            <i class="fas fa-angle-double-left button-icon"></i>
+                        </div>
+                        <div class="item-list-pager__button js-prev-page-button">
+                            <i class="fas fa-angle-left button-icon"></i>
+                        </div>
+                        <div class="item-list-pager__button js-current-page-button">
+                            <span class="js-current-page-text">0</span>
+                        </div>
+                        <div class="item-list-pager__button js-next-page-button">
+                            <i class="fas fa-angle-right button-icon"></i>
+                        </div>
+                        <div class="item-list-pager__button js-last-page-button">
+                            <i class="fas fa-angle-double-right button-icon"></i>
+                        </div>
+
+                    </div>
+
+
+
+                </div>
+            </div>
+
+            <div class="menu-page-container" data-route="service-life">
+
+                    <div class="item-list-container-service-life js-item-list-service-life-container">
+
+                    <!-- Template el -->
+
+                    <div class="list-item-service-life list-item-service-life--hidden js-list-item-template-service-life">
+
+                        <div class="list-item-service-life-container js-item-container-service-life">
+
+                            <div class="list-item-service-life-title">
+                                <span class="list-item-service-life-title-text list-item-text-span"> </span>
+                            </div>
+                                
+                            <div class="list-item-service-life-recomended-replace">
+                                <span class="list-item-recomended-replace-text list-item-text-span"></span>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="item-list-service-life js-item-list-service-life">
+                        <!-- Items will be inserted dynamically -->
+                    </div>
+
+
+                    <div class="item-list-pager" id="dataItemsButtonBlock">
+                        <div class="item-list-pager__button js-first-page-button">
+                            <i class="fas fa-angle-double-left button-icon"></i>
+                        </div>
+                        <div class="item-list-pager__button js-prev-page-button">
+                            <i class="fas fa-angle-left button-icon"></i>
+                        </div>
+                        <div class="item-list-pager__button js-current-page-button">
+                            <span class="js-current-page-text">0</span>
+                        </div>
+                        <div class="item-list-pager__button js-next-page-button">
+                            <i class="fas fa-angle-right button-icon"></i>
+                        </div>
+                        <div class="item-list-pager__button js-last-page-button">
+                            <i class="fas fa-angle-double-right button-icon"></i>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+
+
+            <div class="menu-page-container js-error-page" data-route="no-response">
+                <img class="error-image" src="images/brending/sign.png" alt="" />
+                <div class="error-message-row">
+                    <p class="hidden js-empty-data">
+                        Server returned no data
+                    </p>
+                    <p class="hidden js-authentication-time-out">
+                        Authentication time out
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!--<script src="lib/oidc-client.min.js"></script>-->
+    <script src="/dist/bundle.js"></script>
+
+</body>
+
+</html>

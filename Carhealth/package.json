@@ -1,0 +1,15 @@
+{
+  "version": "1.0.0",
+  "name": "carhealth",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "build": "npx webpack --config webpack.config.js",
+    "watch": "npx webpack --config webpack.config.js --watch"
+  },
+  "devDependencies": {
+    "webpack": "^4.34.0",
+    "webpack-cli": "^3.3.9"
+  },
+  "dependencies": {}
+}

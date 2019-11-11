@@ -1,0 +1,201 @@
+﻿{
+  "CarId": 1,
+  "CarsTotalRide": 1000,
+  "CarEntityName": "Default car",
+  "CarDetails": [
+    {
+      "Detail_id": 1,
+      "Name": "Блок управления ABS",
+      "TotalRide": 10000,
+      "ChangeRide": 20000,
+      "PriceOfDetail": 258,
+      "DateOfReplace": "2018-09-12",
+      "RecomendedReplace": 30000
+    },
+
+    {
+      "Detail_id": 2,
+      "Name": "Генератор",
+      "TotalRide": 11000,
+      "ChangeRide": 22150,
+      "PriceOfDetail": 750,
+      "DateOfReplace": "2018-06-12",
+      "RecomendedReplace": 20000
+    },
+
+    {
+      "Detail_id": 3,
+      "Name": "Шаровая",
+      "TotalRide": 11000,
+      "ChangeRide": 30150,
+      "PriceOfDetail": 1550,
+      "DateOfReplace": "2018-07-12",
+      "RecomendedReplace": 40000
+    },
+
+    {
+      "Detail_id": 4,
+      "Name": " Тормозной суппорт ",
+      "TotalRide": 9000,
+      "ChangeRide": 30150,
+      "PriceOfDetail": 150,
+      "DateOfReplace": "2018-11-24",
+      "RecomendedReplace": 50000
+    },
+
+    {
+      "Detail_id": 5,
+      "Name": "Тормозные диски",
+      "TotalRide": 15000,
+      "ChangeRide": 30150,
+      "PriceOfDetail": 200,
+      "DateOfReplace": "2018-09-12",
+      "RecomendedReplace": 20000
+    },
+
+    {
+      "Detail_id": 6,
+      "Name": " Датчик распредвала ",
+      "TotalRide": 21000,
+      "ChangeRide": 40150,
+      "PriceOfDetail": 1550,
+      "DateOfReplace": "2018-08-10",
+      "RecomendedReplace": 50000
+    },
+
+    {
+      "Detail_id": 7,
+      "Name": "Поперечный рычаг",
+      "TotalRide": 12300,
+      "ChangeRide": 22150,
+      "PriceOfDetail": 250,
+      "DateOfReplace": "2018-02-02",
+      "RecomendedReplace": 50000
+    },
+
+    {
+      "Detail_id": 8,
+      "Name": " Сальники коленвала",
+      "TotalRide": 21000,
+      "ChangeRide": 40150,
+      "PriceOfDetail": 2050,
+      "DateOfReplace": "2018-01-11",
+      "RecomendedReplace": 50000
+    },
+
+    {
+      "Detail_id": 9,
+      "Name": " Карданный вал",
+      "TotalRide": 15000,
+      "ChangeRide": 50150,
+      "PriceOfDetail": 750,
+      "DateOfReplace": "2018-10-24",
+      "RecomendedReplace": 15000
+    },
+
+    {
+      "Detail_id": 10,
+      "Name": " Бензонасос ",
+      "TotalRide": 17000,
+      "ChangeRide": 60150,
+      "PriceOfDetail": 1550,
+      "DateOfReplace": "2018-10-29",
+      "RecomendedReplace": 70000
+    },
+
+    {
+      "Detail_id": 11,
+      "Name": "Патрубки",
+      "TotalRide": 17000,
+      "ChangeRide": 60150,
+      "PriceOfDetail": 1550,
+      "DateOfReplace": "2018-10-29",
+      "RecomendedReplace": 70000
+    },
+
+    {
+      "Detail_id": 12,
+      "Name": " Выключатель зажигания ",
+      "TotalRide": 17000,
+      "ChangeRide": 60150,
+      "PriceOfDetail": 1550,
+      "DateOfReplace": "2018-10-29",
+      "RecomendedReplace": 70000
+    },
+
+    {
+      "Detail_id": 13,
+      "Name": "  Подсветка номера  ",
+      "TotalRide": 17000,
+      "ChangeRide": 60150,
+      "PriceOfDetail": 1550,
+      "DateOfReplace": "2018-10-29",
+      "RecomendedReplace": 70000
+    },
+
+    {
+      "Detail_id": 14,
+      "Name": " Приводной вал  ",
+      "TotalRide": 17000,
+      "ChangeRide": 60150,
+      "PriceOfDetail": 1550,
+      "DateOfReplace": "2018-10-29",
+      "RecomendedReplace": 70000
+    },
+
+    {
+      "Detail_id": 15,
+      "Name": " Обдув салона  ",
+      "TotalRide": 17000,
+      "ChangeRide": 60150,
+      "PriceOfDetail": 1550,
+      "DateOfReplace": "2018-10-29",
+      "RecomendedReplace": 70000
+    },
+
+    {
+      "Detail_id": 16,
+      "Name": " Выключатель стоп-сигналов  ",
+      "TotalRide": 17000,
+      "ChangeRide": 60150,
+      "PriceOfDetail": 1550,
+      "DateOfReplace": "2018-10-29",
+      "RecomendedReplace": 70000
+    },
+
+    {
+      "Detail_id": 17,
+      "Name": " Распредвал  ",
+      "TotalRide": 17000,
+      "ChangeRide": 60150,
+      "PriceOfDetail": 1550,
+      "DateOfReplace": "2018-10-29",
+      "RecomendedReplace": 70000
+    },
+
+    {
+      "Detail_id": 18,
+      "Name": " Сцепление  ",
+      "TotalRide": 17000,
+      "ChangeRide": 60150,
+      "PriceOfDetail": 1550,
+      "DateOfReplace": "2018-10-29",
+      "RecomendedReplace": 70000
+    },
+
+    {
+      "Detail_id": 19,
+      "Name": " Коленвал ",
+      "TotalRide": 17000,
+      "ChangeRide": 60150,
+      "PriceOfDetail": 1550,
+      "DateOfReplace": "2018-10-29",
+      "RecomendedReplace": 70000
+    }
+
+
+
+
+
+  ]
+}

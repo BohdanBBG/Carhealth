@@ -1,0 +1,678 @@
+
+body, html {
+    width: 100%;
+    height: 100%;
+    margin-bottom: 0%;
+    margin-left: 0%;
+    margin-right: 0%;
+    margin-top: 0%;
+}
+
+body {
+    /* Set base font */
+    font-size: 14px;
+}
+
+@media screen and (max-width: 720px) {
+    body {
+        font-size: 2.2vh;
+    }
+}
+
+:root{
+     --background-color: rgb(68, 67, 67);
+    --text-color: #fff;
+    --menu-background-color:rgb(32, 30, 30);
+    --card-background-color: rgb(31, 30, 30);
+    --card-list-item-background-color:  rgb(34, 33, 33);
+    --card-lighter-color: rgb(39, 39, 39);
+    --card-lighter-color-edit-control-button: #494f7c;
+    --card-darker-color: #20233e;
+    --bottom-color: #4f9da6;
+    --example-background-color: #35849c;
+    --menu-item-font-color: #fff;
+    --button-red-color:rgb(83, 3, 3);
+    --button-red-color-hover: rgb(180, 61, 61);
+    --input-field-color:#bec9ff;
+    --input-field-border-color:#bec9ff;
+    --block-bottom-width: 13%;
+    --block-bottom-height: 10%;
+    --car-details-ride-section:rgb(13, 8, 68);
+    --car-details-price-date-section: rgb(13, 8, 68);
+    --car-details-recomended-replace-section: rgb(13, 8, 68);
+}
+
+/* #region General classes */
+
+.hidden {
+    display: none;
+}
+
+/* #endregion */
+
+.app-container{
+    width:100%;
+    height:100%;
+}
+
+.main-block{
+    background-color: var(--background-color);
+    width: 100%;
+    min-height: 90%;
+    height: auto;
+}
+/* begin dashboard */
+.dashboard-container {
+    color: var(--text-color);
+}
+
+.dashboard-container .main-title {
+    text-align: center;
+    font-size: 2em;
+    margin: 0 0 1em 0;
+}
+
+.info-container .info-row {
+    margin: 0 0 0.5em;
+    font-size: 1.75em;
+    text-align: center;
+}
+.info-container .info-row:last-child {
+    margin-bottom: 0;
+}
+
+.info-container .info-image {
+    width: auto;
+    height: auto;
+    max-height: 17em;
+}
+.info-container .info-image--top {
+    max-height: 17em;
+}
+
+.brend-name{
+    font-size: 3em;
+    color: rgb(180, 164, 17);
+    font-style: oblique;
+    font-variant: petite-caps;
+}
+
+@media screen and (max-width: 720px){
+    .info-container .info-image--top {
+        width: 17em;
+    }
+
+    .info-container .info-row {
+        font-size: 1.7em;
+        margin: 1em;
+    }
+}
+
+.ride-input-container{
+    display: flex;
+    flex-direction: row;
+    border-radius: 3px;
+}
+
+.send-ride-button{
+    margin-left: 1em;
+    background: var(--button-red-color);
+    cursor: pointer;
+}
+
+.send-ride-button:hover{
+    background-color: var(--button-red-color-hover);
+}
+
+.send-ride-button-text{
+    font-size: 1.4em;
+}
+
+/* begin dashboard */
+
+/* error page  begin*/
+
+.error-image{
+    max-height: 20em;
+    display: block;
+    margin: 0 auto;
+    
+}
+@media screen and (max-width: 720px){
+    .error-image{
+         max-width: 10em;
+    }
+}
+
+.error-message-row{
+    font-size: 1.75em;
+    text-align: center;
+    font-size: 2em;
+    color: #fff;
+}
+
+.hidden{
+    display: none;
+}
+
+.active{
+    display: block;
+}
+/* error page  end*/
+
+
+.border-wrong{
+    border: 1px solid #fb0000;
+}
+
+.border-correct{
+    border: 2px solid #4ce406;
+}
+
+
+/* menu */
+
+.main-block-menu{
+    background-color: var(--background-color-menu);
+    width: 100%;
+    height: 10%;
+    overflow-y: hidden;
+}
+
+
+.menu{
+  width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    overflow-y: auto;
+    background-color: var(--menu-background-color);
+}
+.menu-item{
+    height: 100%;
+    margin: 0;
+    padding: 0.8em 1em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: auto;
+    background-color: var(--menu-background-color);
+    opacity: 1;
+    color: var(--menu-item-font-color);
+    box-sizing: border-box;
+    text-align: center;
+    text-overflow: ellipsis;
+    font-size: 1em;
+}
+
+.menu-item.active {
+    color: orangered;
+}
+
+.menu-page-container {
+    display: none;
+    width: 100%;
+    height: auto;
+       padding: 1em 0 1em 0;
+    box-sizing: border-box;
+}
+
+.menu-page-container.active {
+    display: block;
+}
+
+@media screen and (max-width: 720px){
+    .menu-item{
+        flex-grow: 1;
+    }
+}
+/* all data items review*/
+
+.list-item-title{
+    width: 99%;
+    flex-grow: 1;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+    text-align: center;
+    overflow-x: hidden;
+    overflow-y: auto;
+    text-overflow: ellipsis;
+    font-size: 1.5em;
+    padding: 0.3em 0 0.5em 0;
+    margin-bottom: 0.5em;
+}
+
+.list-item-ride-container{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-grow: 1;
+    width: 99%;
+    min-height: 1em;
+    font-size: 1em;
+    overflow-x: hidden;
+    overflow-y: auto;
+    margin-bottom: 0.5em;
+    background: var(--car-details-ride-section);
+}
+
+.list-item-ride-total{
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.list-item-change-ride{
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.list-item-price-date-container{
+    flex-grow: 1;
+    width: 99%;
+    display: flex;
+    flex-direction: row;
+    min-height: 1em;
+    font-size: 1em;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+    overflow-x: hidden;
+    overflow-y: auto;
+    margin-bottom: 0.5em;
+    background: var(--car-details-price-date-section);
+}
+
+.list-item-price{
+    width: 50%;
+}
+
+.list-item-date{
+    width: 50%;
+}
+
+.list-item-recomended-replace{
+    flex-grow: 1;
+    width: 99%;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+    background: var(--car-details-recomended-replace-section);
+}
+
+.list-item-change-ride{
+
+}
+
+.list-item-title-text{
+
+}
+
+.item-list-container {
+    margin: 0 1% 0 1%;
+    padding: 0;
+}
+
+.item-list {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+}
+
+
+.list-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 19.6%;
+    height: 200px;
+    margin: 0.5% 0.5% 0 0;
+    background-color: var(--card-list-item-background-color);
+    color: var( --text-color);
+    text-align: center;
+    overflow: auto;
+    font-size: 1em;
+    padding: 0.5em;
+    box-sizing: border-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+.list-item-container {
+    height:190px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-grow: 1;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    
+}
+
+.list-item-text-span{
+    flex-grow: 1;
+    font-size: 1.2em;
+}
+
+.container-edit-icon{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 9.6em;
+    background: var(--card-list-item-control-button-background-color);
+}
+
+.edit-picture{
+    opacity: 0.7;
+    width: auto;
+    height: 1.5em;
+}
+
+.border{
+    border: 1px solid  var(--car-details-ride-section) ;
+}
+
+.border-change{
+    border: 0.14em solid rgb(182, 6, 6);
+}
+
+.edit-picture:hover {
+    opacity: 1;
+}
+
+.list-item:hover {
+    background-color: var(--card-lighter-color);
+}
+
+.list-item--hidden {
+    display: none;
+}
+@media screen and (min-width: 721px) {
+    .list-item:nth-child(-n + 5) {
+        margin-top: 0;
+    }
+    .list-item:nth-child(5n) {
+        margin-right: 0;
+    }
+}
+@media screen and (max-width: 720px) {
+    .list-item {
+        width: 49.5%;
+        height: 60px;
+        margin: 1% 1% 0 0;
+    }
+    .list-item:nth-child(-n + 2) {
+        margin-top: 0;
+    }
+    .list-item:nth-child(2n) {
+        margin-right: 0;
+    }
+
+}
+
+/* Begin service life page */
+
+.item-list-service-life {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+}
+
+.item-list-container-service-life {
+    margin: 0 1% 0 1%;
+    padding: 0;
+}
+
+.list-item-service-life {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 19.5%;
+    height: 99px;
+    margin: 0.5% 0.5% 0 0;
+    background-color: var(--card-list-item-background-color);
+    color: var( --text-color);
+    text-align: center;
+    overflow: auto;
+    font-size: 1em;
+    padding: 0.5em;
+    box-sizing: border-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+.list-item-service-life-title{
+    width: 99%;
+    flex-grow: 1;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+    text-align: center;
+    overflow-x: hidden;
+    overflow-y: auto;
+    text-overflow: ellipsis;
+    font-size: 1.5em;
+    padding: 0.3em 0 0.5em 0;
+    margin-bottom: 0.5em;
+}
+
+.list-item-service-life-container{
+    height:84px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-grow: 1;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.list-item-service-life-recomended-replace{
+    flex-grow: 1;
+    width: 99%;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+    background: var(--car-details-recomended-replace-section);
+}
+
+.list-item-service-life--hidden {
+    display: none;
+}
+/* End service life page */
+
+/* Begin Modal window */
+
+  .modal-window-close-button:hover {background: #e6e6ff;}
+/*End Modal window  */
+
+
+
+.item-list-pager {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin: 1em 0;
+}
+
+.item-list-pager__button {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5em;
+    color: var( --text-color);
+    padding: 0.25em;
+    background-color: var(--button-red-color);
+    margin: 0 0.25em 0 0;
+    border-radius: 2px;
+    cursor: pointer;
+}
+
+.item-list-pager__button:hover{
+    background-color: var(--button-red-color-hover);
+}
+
+.item-list-pager__button:last-child {
+    margin-right: 0;
+}
+
+.item-list-pager__button .button-icon {
+}
+
+/*begin add word form */
+.data-form-container{
+    display: flex;
+    flex-direction: row;
+}
+.add-word-form{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin: 1em 4em 0em;
+    
+}
+
+.form-container{
+    display: flex;
+    flex-direction: column;
+    color: white;
+    font-size: 2em;
+}
+
+.form-text{
+    margin: 0em 0em 0.5em;
+}
+
+.price-date-container{
+    display: flex;
+    flex-direction: row;
+    height: 1.2em;
+    width: 12em;
+    margin: 0.7em 0em 0em;
+}
+
+.input-field-title{
+    background-color: var(--input-field-color);
+    border-color: var(--input-field-border-color);
+    padding: 0em 0.5em;
+    margin: 1em 0em 0.5em;
+    height: 1.2em;
+    width: 16.1em;
+    font-size: 0.7em;
+}
+
+.input-field-price{
+    background-color: var(--input-field-color);
+    border-color: var(--input-field-border-color);
+    padding: 0em 0.5em;
+    height: 1.2em;
+    width: 5.5em;
+    font-size: 0.7em;
+}
+
+.price-date-text{
+    border-color: var(--input-field-border-color);
+    padding: 0em 0.5em;
+    margin: 0em 0.3em 0em 0.3em;
+    height: 1.4em;
+    width: 4em;
+    font-size: 0.7em;
+    color: black;
+
+}
+
+.input-field-date{
+    background-color: var(--input-field-color);
+    border-color: var(--input-field-border-color);
+    padding: 0em 0.5em;
+    height: 1.2em;
+    width: 6.8em;
+    font-size: 0.7em;
+}
+
+.input-field-recomend{
+    background-color: var(--input-field-color);
+    border-color: var(--input-field-border-color);
+    padding: 0em 0.5em;
+    margin: 1em 0em 0.5em;
+    height: 1.2em;
+    width: 16.1em;
+    font-size: 0.7em;
+}
+
+.input-field-empty-js {
+    border-width: 0.12em;
+    border-color: red; 
+}
+
+.reset-button{
+    width: 7em;
+    height: 2em;
+    margin: 1em 0em 1em 11em;
+}
+
+.form-control-button{
+    width: 7em;
+    height: 2em;
+    margin: 1em 0em 1em 0em;
+}
+
+.form-button-container{
+    display: flex;
+    flex-direction: row;
+}
+
+.item-list-add-button-container{
+    margin: 0em 1em 1em 1em;
+}
+.item-list-pager__add-button{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5em;
+    width: 3em;
+    color: var( --text-color);
+    padding: 0.25em;
+    background-color: var(--button-red-color);
+    border-radius: 2px;
+    cursor: pointer;
+}
+
+.item-list-pager__add-button:hover{
+    background-color: var(--button-red-color-hover);
+}
+
+
+@media screen and (max-width: 720px) {
+    
+    .input-field-title{
+        width: 14.5em;
+    }
+
+    .input-field-description{
+        width: 20.9em;
+    }
+
+    .input-field-example-text{
+        width: 20.9em;
+    }
+
+    .input-field-tags{
+        width: 14.5em;
+    }
+
+    .form-dialog{
+         width: 22em
+    }
+}
+/* end add word form */

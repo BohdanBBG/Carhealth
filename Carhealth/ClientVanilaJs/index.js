@@ -49,6 +49,7 @@ function start(config) {
                 e.stopPropagation();
 
                 helper.httpChek('https://localhost:5001/Account/Logout', function (data) {})
+                 //location.reload()
                 
                 });
 
@@ -88,10 +89,10 @@ function start(config) {
             });
         }
 
-        domUtil.addBubleEventListener('body', '.js-logout-button', 'click', globalScopes.getEventListenerState().logoutButton, function (e, desiredEl) {
-            e.stopPropagation();
+        //domUtil.addBubleEventListener('body', '.js-logout-button', 'click', globalScopes.getEventListenerState().logoutButton, function (e, desiredEl) {
+           // e.stopPropagation();
 
-        });
+       // });
 
         initAppMenu();
 

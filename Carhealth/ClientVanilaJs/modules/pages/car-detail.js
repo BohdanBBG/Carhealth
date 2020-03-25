@@ -57,7 +57,7 @@ class CarDetails {
             totalRideEl.innerText = item.TotalRide;
             changeRideEl.innerText = item.ChangeRide;
             priceEl.innerText = item.PriceOfDetail;
-            dateEl.innerText = item.DateOfReplace.slice(0, 10)
+            dateEl.innerText = item.DateOfReplace.slice(0, 10);
             recomendedReplaceEl.innerText = item.RecomendedReplace;
 
             textContainer.setAttribute('position-in-list', i);
@@ -76,7 +76,7 @@ class CarDetails {
             while (itemListEl.firstChild) {
                 itemListEl.removeChild(itemListEl.firstChild);
             }
-
+            var pageOffset =  (page * limit);
             items.forEach(function (item, i) {
                 addDataItemsBlock(item, i);
             });
@@ -162,7 +162,7 @@ class CarDetails {
 
             if (confirm(`Do you want to delete ${pageData.CarDetails[numberOfItem].Name}`)) {
 
-                var idItemUrl = `${config.urls.api}/home/${pageData.CarDetails[numberOfItem].Detail_id}`;
+                var idItemUrl = `${config.urls.api}/home/${pageData.CarDetails[numberOfItem].Id}`;
                 deleteData(idItemUrl);
 
                 alert('Deleted');
@@ -184,6 +184,7 @@ class CarDetails {
 
             var numberOfItem1 = Number(desiredEl.getAttribute('position-in-list'));
             var formPutButtonEl = document.querySelector('.js-put-button');
+            var formIsChanchedButtonEl = document.querySelector('.is-replaced-checkbox-container');
 
             formButtonEl.forEach(function (item) {
                 item.classList.remove('active');
@@ -191,13 +192,14 @@ class CarDetails {
             });
 
             formPutButtonEl.classList.replace('hidden', 'active');
+            formIsChanchedButtonEl.classList.replace('hidden','active');
             modalWindowForm.showModal();
 
             defaultFullfieldForm(pageData.CarDetails[numberOfItem1]);
 
             domUtil.addBubleEventListener(formPutButtonEl, '.js-put-button', 'click', globalScopes.getEventListenerState().formPutButton, function (e) {
 
-                idItemPutUrl =  `${config.urls.api}/home/${pageData.CarDetails[numberOfItem1].Detail_id}`;
+                idItemPutUrl =  `${config.urls.api}/home/${pageData.CarDetails[numberOfItem1].Id}`;
                 var totalRideObj = {};
 
                 if (makeRequestBody(formDataSend, totalRideObj)) {
@@ -296,7 +298,7 @@ class CarDetails {
 
             CarItemFormEl.elements.totalRace.value = pageData.CarsTotalRide;
 
-            CarItemFormEl.elements.date.value = data.DateOfReplace;
+            CarItemFormEl.elements.date.value = data.DateOfReplace.slice(0, 10);
 
         }
 
@@ -304,6 +306,10 @@ class CarDetails {
 
             var CarItemFormEl = document.forms.NewCarItem;
 
+            if(CarItemFormEl.elements.isRepalced.checked)
+            {
+                formDataSend.TotalRide = 0;
+            }
 
             formDataSend.Name = CarItemFormEl.elements.name.value ? CarItemFormEl.elements.name.value :
                 CarItemFormEl.elements.name.classList.add('input-field-empty-js');

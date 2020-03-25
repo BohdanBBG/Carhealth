@@ -1,196 +1,215 @@
-﻿{
-  "CarId": 1,
+{
+  "Id": 1,
   "CarsTotalRide": 1000,
   "CarEntityName": "Default car",
-  "CarDetails": [
+  "CarItems": [
     {
-      "Detail_id": 1,
-      "Name": "Блок управления ABS",
+      "CarItemId": 1,
+      "Name": "ABS control unit",
       "TotalRide": 10000,
       "ChangeRide": 20000,
       "PriceOfDetail": 258,
       "DateOfReplace": "2018-09-12",
-      "RecomendedReplace": 30000
+      "RecomendedReplace": 30000,
+      "CarEntityId": 1
     },
 
     {
-      "Detail_id": 2,
-      "Name": "Генератор",
+      "CarItemId": 2,
+      "Name": "Generator",
       "TotalRide": 11000,
       "ChangeRide": 22150,
       "PriceOfDetail": 750,
       "DateOfReplace": "2018-06-12",
-      "RecomendedReplace": 20000
+      "RecomendedReplace": 20000,
+      "CarEntityId": 1
     },
 
     {
-      "Detail_id": 3,
-      "Name": "Шаровая",
+      "CarItemId": 3,
+      "Name": "Ball",
       "TotalRide": 11000,
       "ChangeRide": 30150,
       "PriceOfDetail": 1550,
       "DateOfReplace": "2018-07-12",
-      "RecomendedReplace": 40000
+      "RecomendedReplace": 40000,
+      "CarEntityId": 1
     },
 
     {
-      "Detail_id": 4,
-      "Name": " Тормозной суппорт ",
+      "CarItemId": 4,
+      "Name": " Stopping support",
       "TotalRide": 9000,
       "ChangeRide": 30150,
       "PriceOfDetail": 150,
       "DateOfReplace": "2018-11-24",
-      "RecomendedReplace": 50000
+      "RecomendedReplace": 50000,
+      "CarEntityId": 1
     },
 
     {
-      "Detail_id": 5,
-      "Name": "Тормозные диски",
+      "CarItemId": 5,
+      "Name": "Brake discs",
       "TotalRide": 15000,
       "ChangeRide": 30150,
       "PriceOfDetail": 200,
       "DateOfReplace": "2018-09-12",
-      "RecomendedReplace": 20000
+      "RecomendedReplace": 20000,
+      "CarEntityId": 1
     },
 
     {
-      "Detail_id": 6,
-      "Name": " Датчик распредвала ",
+      "CarItemId": 6,
+      "Name": " Camshaft sensor ",
       "TotalRide": 21000,
       "ChangeRide": 40150,
       "PriceOfDetail": 1550,
       "DateOfReplace": "2018-08-10",
-      "RecomendedReplace": 50000
+      "RecomendedReplace": 50000,
+      "CarEntityId": 1
     },
 
     {
-      "Detail_id": 7,
-      "Name": "Поперечный рычаг",
+      "CarItemId": 7,
+      "Name": "Wishbone",
       "TotalRide": 12300,
       "ChangeRide": 22150,
       "PriceOfDetail": 250,
       "DateOfReplace": "2018-02-02",
-      "RecomendedReplace": 50000
+      "RecomendedReplace": 50000,
+      "CarEntityId": 1
     },
 
     {
-      "Detail_id": 8,
-      "Name": " Сальники коленвала",
+      "CarItemId": 8,
+      "Name": " Crankshaft oil seals",
       "TotalRide": 21000,
       "ChangeRide": 40150,
       "PriceOfDetail": 2050,
       "DateOfReplace": "2018-01-11",
-      "RecomendedReplace": 50000
+      "RecomendedReplace": 50000,
+      "CarEntityId": 1
     },
 
     {
-      "Detail_id": 9,
-      "Name": " Карданный вал",
+      "CarItemId": 9,
+      "Name": " Driveshaft",
       "TotalRide": 15000,
       "ChangeRide": 50150,
       "PriceOfDetail": 750,
       "DateOfReplace": "2018-10-24",
-      "RecomendedReplace": 15000
+      "RecomendedReplace": 15000,
+      "CarEntityId": 1
     },
 
     {
-      "Detail_id": 10,
-      "Name": " Бензонасос ",
+      "CarItemId": 10,
+      "Name": " Gas pump ",
       "TotalRide": 17000,
       "ChangeRide": 60150,
       "PriceOfDetail": 1550,
       "DateOfReplace": "2018-10-29",
-      "RecomendedReplace": 70000
+      "RecomendedReplace": 70000,
+      "CarEntityId": 1
     },
 
     {
-      "Detail_id": 11,
-      "Name": "Патрубки",
+      "CarItemId": 11,
+      "Name": "Branch pipes",
       "TotalRide": 17000,
       "ChangeRide": 60150,
       "PriceOfDetail": 1550,
       "DateOfReplace": "2018-10-29",
-      "RecomendedReplace": 70000
+      "RecomendedReplace": 70000,
+      "CarEntityId": 1
     },
 
     {
-      "Detail_id": 12,
-      "Name": " Выключатель зажигания ",
+      "CarItemId": 12,
+      "Name": " Ignition switch",
       "TotalRide": 17000,
       "ChangeRide": 60150,
       "PriceOfDetail": 1550,
       "DateOfReplace": "2018-10-29",
-      "RecomendedReplace": 70000
+      "RecomendedReplace": 70000,
+      "CarEntityId": 1
     },
 
     {
-      "Detail_id": 13,
-      "Name": "  Подсветка номера  ",
+      "CarItemId": 13,
+      "Name": "  Room illumination ",
       "TotalRide": 17000,
       "ChangeRide": 60150,
       "PriceOfDetail": 1550,
       "DateOfReplace": "2018-10-29",
-      "RecomendedReplace": 70000
+      "RecomendedReplace": 70000,
+      "CarEntityId": 1
     },
 
     {
-      "Detail_id": 14,
-      "Name": " Приводной вал  ",
+      "CarItemId": 14,
+      "Name": " Drive shaft",
       "TotalRide": 17000,
       "ChangeRide": 60150,
       "PriceOfDetail": 1550,
       "DateOfReplace": "2018-10-29",
-      "RecomendedReplace": 70000
+      "RecomendedReplace": 70000,
+      "CarEntityId": 1
     },
 
     {
-      "Detail_id": 15,
-      "Name": " Обдув салона  ",
+      "CarItemId": 15,
+      "Name": " Interior blowing  ",
       "TotalRide": 17000,
       "ChangeRide": 60150,
       "PriceOfDetail": 1550,
       "DateOfReplace": "2018-10-29",
-      "RecomendedReplace": 70000
+      "RecomendedReplace": 70000,
+      "CarEntityId": 1
     },
 
     {
-      "Detail_id": 16,
-      "Name": " Выключатель стоп-сигналов  ",
+      "CarItemId": 16,
+      "Name": " Brake light switch ",
       "TotalRide": 17000,
       "ChangeRide": 60150,
       "PriceOfDetail": 1550,
       "DateOfReplace": "2018-10-29",
-      "RecomendedReplace": 70000
+      "RecomendedReplace": 70000,
+      "CarEntityId": 1
     },
 
     {
-      "Detail_id": 17,
-      "Name": " Распредвал  ",
+      "CarItemId": 17,
+      "Name": " Camshaft  ",
       "TotalRide": 17000,
       "ChangeRide": 60150,
       "PriceOfDetail": 1550,
       "DateOfReplace": "2018-10-29",
-      "RecomendedReplace": 70000
+      "RecomendedReplace": 70000,
+      "CarEntityId": 1
     },
 
     {
-      "Detail_id": 18,
-      "Name": " Сцепление  ",
+      "CarItemId": 18,
+      "Name": " Clutch  ",
       "TotalRide": 17000,
       "ChangeRide": 60150,
       "PriceOfDetail": 1550,
       "DateOfReplace": "2018-10-29",
-      "RecomendedReplace": 70000
+      "RecomendedReplace": 70000,
+      "CarEntityId": 1
     },
 
     {
-      "Detail_id": 19,
-      "Name": " Коленвал ",
+      "CarItemId": 19,
+      "Name": " Crankshaft ",
       "TotalRide": 17000,
       "ChangeRide": 60150,
       "PriceOfDetail": 1550,
       "DateOfReplace": "2018-10-29",
-      "RecomendedReplace": 70000
+      "RecomendedReplace": 70000,
+      "CarEntityId": 1
     }
 
 

@@ -7,11 +7,12 @@ using Microsoft.AspNetCore.Mvc;
 using Carhealth.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Text.Json;
-using Carhealth.ImportAndExport;
+using Carhealth.Repositories;
 using Microsoft.Extensions.Configuration;
 using System.Net.Mime;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
+using Microsoft.EntityFrameworkCore;
 
 namespace Carhealth.Controllers
 {
@@ -19,14 +20,14 @@ namespace Carhealth.Controllers
     {
       
 
-        private readonly IRepository _repository;
         private readonly IConfiguration _configuration;
         private IHostingEnvironment _hostingEnvironment;
+        private readonly CarContext db;
 
 
-        public HomeController(IRepository repository, IConfiguration configuration, IHostingEnvironment hostingEnvironment)
+        public HomeController(IConfiguration configuration, IHostingEnvironment hostingEnvironment, CarContext context)
         {
-            _repository = repository;
+            db = context;
             _configuration = configuration;
             _hostingEnvironment = hostingEnvironment;
         }
@@ -47,73 +48,79 @@ namespace Carhealth.Controllers
             return "{ \"urls\" :{ \"api\" : \"https://localhost:5001\"} }";
         }
 
-        // GET home/car
-        [Route("home/car")]
+        // GET /home/car/1
+        [Route("home/car/{id}")]
         [HttpGet]
-        public ActionResult<string> Get()
+        public ActionResult<string> Get(int id = 1)
         {
-            CarEntity carEntity = _repository.Import();
 
+            var car = db.CarEntities.Where(x => x.Id == id).Include(x=>x.CarItems);
 
-            return JsonSerializer.Serialize<CarEntity>(carEntity);
+            return JsonSerializer.Serialize(car);
         }
 
-        // GET home/cardetails/5/1
+        // GET home/cardetails/0/2
         [Route("home/cardetails/{offset}/{limit}")]
         [HttpGet("offset/limit")]
         public ActionResult<string> Get(int offset, int limit)
         {
-            CarEntity carEntity = _repository.Import();
-
+            CarEntity carEntity = db.CarEntities.Find(1);
             CarEntity carEntitySendData = new CarEntity();
-            carEntitySendData.CarDetails = new List<CarItem>();
             carEntitySendData.CarEntityName = carEntity.CarEntityName;
-            carEntitySendData.CarId = carEntity.CarId;
-            carEntitySendData.CountCarsItems = carEntity.CountCarsItems;
+            carEntitySendData.Id = carEntity.Id;
             carEntitySendData.CarsTotalRide = carEntity.CarsTotalRide;
 
             int counter = 1;
-            int detailsTotalCount = carEntity.CountCarsItems;
+            int detailsTotalCount = db.CarItems.Count();
 
-            if (offset < 0 || limit < 0 || offset > carEntity.CountCarsItems)
+            if (offset < 0 || limit < 0 || offset > detailsTotalCount)
             {
                 return null;
             }
 
-            carEntity.CarDetails.ForEach(item =>
+            var carItems = db.CarItems;
+
+            foreach(CarItem item in carItems)
             {
+
                 if (counter > offset && (counter <= (offset + limit)) && counter <= detailsTotalCount)
                 {
-                    carEntitySendData.CarDetails.Add(item);
+                    carEntitySendData.CarItems.Add(item);
                     counter++;
                 }
                 else
                 {
                     counter++;
                 }
+            }
 
-            });
+            
             return JsonSerializer.Serialize<CarEntity>(carEntitySendData);
+
         }
 
 
-        //// Add TotalRide Post home/totalride
+        // Add TotalRide Post home/totalride
         [Route("home/totalride")]
         [HttpPost]
         public void Post([FromBody] CarsTotalRide carsTotalRide)
         {
+            CarEntity carEntity = db.CarEntities.Find(1);
+           var carItems = db.CarItems.Where(x => x.CarEntityId == 1);
 
-            CarEntity carEntity = _repository.Import();
             if (carEntity.CarsTotalRide < carsTotalRide.TotalRide)
             {
-
-                _repository.ReCalcCarItemsRides(carEntity, carsTotalRide.TotalRide);
+               foreach(CarItem item in carItems)
+                {
+                    item.TotalRide += (carsTotalRide.TotalRide - carEntity.CarsTotalRide);
+                }
 
                 carEntity.CarsTotalRide = carsTotalRide.TotalRide;
 
-                _repository.UpdateAllFileData(carEntity);
+                db.SaveChanges();
             }
 
+          
         }
 
         //Add new CarItem POST home/addcaritem
@@ -121,12 +128,12 @@ namespace Carhealth.Controllers
         [HttpPost]
         public void Post([FromBody] CarItem carItem)
         {
-            CarEntity carEntity = _repository.Import();
+            carItem.CarEntityId = 1;
 
-            carItem.Detail_id = carEntity.CarDetails.Last().Detail_id + 1;
-            carEntity.CarDetails.Add(carItem);
+            db.CarItems.Add(carItem);
 
-            _repository.UpdateAllFileData(carEntity);
+            db.SaveChanges();
+
         }
 
         // PUT home/5
@@ -135,25 +142,20 @@ namespace Carhealth.Controllers
         {
             if (id >= 0)
             {
-                CarEntity carEntity = _repository.Import();
-                CarItem carItemToDelete = new CarItem();
+                CarItem carItem = new CarItem();
+                carItem = db.CarItems.FirstOrDefault(x => x.CarItemId == id);
 
-                carEntity.CarDetails.ForEach(item =>
-                {
-                    if (item.Detail_id == id)
-                    {
-                        item.Name = value.Name;
-                        item.TotalRide = value.TotalRide;
-                        item.ChangeRide = value.ChangeRide;
-                        item.PriceOfDetail = value.PriceOfDetail;
-                        item.DateOfReplace = value.DateOfReplace;
-                        item.RecomendedReplace = value.RecomendedReplace;
-                    }
-                });
+                carItem.Name = value.Name;
+                carItem.TotalRide = value.TotalRide;
+                carItem.ChangeRide = value.ChangeRide;
+                carItem.PriceOfDetail = value.PriceOfDetail;
+                carItem.DateOfReplace = value.DateOfReplace;
+                carItem.RecomendedReplace = value.RecomendedReplace;
 
-                _repository.UpdateAllFileData(carEntity);
+                db.SaveChanges();
             }
         }
+
 
         // DELETE home/5
         [HttpDelete("home/{id}")]
@@ -161,25 +163,17 @@ namespace Carhealth.Controllers
         {
             if (id >= 0)
             {
-                CarEntity carEntity = _repository.Import();
-                CarItem carItemToDelete = new CarItem();
+                CarItem carItem = new CarItem();
+                carItem = db.CarItems.FirstOrDefault(x => x.CarItemId == id);
 
-                carEntity.CarDetails.ForEach(item =>
+                if( carItem != null)
                 {
-                    if (item.Detail_id == id)
-                    {
-                        carItemToDelete = item;
-                    }
-                });
-
-                int carItemToDeleteIndex = carEntity.CarDetails.IndexOf(carItemToDelete);
-
-                if (carEntity.CarDetails.Contains(carItemToDelete))
-                {
-                    carEntity.CarDetails.RemoveAt(carItemToDeleteIndex);
+                    db.CarItems.Remove(carItem);
+                    db.SaveChanges();
                 }
-                _repository.UpdateAllFileData(carEntity);
             }
         }
+
+              
     }
 }

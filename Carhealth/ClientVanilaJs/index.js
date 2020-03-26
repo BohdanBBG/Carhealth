@@ -40,6 +40,7 @@ function start(config) {
 
                 var targetLinkEl = desiredEl;
                 appRouter.goToRoute(targetLinkEl.dataset.routeLink);
+
             });
 
             GetCarTotalMileage();
@@ -67,6 +68,7 @@ function start(config) {
                     //var url = config.urls.api + '/home/cardetails' + '/' ;
                     var url = config.urls.api + "/home/totalride";
                     var SendRide = {};
+                    SendRide.CarEntityId = 1;////
                     SendRide.TotalRide = document.forms.RideForm.elements.ride.value;
                     SendTotalRide(url, SendRide);
                 } else {
@@ -76,8 +78,9 @@ function start(config) {
         }
 
         function GetCarTotalMileage() {
-            helper.httpGet(config.urls.api + '/home/car', function (data) {
+            helper.httpGet(config.urls.api + '/home/car/1', function (data) {///
                 document.querySelector('.js-menu-car-total-ride').innerText = data.CarsTotalRide;
+             
             });
         }
 
@@ -111,7 +114,7 @@ function start(config) {
         function checkingServerResponse() {
 
             function getData(offset = 0, limit = 2, callBack = null) {
-                helper.httpGet(config.urls.api + '/home/cardetails' + '/' + offset + '/' + limit, function (data) {
+                helper.httpGet(config.urls.api + '/home/cardetails/1' + '/' + offset + '/' + limit, function (data) {
                     console.log(2, data);
                     if (callBack !== null) {
                         callBack(data);

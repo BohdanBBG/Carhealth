@@ -24,7 +24,7 @@ class CarDetails {
         var listItemTemplateEl = itemListContainerEl.querySelector('.js-list-item-template');
 
         function getData(offset = 0, limit = 2, callBack = null) {
-            helper.httpGet(config.urls.api + '/home/cardetails' + '/' + offset + '/' + limit, function (data) {
+            helper.httpGet(config.urls.api + '/home/cardetails/1' + '/' + offset + '/' + limit, function (data) {
                 console.log(2, data);
                 if (callBack !== null) {
                     callBack(data);
@@ -103,10 +103,11 @@ class CarDetails {
 
         function showPage(page, limit) {
             getPageData(page, limit, function (response) {
-                totalCount = response.CountCarsItems;
+                totalCount = 20;
+               // totalCount = response.CountCarsItems;//////////////////
                 pageData = response;
                 console.log("pageData",pageData);
-                showPageData(response.CarDetails);
+                showPageData(response);
             });
         }
 
@@ -160,9 +161,9 @@ class CarDetails {
 
             var numberOfItem = Number(desiredEl.getAttribute('position-in-list'));
 
-            if (confirm(`Do you want to delete ${pageData.CarDetails[numberOfItem].Name}`)) {
+            if (confirm(`Do you want to delete ${pageData[numberOfItem].Name}`)) {
 
-                var idItemUrl = `${config.urls.api}/home/${pageData.CarDetails[numberOfItem].Id}`;
+                var idItemUrl = `${config.urls.api}/home/1/${pageData[numberOfItem].CarItemId}`;
                 deleteData(idItemUrl);
 
                 alert('Deleted');
@@ -195,23 +196,29 @@ class CarDetails {
             formIsChanchedButtonEl.classList.replace('hidden','active');
             modalWindowForm.showModal();
 
-            defaultFullfieldForm(pageData.CarDetails[numberOfItem1]);
+            defaultFullfieldForm(pageData[numberOfItem1]);
 
             domUtil.addBubleEventListener(formPutButtonEl, '.js-put-button', 'click', globalScopes.getEventListenerState().formPutButton, function (e) {
 
-                idItemPutUrl =  `${config.urls.api}/home/${pageData.CarDetails[numberOfItem1].Id}`;
+                //idItemPutUrl =  `${config.urls.api}/home/${pageData[numberOfItem1].CarItemId}`;
+                idItemPutUrl =  `${config.urls.api}/home`;
+
                 var totalRideObj = {};
 
                 if (makeRequestBody(formDataSend, totalRideObj)) {
 
                     if (/^\d+$/.test(totalRideObj.totalRide)) {
                         var url = config.urls.api + "/home/totalride";
+                        totalRideObj.CarEntityId = 1; ///////
                         SendTotalRide(url, totalRideObj);
                     }
 
+                    formDataSend.CarEntityId = 1;/////////
+                    formDataSend.CarItemId = pageData[numberOfItem1].CarItemId;/////
+
                     updateData(idItemPutUrl, formDataSend);
                     modalWindowForm.close();
-                    location.reload()
+                    //location.reload()
                 }
             });
 
@@ -242,7 +249,7 @@ class CarDetails {
                         var url = config.urls.api + "/home/totalride";
                         SendTotalRide(url, totalRideObj);
                     }
-
+                    formDataSend.CarEntityId = 1; // !!!!!!!!!!!!!!!!
                     sendData(postUrl, formDataSend);
                     modalWindowForm.close();
                     location.reload()
@@ -384,7 +391,7 @@ class CarDetails {
         }
 
         function updateData(url, data, authToken) {
-            helper.httpRequest(url, data, 'PUT', authToken, function (request) {
+            helper.httpRequest(url, data, 'PUT', function (request) {
                 alert(`Item was update`);
 
             });

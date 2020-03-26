@@ -25,7 +25,7 @@ class ServiceLife {
         var listItemTemplateEl = itemListContainerEl.querySelector('.js-list-item-template-service-life');
 
         function getData(offset = 0, limit = 2, callBack = null) {
-            helper.httpGet(config.urls.api + '/home/cardetails' + '/' + offset + '/' + limit, function (data) {
+            helper.httpGet(config.urls.api + '/home/cardetails/1' + '/' + offset + '/' + limit, function (data) {
                 console.log(2, data);
                 if (callBack !== null) {
                     callBack(data);
@@ -77,10 +77,12 @@ class ServiceLife {
 
         function showPage(page, limit) {
             getPageData(page, limit, function (response) {
-                totalCount = response.CountCarsItems;
+                totalCount = 20;
+                // totalCount = response.CountCarsItems;//////////////////
+                 pageData = response;
                 pageData = response;
                 console.log("pageData",pageData);
-                showPageData(response.CarDetails);
+                showPageData(responses);
             });
         }
 

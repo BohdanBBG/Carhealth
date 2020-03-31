@@ -16,9 +16,23 @@ let appRouter = {};
 document.addEventListener("DOMContentLoaded", function (event) {
     helper.httpGet('https://localhost:5001/home/config', function (config) {
 
-
+      if(isEmpty(config))
+      {
+        document.location.href = "https://localhost:5001/Account/Login";
+      }
+      else
+      {
         start(config);
+      }
     });
+
+    function isEmpty(obj) {
+        for (let key in obj) {
+          // если тело цикла начнет выполняться - значит в объекте есть свойства
+          return false;
+        }
+        return true;
+      }
 });
 
 function start(config) {
@@ -49,9 +63,7 @@ function start(config) {
                 e.preventDefault();
                 e.stopPropagation();
 
-                helper.httpChek('https://localhost:5001/Account/Logout', function (data) {})
-                 //location.reload()
-                
+                document.location.href = "https://localhost:5001/Account/Logout";
                 });
 
             domUtil.addBubleEventListener('.send-ride-button', '.send-ride-button-text', 'click', globalScopes.getEventListenerState().rideSendButton, function (e, actualEl, desiredEl) {
@@ -114,7 +126,7 @@ function start(config) {
         function checkingServerResponse() {
 
             function getData(offset = 0, limit = 2, callBack = null) {
-                helper.httpGet(config.urls.api + '/home/cardetails/1' + '/' + offset + '/' + limit, function (data) {
+                helper.httpChek(config.urls.api + '/home/cardetails/1' + '/' + offset + '/' + limit, function (data) {
                     console.log(2, data);
                     if (callBack !== null) {
                         callBack(data);

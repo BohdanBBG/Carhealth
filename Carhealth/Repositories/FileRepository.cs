@@ -11,11 +11,11 @@ namespace Carhealth.Repositories
 {
     public class FileRepository: IRepository<List<CarEntity>>
     {
-        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IWebHostEnvironment _hostingEnvironment;
         private string _filePath = "./AppData/data.json";
 
 
-        public FileRepository(IHostingEnvironment hostingEnvironment)
+        public FileRepository(IWebHostEnvironment hostingEnvironment)
         {
             _hostingEnvironment = hostingEnvironment;
             Path.Combine(_hostingEnvironment.ContentRootPath, _filePath);

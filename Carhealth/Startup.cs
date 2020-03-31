@@ -7,16 +7,18 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Carhealth.Repositories;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Hosting;
 
 namespace Carhealth
 {
     public class Startup
     {
 
-        IHostingEnvironment _env;
+        IWebHostEnvironment _env;
         public IConfiguration Configuration { get; }
 
-        public Startup(IHostingEnvironment env, IConfiguration configuration)
+        public Startup(IWebHostEnvironment env, IConfiguration configuration)
         {
             Configuration = configuration;
             _env = env;
@@ -25,26 +27,29 @@ namespace Carhealth
 
         public void ConfigureServices(IServiceCollection services)
         {
-            string connection = Configuration.GetConnectionString("DefaultConnection");
-            services.AddDbContext<UserContext>(options => options.UseSqlServer(connection));
-
             services.AddTransient<CarContext>();
             services.AddTransient<IRepository<List<CarEntity>>, FileRepository>();
 
+            services.AddDbContext<UserContext>(options =>
+            options.UseSqlServer(Configuration.GetConnectionString("CarHealthIdentityDb")));
+
+            services.AddIdentity<User, IdentityRole>(options => //валидация пароля 
+            { 
+                options.Password.RequiredLength = 4;   // минимальная длина
+                options.Password.RequireNonAlphanumeric = false;   // требуются ли не алфавитно-цифровые символы
+                options.Password.RequireLowercase = false; // требуются ли символы в нижнем регистре
+                options.Password.RequireUppercase = false; // требуются ли символы в верхнем регистре
+                options.Password.RequireDigit = false; // требуются ли цифры
+                options.User.RequireUniqueEmail = true; // уникальный email
+            }).
+            AddEntityFrameworkStores<UserContext>();// устанавливает тип хранилища, которое будет применяться в Identity для хранения 
+                                                       //данных. В качестве типа хранилища здесь указывается класс контекста данных.
 
 
-            // установка конфигурации подключения
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(options => //CookieAuthenticationOptions
-                {
-                    options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Account/Login");
-                });
-
-            //services.AddTransient<IRepository, Repository>();
-            services.AddMvc();
+            services.AddControllersWithViews();
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             
             if (env.IsDevelopment())
@@ -58,16 +63,19 @@ namespace Carhealth
             }
 
             app.UseHttpsRedirection();
-            //app.UseDefaultFiles();
+            app.UseDefaultFiles();
             app.UseStaticFiles();
 
-            app.UseAuthentication();
+            app.UseRouting();
 
-            app.UseMvc(routes =>
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            app.UseEndpoints(routes =>
             {
-                routes.MapRoute(
+                routes.MapControllerRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Start}");
+                    pattern: "{controller=Home}/{action=Index}");
             });
         }
     }

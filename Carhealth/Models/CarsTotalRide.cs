@@ -13,6 +13,6 @@ namespace Carhealth.Models
         }
         public int TotalRide { get; set; }
 
-        public int CarEntityId { get; set; }
+        public string CarEntityId { get; set; }
     }
 }

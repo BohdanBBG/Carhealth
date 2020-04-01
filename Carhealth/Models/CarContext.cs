@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Carhealth.Repositories;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -10,11 +12,13 @@ namespace Carhealth.Models
     {
         private readonly IConfiguration _configuration;
         private readonly IRepository<List<CarEntity>> _repository;
+        private UserManager<User> _userManager;
 
-        public CarContext(IConfiguration configuration, IRepository<List<CarEntity>> repository)
+        public CarContext(IConfiguration configuration, IRepository<List<CarEntity>> repository, UserManager<User> userManager)
         {
             this._configuration = configuration;
             this._repository = repository;
+            _userManager = userManager;
 
             Database.EnsureCreated();
         }
@@ -36,13 +40,37 @@ namespace Carhealth.Models
 
             var carEntities = _repository.ImportAllData();
 
+            var users =  _userManager.Users.ToList();
+
             foreach (var car in carEntities)
             {
-                modelBuilder.Entity<CarEntity>().HasData(new {car.Id, car.CarEntityName, car.CarsTotalRide });
-
-                foreach (var details in car.CarItems)
+                foreach (var user in users)
                 {
-                    modelBuilder.Entity<CarItem>().HasData(details);
+                    CarEntity carEntity = new CarEntity
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        CarEntityName = car.CarEntityName,
+                        CarsTotalRide = car.CarsTotalRide,
+                        UserId = user.Id,
+                    };
+
+                    modelBuilder.Entity<CarEntity>().HasData(carEntity);
+
+                    foreach (var details in car.CarItems)
+                    {
+                        modelBuilder.Entity<CarItem>().HasData(new CarItem
+                        {
+                            CarEntityId = carEntity.Id,
+                            CarItemId = Guid.NewGuid().ToString(),
+                            Name = details.Name,
+                            TotalRide = details.TotalRide,
+                            ChangeRide = details.ChangeRide,
+                            PriceOfDetail = details.PriceOfDetail,
+                            DateOfReplace = details.DateOfReplace,
+                            RecomendedReplace = details.RecomendedReplace,
+                            CarEntity = carEntity
+                        });
+                    }
                 }
             }
         }

@@ -32,7 +32,7 @@ namespace Carhealth.Repositories
             return carEntities;
         }
 
-        public bool RecalcCarItemsRides(int idCarEntity, int totalRideDiff)
+        public bool RecalcCarItemsRides(string idCarEntity, int totalRideDiff)
         {
             List<CarEntity> carEntities = new List<CarEntity>
             {

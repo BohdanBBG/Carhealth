@@ -8,6 +8,11 @@ namespace Carhealth.Models
 {
     public class User: IdentityUser
     {
-       
+        public List<CarEntity> CarEntity { get; set; }
+
+        public User()
+        {
+            CarEntity = new List<CarEntity>();
+        }
     }
 }

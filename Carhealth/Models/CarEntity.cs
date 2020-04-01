@@ -10,22 +10,19 @@ namespace Carhealth.Models
     public class CarEntity
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        public string Id { get; set; }
         public string CarEntityName { get; set; }
         public int CarsTotalRide { get; set; }
 
         public List<CarItem> CarItems { get; set; }
+
+
+        public string UserId { get; set; }
 
         public CarEntity()
         {
             this.CarItems = new List<CarItem>();
         }
 
-        public CarEntity(string carEntityName)
-        {
-            CarEntityName = carEntityName;
-            this.CarItems = new List<CarItem>();
-        }
-       
     }
 }

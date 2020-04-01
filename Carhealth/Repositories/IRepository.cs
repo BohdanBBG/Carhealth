@@ -12,7 +12,7 @@ namespace Carhealth.Repositories
 
         void UpdateAllData(List<CarEntity> carEntities);
 
-        bool RecalcCarItemsRides(int idCarEntity, int totalRideDiff);
+        bool RecalcCarItemsRides(string idCarEntity, int totalRideDiff);
 
     }
 }

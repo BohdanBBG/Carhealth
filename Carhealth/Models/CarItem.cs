@@ -10,8 +10,8 @@ namespace Carhealth.Models
     public class CarItem
     {
       
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int CarItemId { get; set; }
+        //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public string CarItemId { get; set; }
         public string Name { get; set; }
         public int TotalRide { get; set; }
         public int ChangeRide { get; set; }
@@ -20,7 +20,7 @@ namespace Carhealth.Models
         public int RecomendedReplace { get; set; }
 
         
-        public int CarEntityId { get; set; }
+        public string CarEntityId { get; set; }
         [NotMapped]
         public CarEntity CarEntity { get; set; }
 

@@ -59,7 +59,7 @@ namespace Carhealth.Controllers
         [Authorize]
         [Route("home/car/{id}")]
         [HttpGet]
-        public async Task<ActionResult<string>> GetAsync(int? id)
+        public async Task<ActionResult<string>> GetAsync(string id)
         {
             if (id != null && await db.CarEntities.AnyAsync(x => x.Id == id))
             {
@@ -76,7 +76,7 @@ namespace Carhealth.Controllers
         [Authorize]
         [Route("home/cardetails/{carId}/{offset}/{limit}")]
         [HttpGet("offset/limit")]
-        public async Task<ActionResult<string>> GetAsync(int carId, int offset, int limit)
+        public async Task<ActionResult<string>> GetAsync(string carId, int offset, int limit)
         {
             if (offset >= 0 && 
                 limit > 0 &&
@@ -103,7 +103,7 @@ namespace Carhealth.Controllers
                 var carEntity = await db.CarEntities.FirstOrDefaultAsync(x => x.Id == carsTotalRide.CarEntityId);
 
 
-                if (carsTotalRide.CarEntityId != 0 &&
+                if (carsTotalRide.CarEntityId != null &&
                     carsTotalRide.TotalRide > 0 &&
                     carEntity != null &&
                     carsTotalRide.TotalRide > carEntity.CarsTotalRide)
@@ -170,7 +170,7 @@ namespace Carhealth.Controllers
         // DELETE home/5
         [Authorize]
         [HttpDelete("home/{carId}/{itemId}")]
-        public async Task<IActionResult> DeleteAsync(int carId, int itemId)
+        public async Task<IActionResult> DeleteAsync(string carId, string itemId)
         {
             var carItemToDelete = await db.CarItems.FirstOrDefaultAsync(x => x.CarItemId == itemId && x.CarEntityId == carId);
 

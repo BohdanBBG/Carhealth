@@ -27,8 +27,11 @@ namespace Carhealth
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddTransient<CarContext>();
             services.AddTransient<IRepository<List<CarEntity>>, FileRepository>();
+
+            services.AddDbContext<CarContext> (options =>
+            options.UseSqlServer(Configuration.GetConnectionString("CarsDb")));
+
 
             services.AddDbContext<UserContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("CarHealthIdentityDb")));
@@ -49,10 +52,10 @@ namespace Carhealth
             services.AddControllersWithViews();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app)
         {
             
-            if (env.IsDevelopment())
+            if (_env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }

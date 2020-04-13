@@ -14,25 +14,14 @@ let appRouter = {};
 
 
 document.addEventListener("DOMContentLoaded", function (event) {
+   
+    //checkingServerResponse(); // db creates issue
+
     helper.httpGet('https://localhost:5001/home/config', function (config) {
 
-      if(isEmpty(config))
-      {
-        document.location.href = "https://localhost:5001/Account/Login";
-      }
-      else
-      {
-        start(config);
-      }
+     start(config);
+      
     });
-
-    function isEmpty(obj) {
-        for (let key in obj) {
-          // если тело цикла начнет выполняться - значит в объекте есть свойства
-          return false;
-        }
-        return true;
-      }
 });
 
 function start(config) {
@@ -123,30 +112,31 @@ function start(config) {
             appRouter.processRoute(window.location.hash);
         }
 
-        function checkingServerResponse() {
+      
 
-            function getData(offset = 0, limit = 2, callBack = null) {
-                helper.httpChek(config.urls.api + '/home/cardetails/1' + '/' + offset + '/' + limit, function (data) {
-                    console.log(2, data);
-                    if (callBack !== null) {
-                        callBack(data);
-                    }
-                });
-            }
-
-            getData(0, 1, function (response) {
-                if (response.length === 0) {
-                    console.log('respone', false);
-                    var descriptionIssue = document.querySelector('.js-empty-data');
-                    descriptionIssue.classList.replace('hidden', 'active');
-
-                    appRouter.goToRoute("#no-response");
-                }
-            });
-        }//checks server connection
-
-        checkingServerResponse();
+       
     }
 
 
 }
+
+function checkingServerResponse() {
+
+  
+    helper.httpChek('https://localhost:5001/ping', function (response)
+    {
+      if (response.statusCode === 401  ||response.statusCode === 403) 
+      {
+        document.location.href = "https://localhost:5001/Account/Login";
+      }
+      else if (response.statusCode === 500) {
+          console.log('response', false);
+          var descriptionIssue = document.querySelector('.js-empty-data');
+          descriptionIssue.classList.replace('hidden', 'active');
+    
+         appRouter.goToRoute("#no-response");
+        }
+    });
+
+    
+}//checks server connection

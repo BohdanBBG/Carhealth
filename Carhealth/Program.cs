@@ -37,9 +37,14 @@ namespace Carhealth
                 var services = scope.ServiceProvider;
                 try
                 {
+                    //IRepository<List<CarEntity>> repository, UserManager<User> userManager, CarContext carContext
                     var userManager = services.GetRequiredService<UserManager<User>>();
                     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+                    var repository = services.GetRequiredService <IRepository<List<CarEntity>>>();
+                    var carsDb = services.GetRequiredService<CarContext>();
+
                     await RoleInitializer.InitializeAsync(userManager, roleManager);
+                    await CarsDbInitializer.InitializeAsync(repository, userManager, carsDb);
                 }
 
                 catch (Exception ex)

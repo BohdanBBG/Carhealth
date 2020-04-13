@@ -40,19 +40,21 @@ namespace Carhealth.Controllers
         }
 
 
+        [HttpGet("ping")]
+        public string Ping()
+        {
+            return "Pong";
+        }
+
         // GET home/config
-       // [Authorize]
+        [Authorize]
         [Route("home/config")]
         [HttpGet]
         public ActionResult<string> Config()
         {
-            if (User.Identity.IsAuthenticated)
-            {
-                // string host = _configuration["Config"];
-                return "{ \"urls\" :{ \"api\" : \"https://localhost:5001\"} }";
-            }
+            string host = _configuration["api"];
+            return "{ \"urls\" :{ \"api\" :\""+ host +"\"} }";
 
-            return "{}";
         }
 
         // GET /home/car/1

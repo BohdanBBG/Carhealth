@@ -10,7 +10,7 @@ namespace Carhealth.Repositories
     {
         T ImportAllData();
 
-        void UpdateAllData(List<CarEntity> carEntities);
+        void UpdateAllData(T carEntities);
 
         bool RecalcCarItemsRides(string idCarEntity, int totalRideDiff);
 

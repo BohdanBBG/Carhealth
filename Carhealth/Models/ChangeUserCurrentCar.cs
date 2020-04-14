@@ -5,9 +5,8 @@ using System.Threading.Tasks;
 
 namespace Carhealth.Models
 {
-    public class CarsTotalRide
+    public class ChangeUserCurrentCar
     {
-        public int TotalRide { get; set; }
-
+        public string CarEntityId { get; set; }
     }
 }

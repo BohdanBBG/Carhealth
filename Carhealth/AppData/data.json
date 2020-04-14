@@ -2,6 +2,7 @@
   "Id": "1",
   "CarsTotalRide": 1000,
   "CarEntityName": "Default car",
+  "IsCurrent": true,
   "CarItems": [
     {
       "Name": "ABS control unit",

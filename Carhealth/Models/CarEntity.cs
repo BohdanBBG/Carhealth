@@ -14,6 +14,8 @@ namespace Carhealth.Models
         public string CarEntityName { get; set; }
         public int CarsTotalRide { get; set; }
 
+        public bool IsCurrent { get; set; }// indicate that this CarEntity will be used by Controller like default CarEntity
+
         public List<CarItem> CarItems { get; set; }
 
 

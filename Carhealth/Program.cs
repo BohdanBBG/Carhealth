@@ -44,7 +44,12 @@ namespace Carhealth
                     var carsDb = services.GetRequiredService<CarContext>();
 
                     await RoleInitializer.InitializeAsync(userManager, roleManager);
-                    await CarsDbInitializer.InitializeAsync(repository, userManager, carsDb);
+
+                    if (!carsDb.CarEntities.Any())
+                    {
+                        await CarsDbInitializer.InitializeAsync(repository, userManager, carsDb);
+
+                    }
                 }
 
                 catch (Exception ex)

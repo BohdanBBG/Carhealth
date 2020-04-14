@@ -19,6 +19,7 @@ namespace Carhealth.Repositories
             {
                 foreach (var user in users)
                 {
+
                     for (int i = 0; i < 2; i++)
                     {
                         CarEntity carEntity;
@@ -28,6 +29,7 @@ namespace Carhealth.Repositories
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 CarEntityName = "Car2",
+                                IsCurrent = false,
                                 CarsTotalRide = car.CarsTotalRide,
                                 UserId = user.Id,
                             };
@@ -38,6 +40,7 @@ namespace Carhealth.Repositories
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 CarEntityName = car.CarEntityName,
+                                IsCurrent = true,
                                 CarsTotalRide = car.CarsTotalRide,
                                 UserId = user.Id,
                             };
@@ -62,23 +65,6 @@ namespace Carhealth.Repositories
                         }
                         await carContext.SaveChangesAsync();
 
-                        //modelBuilder.Entity<CarEntity>().HasData(carEntity);
-
-                        //foreach (var details in car.CarItems)
-                        //{
-                        //    modelBuilder.Entity<CarItem>().HasData(new CarItem
-                        //    {
-                        //        CarEntityId = carEntity.Id,
-                        //        CarItemId = Guid.NewGuid().ToString(),
-                        //        Name = details.Name,
-                        //        TotalRide = details.TotalRide,
-                        //        ChangeRide = details.ChangeRide,
-                        //        PriceOfDetail = details.PriceOfDetail,
-                        //        DateOfReplace = details.DateOfReplace,
-                        //        RecomendedReplace = details.RecomendedReplace,
-                        //        CarEntity = carEntity
-                        //    });
-                        //}
                     }
                 }
             }

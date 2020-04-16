@@ -12,15 +12,16 @@ import globalScopes from './modules/pages/global-scopes.js';
 import AppRouter from './modules/AppRouter.js';
 let appRouter = {};
 
+var serverUrl = "https://localhost:5001";
+
 
 document.addEventListener("DOMContentLoaded", function (event) {
-   
-    //checkingServerResponse(); // db creates issue
 
-    helper.httpGet('https://localhost:5001/home/config', function (config) {
+    checkingServerResponse(serverUrl, serverUrl);
 
-     start(config);
-      
+    helper.httpGet(serverUrl + "/config", function (config) {
+        start(config);
+
     });
 });
 
@@ -52,8 +53,8 @@ function start(config) {
                 e.preventDefault();
                 e.stopPropagation();
 
-                document.location.href = "https://localhost:5001/Account/Logout";
-                });
+                document.location.href = config.urls.api + "/Account/Logout";
+            });
 
             domUtil.addBubleEventListener('.send-ride-button', '.send-ride-button-text', 'click', globalScopes.getEventListenerState().rideSendButton, function (e, actualEl, desiredEl) {
 
@@ -67,39 +68,60 @@ function start(config) {
                 }
                 if (/^\d+$/.test(document.forms.RideForm.elements.ride.value)) {
                     //var url = config.urls.api + '/home/cardetails' + '/' ;
-                    var url = config.urls.api + "/home/totalride";
-                    var SendRide = {};
-                    SendRide.CarEntityId = 1;////
-                    SendRide.TotalRide = document.forms.RideForm.elements.ride.value;
-                    SendTotalRide(url, SendRide);
+                    var url = config.urls.api + "/totalride/set/" + document.forms.RideForm.elements.ride.value;
+                    SendTotalRide(url);
                 } else {
                     document.forms.RideForm.elements.ride.classList.add('input-field-empty-js');
                 }
             });
         }
 
-        function GetCarTotalMileage() {
-            helper.httpGet(config.urls.api + '/home/car/1', function (data) {///
-                document.querySelector('.js-menu-car-total-ride').innerText = data.CarsTotalRide;
-             
+        GetUserCars(function (data) {
+
+            data.forEach(element => {
+
+                var newOption = new Option(element.CarEntityName, element.Id, element.IsDefault ? true : false, element.IsDefault ? true : false);
+
+                currentCar.cars.options[currentCar.cars.options.length] = newOption;
+            });
+
+        });
+
+        function changeOption() {
+
+            var selectedCar = {};
+            selectedCar.CarEntityId = currentCar.cars.options[currentCar.cars.selectedIndex].value;
+            helper.httpRequest(config.urls.api + '/setUserCurCar', selectedCar, "POST", function () {
+                console.log("Current car: ", currentCar.cars.options[currentCar.cars.selectedIndex].text);
+                location.reload();
+
             });
         }
 
-        function SendTotalRide(url, TotalRide) {
-            helper.httpRequest(url, TotalRide, 'POST', function (request) {
+        currentCar.cars.addEventListener("change", changeOption);
+
+        function GetUserCars(callback) {
+            helper.httpGet(config.urls.api + '/allUsersCars', function (data) {
+                callback(data);
+            });
+        }
+
+        function GetCarTotalMileage() {
+            helper.httpGet(config.urls.api + '/totalride', function (data) {
+                document.querySelector('.js-menu-car-total-ride').innerText = data.carsTotalRide;
+
+            });
+        }
+
+        function SendTotalRide(url) {
+            helper.httpGet(url, function (request) {
                 location.reload();
                 alert("Updated total vehicle mileage");
 
             });
         }
 
-        //domUtil.addBubleEventListener('body', '.js-logout-button', 'click', globalScopes.getEventListenerState().logoutButton, function (e, desiredEl) {
-           // e.stopPropagation();
-
-       // });
-
         initAppMenu();
-
 
         // listen hash changes
         window.addEventListener('hashchange', function (e) {
@@ -112,31 +134,29 @@ function start(config) {
             appRouter.processRoute(window.location.hash);
         }
 
-      
 
-       
+
+
     }
 
 
 }
 
-function checkingServerResponse() {
+function checkingServerResponse(apiUrl, identityUrl) {
 
-  
-    helper.httpChek('https://localhost:5001/ping', function (response)
-    {
-      if (response.statusCode === 401  ||response.statusCode === 403) 
-      {
-        document.location.href = "https://localhost:5001/Account/Login";
-      }
-      else if (response.statusCode === 500) {
-          console.log('response', false);
-          var descriptionIssue = document.querySelector('.js-empty-data');
-          descriptionIssue.classList.replace('hidden', 'active');
-    
-         appRouter.goToRoute("#no-response");
+
+    helper.httpChek(apiUrl + "/ping", function (response) {
+        if (response === 401 || response === 403) {
+            document.location.href = identityUrl + "/Account/Login";
+        }
+        else if (response.statusCode === 500) {
+            console.log('response', false);
+            var descriptionIssue = document.querySelector('.js-empty-data');
+            descriptionIssue.classList.replace('hidden', 'active');
+
+            appRouter.goToRoute("#no-response");
         }
     });
 
-    
+
 }//checks server connection

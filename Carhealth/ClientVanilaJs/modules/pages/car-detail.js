@@ -24,7 +24,7 @@ class CarDetails {
         var listItemTemplateEl = itemListContainerEl.querySelector('.js-list-item-template');
 
         function getData(offset = 0, limit = 2, callBack = null) {
-            helper.httpGet(config.urls.api + '/home/cardetails/1' + '/' + offset + '/' + limit, function (data) {
+            helper.httpGet(config.urls.api + '/cardetails/' + offset + '/' + limit, function (data) {
                 console.log(2, data);
                 if (callBack !== null) {
                     callBack(data);
@@ -60,13 +60,13 @@ class CarDetails {
             dateEl.innerText = item.DateOfReplace.slice(0, 10);
             recomendedReplaceEl.innerText = item.RecomendedReplace;
 
-            textContainer.setAttribute('position-in-list', i);
-            //textEl.setAttribute('position-in-list', i);
+            textContainer.setAttribute('item-id', i);
+            //textEl.setAttribute('item-id', i);
 
-            deletePictureEl.setAttribute('position-in-list', i);
-            putPictureEl.setAttribute('position-in-list', i);
+            deletePictureEl.setAttribute('item-id', i);
+            putPictureEl.setAttribute('item-id', i);
 
-            clone.setAttribute('position-in-list', i);
+            clone.setAttribute('item-id', i);
             clone.classList.remove('list-item--hidden');
             itemListEl.appendChild(clone);
         }
@@ -78,7 +78,7 @@ class CarDetails {
             }
             var pageOffset =  (page * limit);
             items.forEach(function (item, i) {
-                addDataItemsBlock(item, i);
+                addDataItemsBlock(item, item.CarItemId);
             });
             //addDataItemsBlock(items[0], 0);
         }
@@ -103,11 +103,10 @@ class CarDetails {
 
         function showPage(page, limit) {
             getPageData(page, limit, function (response) {
-                totalCount = 20;
-               // totalCount = response.CountCarsItems;//////////////////
-                pageData = response;
+                totalCount = response.CountCarsItems;
+                pageData = response.CarItems;
                 console.log("pageData",pageData);
-                showPageData(response);
+                showPageData(pageData);
             });
         }
 
@@ -146,24 +145,19 @@ class CarDetails {
             showPage(page, limit);
         });
 
-        domUtil.addBubleEventListener(itemListContainerEl, '.js-item-text', 'click', globalScopes.getEventListenerState().itemListButtonFromListToCard, function (e, desiredEl) {
-            e.stopPropagation();
-
-            globalScopes.getWordOrder().length = (page * limit) + Number(desiredEl.getAttribute('position-in-list'));
-            globalScopes.getWordOrder().isFromCarDetails = true;
-
-            window.location.hash = '#cards';
-
-        });
+      
 
         domUtil.addBubleEventListener(itemListContainerEl, '.list-item-icon-delete', 'click', globalScopes.getEventListenerState().itemListDeleteButton, function (e, actualEl, desiredEl) {
             e.stopPropagation();
 
-            var numberOfItem = Number(desiredEl.getAttribute('position-in-list'));
+            var itemId = desiredEl.getAttribute('item-id');
 
-            if (confirm(`Do you want to delete ${pageData[numberOfItem].Name}`)) {
+            let result = pageData.find(x => x.CarItemId === itemId);
 
-                var idItemUrl = `${config.urls.api}/home/1/${pageData[numberOfItem].CarItemId}`;
+
+            if (confirm(`Do you want to delete ${result.Name}`)) {
+
+                var idItemUrl = `${config.urls.api}/delete/caritem/${itemId}`;
                 deleteData(idItemUrl);
 
                 alert('Deleted');
@@ -183,9 +177,14 @@ class CarDetails {
         domUtil.addBubleEventListener(itemListContainerEl, '.list-item-icon-put', 'click', globalScopes.getEventListenerState().itemListPutButton, function (e, actualEl, desiredEl) {
             e.stopPropagation();
 
-            var numberOfItem1 = Number(desiredEl.getAttribute('position-in-list'));
+
+
+            var numberOfItem1 = desiredEl.getAttribute('item-id');
             var formPutButtonEl = document.querySelector('.js-put-button');
             var formIsChanchedButtonEl = document.querySelector('.is-replaced-checkbox-container');
+
+            let currentPageDataEl = pageData.find(x => x.CarItemId === numberOfItem1);
+
 
             formButtonEl.forEach(function (item) {
                 item.classList.remove('active');
@@ -196,27 +195,26 @@ class CarDetails {
             formIsChanchedButtonEl.classList.replace('hidden','active');
             modalWindowForm.showModal();
 
-            defaultFullfieldForm(pageData[numberOfItem1]);
+            defaultFullfieldForm(currentPageDataEl);
 
             domUtil.addBubleEventListener(formPutButtonEl, '.js-put-button', 'click', globalScopes.getEventListenerState().formPutButton, function (e) {
 
-                //idItemPutUrl =  `${config.urls.api}/home/${pageData[numberOfItem1].CarItemId}`;
-                idItemPutUrl =  `${config.urls.api}/home`;
+                idItemPutUrl =  `${config.urls.api}/put/caritem`;
 
                 var totalRideObj = {};
 
                 if (makeRequestBody(formDataSend, totalRideObj)) {
 
                     if (/^\d+$/.test(totalRideObj.totalRide)) {
-                        var url = config.urls.api + "/home/totalride";
-                        totalRideObj.CarEntityId = 1; ///////
-                        SendTotalRide(url, totalRideObj);
+                        var url = config.urls.api + "/totalride/set/" + totalRideObj.totalRide;
+                        SendTotalRide(url);
                     }
 
-                    formDataSend.CarEntityId = 1;/////////
-                    formDataSend.CarItemId = pageData[numberOfItem1].CarItemId;/////
+                    formDataSend.CarItemId = numberOfItem1;
+                    console.log(formDataSend);
 
                     updateData(idItemPutUrl, formDataSend);
+                    location.reload();
                     modalWindowForm.close();
                     //location.reload()
                 }
@@ -243,16 +241,17 @@ class CarDetails {
                 var totalRideObj = {};
 
                 if (makeRequestBody(formDataSend,totalRideObj)) {
-                    var postUrl = `${config.urls.api}/home/addcaritem`;// used for add item
+                    var postUrl = `${config.urls.api}/add/caritem`;// used for add item
 
-                    if (/^\d+$/.test(totalRideObj.totalRide)) {
-                        var url = config.urls.api + "/home/totalride";
-                        SendTotalRide(url, totalRideObj);
+                    if (/^\d+$/.test(totalRideObj.totalRide)) 
+                    {
+                        SendTotalRide(config.urls.api + "/totalride/set/" + totalRideObj.totalRide);
                     }
-                    formDataSend.CarEntityId = 1; // !!!!!!!!!!!!!!!!
+
                     sendData(postUrl, formDataSend);
+                    showPage(page, limit);
                     modalWindowForm.close();
-                    location.reload()
+                   //location.reload()
                 } else {
                     // alert("Wrong input data");
                 }
@@ -260,8 +259,9 @@ class CarDetails {
             });
         });// event listener on ADD button
 
-        function SendTotalRide(url, TotalRide) {
-            helper.httpRequest(url, TotalRide, 'POST', function (request) {
+        function SendTotalRide(url) {
+            helper.httpGet(url, function (request) {
+                
             });
         }
 
@@ -315,7 +315,11 @@ class CarDetails {
 
             if(CarItemFormEl.elements.isRepalced.checked)
             {
-                formDataSend.TotalRide = 0;
+                formDataSend.IsTotalRideChanged = true;
+            }
+            else
+            {
+                formDataSend.TotalRide = false;
             }
 
             formDataSend.Name = CarItemFormEl.elements.name.value ? CarItemFormEl.elements.name.value :
@@ -342,7 +346,7 @@ class CarDetails {
                 CarItemFormEl.elements.date.classList.add('input-field-empty-js');
 
 
-            formDataSend.ChangeRide = Number(formDataSend.RecomendedReplace) + Number(totalRideObj.totalRide);
+            formDataSend.ChangeRide = String(Number(formDataSend.RecomendedReplace) + Number(totalRideObj.totalRide));
 
             CarItemFormEl.elements.name.onfocus = function () {
                 if (CarItemFormEl.elements.name.classList.contains('input-field-empty-js')) {

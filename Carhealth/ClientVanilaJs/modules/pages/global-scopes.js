@@ -27,19 +27,13 @@ class GlobalScopes {
             formAddButton: { state: false }
         }// used in addBubleEventListener() for add once event listener caller
 
-        this.wordOrder = {
-            length: 0,
-            isFromCarDetails: false
-        }; // used in pageHandlers['word-list'] for eventListener
     }; 
 
     getEventListenerState() {
         return this.eventListenerState;
     }
 
-    getWordOrder() {
-        return this.wordOrder;
-    }
+  
 
 }
 

@@ -24,10 +24,6 @@ namespace Carhealth.Models
         [NotMapped]
         public CarEntity CarEntity { get; set; }
 
-        public CarItem()
-        {
-
-        }
     }
 
    

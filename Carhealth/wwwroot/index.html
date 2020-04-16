@@ -20,10 +20,7 @@
                     <span>Menu</span>
                 </a>
                 <a href="#" class="menu-item" data-route-link="car-details">
-                    <span>All car details</span>
-                </a>
-                <a href="#" class="menu-item" data-route-link="service-life">
-                    <span>Details service life </span>
+                    <span>Car parts</span>
                 </a>
 
                 <a href="#" class="menu-item js-logout-button">
@@ -32,17 +29,25 @@
 
                 <div class="ride-input-container menu-item">
                     <form name="RideForm">
-                        <input type="text" placeholder="Total ride" name="ride" size="11">
+                        <input style="width:5em" type="text" placeholder="Total ride" name="ride" size="11">
                     </form>
                     <div class="send-ride-button">
                         <span class="send-ride-button-text">Send</span>
                     </div>
                 </div>
 
+                <div class=" menu-item">
+                    <form name="currentCar">
+                        <select name="cars" size="1">
+                        </select>
+                    </form>
+                </div>
+
                 <div class="total-ride-container menu-item">
                     <span>Cars total mileage: </span>
                     <span class="js-menu-car-total-ride"> </span>
                 </div>
+
             </div>
         </div>
 

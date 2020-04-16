@@ -13,18 +13,17 @@ class HttpUtil {
 
 
         xhr.onload = function () {
-            if (xhr.status === 200) {
-                var data = xhr.responseText;
-                console.log(1, data);
-                callBack(data);
-               
-
-            } else if (xhr.status === 500) {
+            var data = xhr.status;
+            callBack(data);
+            if(xhr.status === 200)
+            {
+                console.log("Ok")
+            }
+            else if (xhr.status === 500) {
                 console.error('Request failed.  Returned status of ' + xhr.status);
                 alert('Request failed.  Returned status of ' + xhr.status);
             } else if (xhr.status === 401 || xhr.status === 403) {
                 console.error('Request failed.  Returned status of ' + xhr.status);
-                alert("Authentication time is up");
             }
             else {
                 console.error('Request failed.  Returned status of ' + xhr.status);
@@ -51,8 +50,6 @@ class HttpUtil {
                 alert('Request failed.  Returned status of ' + xhr.status);
             } else if (xhr.status === 401 || xhr.status === 403) {
                 console.error('Request failed.  Returned status of ' + xhr.status);
-                alert("Authentication time is up");
-               
             }
         };
 
@@ -75,7 +72,6 @@ class HttpUtil {
                 alert('Request failed.  Returned status of ' + xhr.status);
             } else if (xhr.status === 401 || xhr.status === 403) {
                 console.error('Request failed.  Returned status of ' + xhr.status);
-                alert("Authentication time is up");
             }
         };
 
@@ -90,8 +86,12 @@ class HttpUtil {
 
         xhr.onload = function () {
             if (xhr.status === 200) {
-                var data = JSON.parse(xhr.responseText);
-                console.log(1, data);
+                if ( xhr.responseText !== "")
+                {
+                    var data = JSON.parse(xhr.responseText);
+                    console.log(1, data);
+                }
+              
                 callBack(data);
                
 

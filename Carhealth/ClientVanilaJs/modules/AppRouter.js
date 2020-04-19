@@ -1,6 +1,6 @@
 
 import Dashboard from './pages/dashboard.js';
-import ServiceLife from './pages/serviceLife.js';
+import ManageCar from './pages/manage-car.js';
 import CarDetails from './pages/car-detail.js';
 
 class AppRouter {
@@ -8,7 +8,7 @@ class AppRouter {
     constructor( config) {
         this.pages = {
             'dashboard': new Dashboard(),
-            'service-life': new ServiceLife(config),
+           // 'manage-car': new CarManager(config),
             'car-details': new CarDetails(config),
         };
     }

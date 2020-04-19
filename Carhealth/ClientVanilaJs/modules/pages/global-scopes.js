@@ -6,15 +6,7 @@ class GlobalScopes {
             logout: { state: false },
             rideSendButton: { state: false },
             logoutButton: { state: false },
-            cardLeftButton: { state: false },
-            cardRightButton: { state: false },
-            cardLeftButtonMobileVersion: { state: false },
-            cardRightButtonMobileVersion: { state: false },
-            cardChangeModeStudyButton: { state: false },
-            cardChangeModeReviewButton: { state: false },
-            studyButtonUnknow: { state: false },
-            studyButtonKnow: { state: false },
-            studyButtonNextItem: { state: false },
+           
             itemListFirstButton: { state: false },
             itemListPrevButton: { state: false },
             itemListNextButton: { state: false },
@@ -24,7 +16,15 @@ class GlobalScopes {
             itemListDeleteButton: { state: false },
             itemListAddButton: { state: false },
             formPutButton: { state: false },
-            formAddButton: { state: false }
+            formAddButton: { state: false },
+
+            carManager:{ state: false },
+            carManagerMenuItem: { state: false },
+            carManagerAddbutton: { state: false },
+            carManagerPutbutton: { state: false },
+            carManagerDeletebutton: { state: false },
+            carManagmendFormPushNewCarButtonEl:  { state: false }
+
         }// used in addBubleEventListener() for add once event listener caller
 
     }; 

@@ -50,8 +50,8 @@ class CarDetails {
             // end edit picture elements (delete,put)
 
             item.RecomendedReplace <= item.TotalRide ?
-            listItemRideContainer.classList.add('border-wrong'):
-            listItemRideContainer.classList.remove('border-wrong');
+                listItemRideContainer.classList.add('border-wrong') :
+                listItemRideContainer.classList.remove('border-wrong');
 
             titleEl.innerText = item.Name;
             totalRideEl.innerText = item.TotalRide;
@@ -76,7 +76,7 @@ class CarDetails {
             while (itemListEl.firstChild) {
                 itemListEl.removeChild(itemListEl.firstChild);
             }
-            var pageOffset =  (page * limit);
+            var pageOffset = (page * limit);
             items.forEach(function (item, i) {
                 addDataItemsBlock(item, item.CarItemId);
             });
@@ -105,7 +105,7 @@ class CarDetails {
             getPageData(page, limit, function (response) {
                 totalCount = response.CountCarsItems;
                 pageData = response.CarItems;
-                console.log("pageData",pageData);
+                console.log("pageData", pageData);
                 showPageData(pageData);
             });
         }
@@ -145,7 +145,7 @@ class CarDetails {
             showPage(page, limit);
         });
 
-      
+
 
         domUtil.addBubleEventListener(itemListContainerEl, '.list-item-icon-delete', 'click', globalScopes.getEventListenerState().itemListDeleteButton, function (e, actualEl, desiredEl) {
             e.stopPropagation();
@@ -192,14 +192,14 @@ class CarDetails {
             });
 
             formPutButtonEl.classList.replace('hidden', 'active');
-            formIsChanchedButtonEl.classList.replace('hidden','active');
+            formIsChanchedButtonEl.classList.replace('hidden', 'active');
             modalWindowForm.showModal();
 
             defaultFullfieldForm(currentPageDataEl);
 
             domUtil.addBubleEventListener(formPutButtonEl, '.js-put-button', 'click', globalScopes.getEventListenerState().formPutButton, function (e) {
 
-                idItemPutUrl =  `${config.urls.api}/put/caritem`;
+                idItemPutUrl = `${config.urls.api}/put/caritem`;
 
                 var totalRideObj = {};
 
@@ -240,18 +240,17 @@ class CarDetails {
 
                 var totalRideObj = {};
 
-                if (makeRequestBody(formDataSend,totalRideObj)) {
+                if (makeRequestBody(formDataSend, totalRideObj)) {
                     var postUrl = `${config.urls.api}/add/caritem`;// used for add item
 
-                    if (/^\d+$/.test(totalRideObj.totalRide)) 
-                    {
+                    if (/^\d+$/.test(totalRideObj.totalRide)) {
                         SendTotalRide(config.urls.api + "/totalride/set/" + totalRideObj.totalRide);
                     }
 
                     sendData(postUrl, formDataSend);
                     showPage(page, limit);
                     modalWindowForm.close();
-                   //location.reload()
+                    //location.reload()
                 } else {
                     // alert("Wrong input data");
                 }
@@ -261,7 +260,7 @@ class CarDetails {
 
         function SendTotalRide(url) {
             helper.httpGet(url, function (request) {
-                
+
             });
         }
 
@@ -313,14 +312,9 @@ class CarDetails {
 
             var CarItemFormEl = document.forms.NewCarItem;
 
-            if(CarItemFormEl.elements.isRepalced.checked)
-            {
-                formDataSend.IsTotalRideChanged = true;
-            }
-            else
-            {
-                formDataSend.TotalRide = false;
-            }
+
+            formDataSend.IsTotalRideChanged = CarItemFormEl.elements.isRepalced.checked;
+
 
             formDataSend.Name = CarItemFormEl.elements.name.value ? CarItemFormEl.elements.name.value :
                 CarItemFormEl.elements.name.classList.add('input-field-empty-js');

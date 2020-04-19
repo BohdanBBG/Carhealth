@@ -19,7 +19,7 @@ namespace Carhealth.Controllers
 {
     public class HomeController : Controller
     {
-      
+
 
         private readonly IConfiguration _configuration;
         private IWebHostEnvironment _hostingEnvironment;
@@ -43,14 +43,14 @@ namespace Carhealth.Controllers
         [Authorize]
         public IActionResult Index()
         {
-           // return _userManager.GetUserId(User);
+            // return _userManager.GetUserId(User);
             return View("~/wwwroot/index.html");
         }
 
         [HttpGet("ping")]
         public IActionResult Ping()
         {
-            if(User.Identity.IsAuthenticated)
+            if (User.Identity.IsAuthenticated)
             {
                 return Ok("Pong");
             }
@@ -62,7 +62,7 @@ namespace Carhealth.Controllers
         public ActionResult<string> Config()
         {
             string host = _configuration["api"];
-            return "{ \"urls\" :{ \"api\" :\""+ host +"\"} }";
+            return "{ \"urls\" :{ \"api\" :\"" + host + "\"} }";
 
         }
 
@@ -76,6 +76,7 @@ namespace Carhealth.Controllers
             {
                 CarEntityName = x.CarEntityName,
                 Id = x.Id,
+                TotalRide = x.CarsTotalRide,
                 IsDefault = x.IsCurrent
 
             }).ToListAsync();
@@ -85,7 +86,7 @@ namespace Carhealth.Controllers
                 return Ok(JsonSerializer.Serialize(result));
             }
 
-            return NotFound();
+            return NotFound("{}");
 
         }
 
@@ -97,19 +98,24 @@ namespace Carhealth.Controllers
             {
                 string userId = _userManager.GetUserId(User);
 
-                if (await db.CarEntities.AnyAsync(x => x.Id == changeModel.CarEntityId))
+                if (await db.CarEntities.AnyAsync(x => x.UserId == userId))
                 {
-                    await db.CarEntities.Where(x=> x.UserId == userId).ForEachAsync(x => x.IsCurrent = false);
 
-                    db.CarEntities.FirstOrDefault(x => x.Id == changeModel.CarEntityId).IsCurrent = true;
+                    if (await db.CarEntities.AnyAsync(x => x.Id == changeModel.CarEntityId))
+                    {
+                        await db.CarEntities.Where(x => x.UserId == userId).ForEachAsync(x => x.IsCurrent = false);
 
-                    await db.SaveChangesAsync();
+                        db.CarEntities.FirstOrDefault(x => x.Id == changeModel.CarEntityId).IsCurrent = true;
 
-                    return Ok();
+                        await db.SaveChangesAsync();
+
+                        return Ok();
+                    }
+                    return BadRequest();
                 }
-            }
-
                 return NotFound();
+            }
+            return BadRequest();
         }
 
         [Authorize]
@@ -131,28 +137,107 @@ namespace Carhealth.Controllers
 
         [Authorize]
         [HttpPost("add/car")]
-        public async Task<IActionResult> CreateCar([FromBody] CarEntity carEntity)
+        public async Task<IActionResult> CreateCar([FromBody] NewCar carEntity)
         {
             string userId = _userManager.GetUserId(User);
 
-            return NotFound();
+
+            if (carEntity != null)
+            {
+                if (!carEntity.IsCurrent && await db.CarEntities.AnyAsync(x => x.UserId == userId))
+                {
+                    await db.CarEntities.AddAsync(new CarEntity
+                    {
+                        CarEntityName = carEntity.CarEntityName,
+                        CarsTotalRide = int.Parse(carEntity.CarsTotalRide),
+                        IsCurrent = carEntity.IsCurrent,
+                        UserId = userId,
+                        Id = Guid.NewGuid().ToString()
+                    });
+                }
+                else
+                {
+                    await db.CarEntities.Where(x => x.UserId == userId).ForEachAsync(x => x.IsCurrent = false);
+
+                    await db.CarEntities.AddAsync(new CarEntity
+                    {
+                        CarEntityName = carEntity.CarEntityName,
+                        CarsTotalRide = int.Parse(carEntity.CarsTotalRide),
+                        IsCurrent = true,
+                        UserId = userId,
+                        Id = Guid.NewGuid().ToString()
+                    });
+                }
+
+                await db.SaveChangesAsync();
+            }
+            return BadRequest();
         }
 
         [Authorize]
         [HttpPut("put/car")]
-        public async Task<IActionResult> EditCar([FromBody] CarEntity carEntity)
+        public async Task<IActionResult> EditCar([FromBody] EditCar carEntity)
         {
             string userId = _userManager.GetUserId(User);
 
+            if (await db.CarEntities.AnyAsync(x => x.UserId == userId))
+            {
+
+                if (carEntity != null)
+                {
+                    var car = await db.CarEntities.FirstOrDefaultAsync(x => x.UserId == userId && x.Id == carEntity.Id);
+
+                    if (car != null)
+                    {
+                        if (!carEntity.IsCurrent)
+                        {
+                            car.CarEntityName = carEntity.CarEntityName;
+                            car.IsCurrent = carEntity.IsCurrent;
+                        }
+                        else
+                        {
+                            await db.CarEntities.Where(x => x.UserId == userId).ForEachAsync(x => x.IsCurrent = false);
+
+                            car.CarEntityName = carEntity.CarEntityName;
+                            car.IsCurrent = true;
+                        }
+
+                        await db.SaveChangesAsync();
+
+                        return Ok();
+                    }
+                }
+                return BadRequest();
+            }
             return NotFound();
         }
 
         [Authorize]
-        [HttpDelete("delete/car")]
-        public async Task<IActionResult> DeleteCar(string carEntity)
+        [HttpDelete("delete/car/{carEntityId}")]
+        public async Task<IActionResult> DeleteCar(string carEntityId)
         {
             string userId = _userManager.GetUserId(User);
 
+            if (await db.CarEntities.AnyAsync(x => x.UserId == userId))
+            {
+                if (carEntityId != null)
+                {
+                    var carToDelete = db.CarEntities.FirstOrDefault(x => x.UserId == userId && x.Id == carEntityId);
+
+                    if (carToDelete != null)
+                    {
+                        db.CarItems.RemoveRange(db.CarItems.Where(x => x.CarEntityId == carToDelete.Id));
+
+                        db.CarEntities.Remove(carToDelete);
+
+                        await db.SaveChangesAsync();
+
+                        return Ok();
+                    }
+                    return NotFound();
+                }
+                return BadRequest();
+            }
             return NotFound();
         }
 
@@ -160,35 +245,38 @@ namespace Carhealth.Controllers
         [HttpGet("cardetails/{offset}/{limit}")]
         public async Task<ActionResult<string>> GetAsync(int offset, int limit)
         {
-
             string userId = _userManager.GetUserId(User);
 
-            if (offset >= 0 &&
+            if (await db.CarEntities.AnyAsync(x => x.UserId == userId))
+            {
+
+                if (offset >= 0 &&
                 limit > 0 &&
                 offset <= await db.CarItems.CountAsync() &&
                 await db.CarEntities.AnyAsync(x => x.IsCurrent == true && x.UserId == userId)
                 )
-            {
-                var car = await db.CarEntities.FirstOrDefaultAsync(x => x.IsCurrent == true && x.UserId == userId);
-
-                var carEntitySendData = new
                 {
-                    CountCarsItems = await db.CarItems.Where(x => x.CarEntityId == car.Id).CountAsync(),
-                    CarItems = db.CarItems.Where(x => x.CarEntityId == car.Id).Skip(offset).Take(limit).Select(x => new
+                    var car = await db.CarEntities.FirstOrDefaultAsync(x => x.IsCurrent == true && x.UserId == userId);
+
+                    var carEntitySendData = new
                     {
-                        CarItemId = x.CarItemId,
-                        Name = x.Name,
-                        TotalRide = x.TotalRide,
-                        ChangeRide = x.ChangeRide,
-                        PriceOfDetail = x.PriceOfDetail,
-                        DateOfReplace = x.DateOfReplace,
-                        RecomendedReplace = x.RecomendedReplace,
+                        CountCarsItems = await db.CarItems.Where(x => x.CarEntityId == car.Id).CountAsync(),
+                        CarItems = db.CarItems.Where(x => x.CarEntityId == car.Id).Skip(offset).Take(limit).Select(x => new
+                        {
+                            CarItemId = x.CarItemId,
+                            Name = x.Name,
+                            TotalRide = x.TotalRide,
+                            ChangeRide = x.ChangeRide,
+                            PriceOfDetail = x.PriceOfDetail,
+                            DateOfReplace = x.DateOfReplace,
+                            RecomendedReplace = x.RecomendedReplace,
 
-                    })
-                };
-                return Ok(JsonSerializer.Serialize(carEntitySendData));
+                        })
+                    };
+                    return Ok(JsonSerializer.Serialize(carEntitySendData));
+                }
+                return BadRequest();
             }
-
             return NotFound();
 
         }
@@ -199,108 +287,128 @@ namespace Carhealth.Controllers
         {
             string userId = _userManager.GetUserId(User);
 
-            var car = await db.CarEntities.FirstOrDefaultAsync(x => x.IsCurrent == true && x.UserId == userId);
-
-            if(car != null)
+            if (await db.CarEntities.AnyAsync(x => x.UserId == userId))
             {
-                return Ok( new 
+
+                var car = await db.CarEntities.FirstOrDefaultAsync(x => x.IsCurrent == true && x.UserId == userId);
+
+                if (car != null)
                 {
-                    CarsTotalRide = car.CarsTotalRide
-                });
+                    return Ok(new
+                    {
+                        CarsTotalRide = car.CarsTotalRide
+                    });
+                }
+                return NotFound();
             }
 
             return NotFound();
         }
 
         [Authorize]
-        [HttpGet("totalride/set/{value}")]
-        public async Task<IActionResult> PostAsync(int value = 0)
+        [HttpPost("totalride/set")]
+        public async Task<IActionResult> PostAsync([FromBody]  UpdateTotalRide value)
         {
-            if (value != 0)
+            string userId = _userManager.GetUserId(User);
+
+            if (await db.CarEntities.AnyAsync(x => x.UserId == userId))
             {
-                string userId = _userManager.GetUserId(User);
-
-                var carEntity = await db.CarEntities.FirstOrDefaultAsync(x => x.IsCurrent == true && x.UserId == userId);
-
-
-                if (value > 0 &&
-                    carEntity != null &&
-                    value > carEntity.CarsTotalRide
-                    )
+                if (value != null)
                 {
-                    int carEntityTotalRide = carEntity.CarsTotalRide;
 
-                    await db.CarItems.Where(x => x.CarEntityId == carEntity.Id).
-                        ForEachAsync(item =>
-                        {
-                             item.TotalRide += (value - carEntityTotalRide);
-                        });
+                    var carEntity = await db.CarEntities.FirstOrDefaultAsync(x => x.Id == value.CarId && x.UserId == userId);
 
-                    carEntity.CarsTotalRide = value;
 
-                    await db.SaveChangesAsync();
+                    if (value.TotalRide > 0 &&
+                        carEntity != null &&
+                        value.TotalRide > carEntity.CarsTotalRide
+                        )
+                    {
+                        int carEntityTotalRide = carEntity.CarsTotalRide;
 
-                    return Ok();
+                        await db.CarItems.Where(x => x.CarEntityId == carEntity.Id).
+                            ForEachAsync(item =>
+                            {
+                                item.TotalRide += (value.TotalRide - carEntityTotalRide);
+                            });
+
+                        carEntity.CarsTotalRide = value.TotalRide;
+
+                        await db.SaveChangesAsync();
+
+                        return Ok();
+                    }
                 }
-                return Ok();
+                return BadRequest();
             }
-
             return NotFound();
+
         }
 
         [Authorize]
         [HttpPost("add/caritem")]
         public async Task<IActionResult> PostAsync([FromBody] NewCarItem data)
         {
-            if (data != null)
+            string userId = _userManager.GetUserId(User);
+
+            if (await db.CarEntities.AnyAsync(x => x.UserId == userId))
             {
-                string userId = _userManager.GetUserId(User);
 
-                await db.CarItems.AddAsync(new CarItem
+                if (data != null)
                 {
-                    CarItemId = Guid.NewGuid().ToString(),
-                    CarEntityId = db.CarEntities.FirstOrDefault(x => x.IsCurrent == true && x.UserId == userId).Id,
-                    Name = data.Name,
-                    TotalRide = 0,
-                    ChangeRide = int.Parse(data.ChangeRide),
-                    PriceOfDetail = int.Parse(data.PriceOfDetail),
-                    RecomendedReplace = int.Parse(data.RecomendedReplace),
-                    DateOfReplace = DateTime.Parse(data.DateOfReplace)
 
-                });
+                    await db.CarItems.AddAsync(new CarItem
+                    {
+                        CarItemId = Guid.NewGuid().ToString(),
+                        CarEntityId = db.CarEntities.FirstOrDefault(x => x.IsCurrent == true && x.UserId == userId).Id,
+                        Name = data.Name,
+                        TotalRide = 0,
+                        ChangeRide = int.Parse(data.ChangeRide),
+                        PriceOfDetail = int.Parse(data.PriceOfDetail),
+                        RecomendedReplace = int.Parse(data.RecomendedReplace),
+                        DateOfReplace = DateTime.Parse(data.DateOfReplace)
 
-                await db.SaveChangesAsync();
+                    });
 
-                return Ok();
+                    await db.SaveChangesAsync();
+
+                    return Ok();
+                }
+                return BadRequest();
             }
-            return BadRequest();
+            return NotFound();
         }
 
         [Authorize]
         [HttpPut("put/caritem")]
         public async Task<IActionResult> PutAsync([FromBody] UpdateCarItem value)
         {
-            if (value != null)
+            string userId = _userManager.GetUserId(User);
+
+            if (await db.CarEntities.AnyAsync(x => x.UserId == userId))
             {
-                string userId = _userManager.GetUserId(User);
-
-                var carEntity = await db.CarEntities.FirstOrDefaultAsync(x => x.IsCurrent == true && x.UserId == userId);
-
-                var carItem = await db.CarItems.FirstOrDefaultAsync(x => x.CarEntityId == carEntity.Id && x.CarItemId == value.CarItemId);
-
-                if (carItem != null)
+                if (value != null)
                 {
-                    carItem.Name = value.Name;
-                    carItem.TotalRide = value.IsTotalRideChanged ? 0 : carItem.TotalRide;
-                    carItem.ChangeRide = int.Parse(value.ChangeRide);
-                    carItem.PriceOfDetail = int.Parse(value.PriceOfDetail);
-                    carItem.DateOfReplace = DateTime.Parse(value.DateOfReplace);
-                    carItem.RecomendedReplace = int.Parse(value.RecomendedReplace);
 
-                    await db.SaveChangesAsync();
+                    var carEntity = await db.CarEntities.FirstOrDefaultAsync(x => x.IsCurrent == true && x.UserId == userId);
 
-                    return Ok();
+                    var carItem = await db.CarItems.FirstOrDefaultAsync(x => x.CarEntityId == carEntity.Id && x.CarItemId == value.CarItemId);
+
+                    if (carItem != null)
+                    {
+                        carItem.Name = value.Name;
+                        carItem.TotalRide = value.IsTotalRideChanged ? 0 : carItem.TotalRide;
+                        carItem.ChangeRide = int.Parse(value.ChangeRide);
+                        carItem.PriceOfDetail = int.Parse(value.PriceOfDetail);
+                        carItem.DateOfReplace = DateTime.Parse(value.DateOfReplace);
+                        carItem.RecomendedReplace = int.Parse(value.RecomendedReplace);
+
+                        await db.SaveChangesAsync();
+
+                        return Ok();
+                    }
                 }
+                return BadRequest();
             }
             return NotFound();
         }
@@ -311,23 +419,27 @@ namespace Carhealth.Controllers
         {
             string userId = _userManager.GetUserId(User);
 
-            var carEntity = await db.CarEntities.FirstOrDefaultAsync(x => x.IsCurrent == true && x.UserId == userId);
-
-            var carItemToDelete = await db.CarItems.FirstOrDefaultAsync(x => x.CarEntityId == carEntity.Id && x.CarItemId == detailId);
-
-
-            if (carItemToDelete != null)
+            if (await db.CarEntities.AnyAsync(x => x.UserId == userId))
             {
-                db.Remove(carItemToDelete);
+                var carEntity = await db.CarEntities.FirstOrDefaultAsync(x => x.IsCurrent == true && x.UserId == userId);
 
-                await db.SaveChangesAsync();
+                var carItemToDelete = await db.CarItems.FirstOrDefaultAsync(x => x.CarEntityId == carEntity.Id && x.CarItemId == detailId);
 
-                return Ok();
+
+                if (carItemToDelete != null)
+                {
+                    db.CarItems.Remove(carItemToDelete);
+
+                    await db.SaveChangesAsync();
+
+                    return Ok();
+                }
+
             }
-
             return NotFound();
+
         }
 
-        
+
     }
 }

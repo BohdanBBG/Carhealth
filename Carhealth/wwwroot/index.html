@@ -16,25 +16,24 @@
 
         <div class="main-block-menu" id="menu">
             <div class="menu" id="menu">
+
                 <a href="#" class="menu-item active" data-route-link="dashboard">
                     <span>Menu</span>
                 </a>
+
                 <a href="#" class="menu-item" data-route-link="car-details">
                     <span>Car parts</span>
+                </a>
+
+                <a class="menu-item" data-car-manager-id="">
+                    <span>Manage car</span>
                 </a>
 
                 <a href="#" class="menu-item js-logout-button">
                     <span class="js-logout-button-text">Logout</span>
                 </a>
 
-                <div class="ride-input-container menu-item">
-                    <form name="RideForm">
-                        <input style="width:5em" type="text" placeholder="Total ride" name="ride" size="11">
-                    </form>
-                    <div class="send-ride-button">
-                        <span class="send-ride-button-text">Send</span>
-                    </div>
-                </div>
+              
 
                 <div class=" menu-item">
                     <form name="currentCar">
@@ -43,10 +42,6 @@
                     </form>
                 </div>
 
-                <div class="total-ride-container menu-item">
-                    <span>Cars total mileage: </span>
-                    <span class="js-menu-car-total-ride"> </span>
-                </div>
 
             </div>
         </div>
@@ -82,6 +77,7 @@
             </div>
 
             <div class="menu-page-container" data-route="car-details">
+
                 <div class="item-list-container js-item-list-container">
                     <div class="item-list-add-button-container">
                         <div class="item-list-pager__add-button">
@@ -100,15 +96,15 @@
 
                             <div class="list-item-ride-container ">
                                 <div class="list-item-ride-total">
-                                    <span class=" list-item-text-span">Проехано: </span>
+                                    <span class=" list-item-text-span">Ride: </span>
                                     <span class="list-item-ride-total-text list-item-text-span"></span>
-                                    <span class=" list-item-text-span"> км</span>
+                                    <span class=" list-item-text-span"> km</span>
                                 </div>
 
                                 <div class="list-item-change-ride ">
-                                    <span class=" list-item-text-span">Заменить на: </span>
+                                    <span class=" list-item-text-span">Replace after: </span>
                                     <span class="list-item-change-ride-text list-item-text-span"></span>
-                                    <span class=" list-item-text-span"> км</span>
+                                    <span class=" list-item-text-span"> km</span>
                                 </div>
                             </div>
 
@@ -204,57 +200,89 @@
                 </div>
             </div>
 
-            <div class="menu-page-container" data-route="service-life">
+            <div class="car-managmend-modal-window">
 
-                <div class="item-list-container-service-life js-item-list-service-life-container">
+                <dialog class="car-managmend-form-dialog">
+                    <div class="car-managmend-dialog-conten">
 
-                    <!-- Template el -->
 
-                    <div
-                        class="list-item-service-life list-item-service-life--hidden js-list-item-template-service-life">
+                        <a class="car-managmend-menu-item-template hidden" >
+                            <span class="car-managmend-menu-item-text ">Test</span>
+                        </a>
 
-                        <div class="list-item-service-life-container js-item-container-service-life">
+                        <div class="car-managmend-menu-container">
 
-                            <div class="list-item-service-life-title">
-                                <span class="list-item-service-life-title-text list-item-text-span"> </span>
+                            <div class="car-managmend-menu">
+
                             </div>
 
-                            <div class="list-item-service-life-recomended-replace">
-                                <span class="list-item-recomended-replace-text list-item-text-span"></span>
+
+                            <div class="car-managmend-menu-button-container">
+
+                                <div class="car-managmend-add-button-container">
+                                    <button class="car-managmend-add-button">
+                                        <i class="fas fa-plus-circle"></i>
+                                    </button>
+                                </div>
+
+                                <div class="car-managmend-form-close-button-container">
+                                    <button class="car-managmend-modal-window-close-button" id="close">Close</button>
+                                </div>
+
                             </div>
 
+
+
                         </div>
 
+                        <div class="car-managmend-form-container hidden">
+                            <!-- car-managmend-form-container--hidden -->
+
+                            <form method="post" class="car-managmend-form" name="carManagmendForm">
+                                <div class="car-managmend-form-data-container">
+                                    <input class="car-managmend-input-field-title" type="text" name="name"
+                                        placeholder="Name">
+
+                                    <input class="car-managmend-input-field-total-ride" type="text" name="totalRide"
+                                        placeholder="Total mileage ">
+
+                                    <div class="car-managmend-is-current-checkbox-container  ">
+                                        <input type="checkbox" name="isCurrent">Current </input>
+
+                                    </div>
+                                </div>
+
+                                <div class="car-managmend-input-form-button-container">
+
+                                    <input type="button"
+                                        class="car-managmend-form-control-button js-car-managmend-put-button "
+                                        value="Put" />
+
+                                    <input type="button"
+                                        class="car-managmend-form-control-button js-car-managmend-delete-button "
+                                        value="Delete" />
+
+                                    <input type="button"
+                                        class="car-managmend-form-control-button js-car-managmend-push-new-car-button "
+                                        value="Push" />
+
+                                    <input class="car-managmend-form-reset-button" type="reset" value="reset">
+
+                                    <input type="button"
+                                        class="car-managmend-form-control-button js-car-managmend-close-add-form-button "
+                                        value="Close" />
+
+                                </div>
+
+                            </form>
+
+
+
+                        </div>
                     </div>
 
-                    <div class="item-list-service-life js-item-list-service-life">
-                        <!-- Items will be inserted dynamically -->
-                    </div>
-
-
-                    <div class="item-list-pager" id="dataItemsButtonBlock">
-                        <div class="item-list-pager__button js-first-page-button">
-                            <i class="fas fa-angle-double-left button-icon"></i>
-                        </div>
-                        <div class="item-list-pager__button js-prev-page-button">
-                            <i class="fas fa-angle-left button-icon"></i>
-                        </div>
-                        <div class="item-list-pager__button js-current-page-button">
-                            <span class="js-current-page-text">0</span>
-                        </div>
-                        <div class="item-list-pager__button js-next-page-button">
-                            <i class="fas fa-angle-right button-icon"></i>
-                        </div>
-                        <div class="item-list-pager__button js-last-page-button">
-                            <i class="fas fa-angle-double-right button-icon"></i>
-                        </div>
-
-                    </div>
-
-                </div>
+                </dialog>
             </div>
-
-
 
             <div class="menu-page-container js-error-page" data-route="no-response">
                 <img class="error-image" src="images/brending/sign.png" alt="" />

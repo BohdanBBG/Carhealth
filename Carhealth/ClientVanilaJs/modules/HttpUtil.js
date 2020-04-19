@@ -94,16 +94,17 @@ class HttpUtil {
               
                 callBack(data);
                
-
             } else if (xhr.status === 500) {
                 console.error('Request failed.  Returned status of ' + xhr.status);
                 alert('Request failed.  Returned status of ' + xhr.status);
+                callBack(null);
             } else if (xhr.status === 401 || xhr.status === 403) {
                 console.error('Request failed.  Returned status of ' + xhr.status);
-                alert("Authentication time is up");
+                callBack(null);
             }
             else {
                 console.error('Request failed.  Returned status of ' + xhr.status);
+                callBack(null);
             }
 
         };

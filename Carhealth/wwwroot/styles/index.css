@@ -23,14 +23,19 @@ body {
      --background-color: rgb(68, 67, 67);
     --text-color: #fff;
     --menu-background-color:rgb(32, 30, 30);
+    --car-managmend-container-color:rgb(83, 80, 80);
     --card-background-color: rgb(31, 30, 30);
-    --card-list-item-background-color:  rgb(34, 33, 33);
+    --card-list-item-background-color:  rgb(34, 32, 32);
+    --car-managmend-form-container-background-color: rgb(223, 219, 219);
     --card-lighter-color: rgb(39, 39, 39);
     --card-lighter-color-edit-control-button: #494f7c;
     --card-darker-color: #20233e;
     --bottom-color: #4f9da6;
     --example-background-color: #35849c;
     --menu-item-font-color: #fff;
+    --menu-item-active-color: orangered;
+    --car-managmend-form-button:rgb(104, 12, 12);
+    --car-managmend-form-button-hover:rgb(83, 3, 3);
     --button-red-color:rgb(83, 3, 3);
     --button-red-color-hover: rgb(180, 61, 61);
     --input-field-color:#bec9ff;
@@ -108,25 +113,6 @@ body {
     }
 }
 
-.ride-input-container{
-    display: flex;
-    flex-direction: row;
-    border-radius: 3px;
-}
-
-.send-ride-button{
-    margin-left: 1em;
-    background: var(--button-red-color);
-    cursor: pointer;
-}
-
-.send-ride-button:hover{
-    background-color: var(--button-red-color-hover);
-}
-
-.send-ride-button-text{
-    font-size: 1.4em;
-}
 
 /* begin dashboard */
 
@@ -209,14 +195,14 @@ body {
 }
 
 .menu-item.active {
-    color: orangered;
+    color: var(--menu-item-active-color);
 }
 
 .menu-page-container {
     display: none;
     width: 100%;
     height: auto;
-       padding: 1em 0 1em 0;
+    padding: 1em 0 1em 0;
     box-sizing: border-box;
 }
 
@@ -299,17 +285,8 @@ body {
     background: var(--car-details-recomended-replace-section);
 }
 
-.list-item-change-ride{
-
-}
-
-.list-item-title-text{
-
-}
-
 .item-list-container {
     margin: 0 1% 0 1%;
-    padding: 0;
 }
 
 .item-list {
@@ -326,13 +303,13 @@ body {
     flex-direction: row;
     align-items: center;
     width: 19.6%;
-    height: 200px;
+    height: 226px;
     margin: 0.5% 0.5% 0 0;
     background-color: var(--card-list-item-background-color);
     color: var( --text-color);
     text-align: center;
     overflow: auto;
-    font-size: 1em;
+    font-size: 1.3em;
     padding: 0.5em;
     box-sizing: border-box;
     overflow: hidden;
@@ -343,7 +320,7 @@ body {
 }
 
 .list-item-container {
-    height:190px;
+    height:220px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -364,7 +341,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-bottom: 9.6em;
+    padding-bottom: 8.2em;
     background: var(--card-list-item-control-button-background-color);
 }
 
@@ -416,78 +393,208 @@ body {
 
 }
 
-/* Begin service life page */
+/* BEGIN Car Managment */
 
-.item-list-service-life {
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: row;
+.car-managmend-form-container
+{
+    height: 28em;
+    width: 24em;
 }
 
-.item-list-container-service-life {
-    margin: 0 1% 0 1%;
-    padding: 0;
+.car-managmend-form-dialog
+{
+    padding: 0em;
 }
 
-.list-item-service-life {
+.car-managmend-dialog-conten{
     display: flex;
     flex-direction: row;
-    align-items: center;
-    width: 19.5%;
-    height: 99px;
-    margin: 0.5% 0.5% 0 0;
-    background-color: var(--card-list-item-background-color);
-    color: var( --text-color);
-    text-align: center;
-    overflow: auto;
-    font-size: 1em;
-    padding: 0.5em;
-    box-sizing: border-box;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    cursor: pointer;
-    border-radius: 8px;
+    height: 100%;
 }
-
-.list-item-service-life-title{
-    width: 99%;
-    flex-grow: 1;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.25);
-    text-align: center;
-    overflow-x: hidden;
-    overflow-y: auto;
-    text-overflow: ellipsis;
-    font-size: 1.5em;
-    padding: 0.3em 0 0.5em 0;
-    margin-bottom: 0.5em;
-}
-
-.list-item-service-life-container{
-    height:84px;
+.car-managmend-menu-container
+{
     display: flex;
     flex-direction: column;
-    align-items: center;
-    flex-grow: 1;
-    width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    background-color: var(--car-managmend-container-color);
+    padding: 0.6% 0% 0% 0%;
 }
 
-.list-item-service-life-recomended-replace{
-    flex-grow: 1;
-    width: 99%;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.25);
-    background: var(--car-details-recomended-replace-section);
-}
-
-.list-item-service-life--hidden {
+.car-managmend-menu-container.hidden
+{
     display: none;
 }
-/* End service life page */
+
+.car-managmend-menu
+{
+    height: 90%;
+}
+
+.car-managmend-menu-item-template{
+    margin: 0;
+    padding: 0.8em 1em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: auto;
+    opacity: 1;
+    color: var(--menu-item-font-color);
+    box-sizing: border-box;
+    text-align: center;
+    text-overflow: ellipsis;
+    font-size: 1.3em;
+}
+
+.car-managmend-menu-item-template.active {
+    color: var(--menu-item-active-color);
+}
+
+.car-managmend-menu-item-template.hidden
+{
+    display: none;
+}
+
+@media screen and (max-width: 720px){
+    .car-managmend-menu-item-template{
+        flex-grow: 1;
+    }
+}
+
+.car-managmend-menu-button-container
+{
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+}
+
+.car-managmend-form-close-button-container
+{
+    flex-grow: 1;
+    display: flex;
+    padding: 1em 1em 1em 1em;
+    flex-direction: column;
+}
+
+.car-managmend-modal-window-close-button
+{
+    height: 2.2em;
+    width: 100%;
+    background-color: var(--car-managmend-form-button);
+    border-color: black;
+    color: white;
+    border-radius: 6em;
+}
+.car-managmend-add-button-container
+{
+    display: flex;
+    flex-grow: 1;
+    padding: 1em 1em 1em 1em;
+    flex-direction: column;
+}
+
+.car-managmend-add-button
+{
+    height: 2.2em;
+    width: 100%;
+    background-color: var(--car-managmend-form-button);
+    border-color: black;
+    color:white;
+    border-radius: 6em;
+
+}
+
+.car-managmend-add-button:hover{
+    background-color: var(--car-managmend-form-button-hover);
+}
+
+.car-managmend-form-container
+{
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    align-items: center;
+    background-color:var(--car-managmend-form-container-background-color);
+}
+
+.car-managmend-form-container.hidden
+{
+    display: none;
+}
+
+.car-managmend-form
+{
+    height: 82%;
+    padding: 1em;
+}
+
+.car-managmend-input-field-title
+{
+    height: 1.3em;
+    margin: 0em 0em 1em 0em;
+    width: 98.5%;
+    font-size: 1.4em;
+}
+
+.car-managmend-input-field-total-ride
+{
+    height: 1.3em;
+    margin: 0em 0em 1em 0em;
+    width: 98.5%;
+    font-size: 1.4em;
+}
+
+.car-managmend-is-current-checkbox-container{
+    font-size: 1.4em;
+}
+
+.car-managmend-input-form-button-container
+{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.car-managmend-form-control-button
+{
+    flex-grow: 1;
+    height: 2em;
+    margin: 1em 0em 1em 0.5em;
+    background-color: var(--car-managmend-form-button);
+    border-color: black;
+    color:white;
+    border-radius: 6em;
+}
+
+.car-managmend-form-total-ride
+{
+        font-size: 1.2em;
+        display: flex;
+        flex-direction: row;
+        align-items: baseline;
+        margin-bottom: 0.8em;
+        margin-left: 0.4em;
+}
+
+.car-managmend-form-total-ride.hidden
+{
+    display: none;
+}
+
+.car-managmend-form-reset-button
+{
+    flex-grow: 1;
+    width: 5.6em;
+    height: 2em;
+    margin: 1em 0em 1em 0.5em;
+    background-color: var(--car-managmend-form-button);
+    border-color: black;
+    color:white;
+    border-radius: 6em;
+}
+
+
+
+
+/* END Car Managment */
 
 /* Begin Modal window */
 

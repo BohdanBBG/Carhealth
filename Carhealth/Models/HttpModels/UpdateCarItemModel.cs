@@ -5,13 +5,14 @@ using System.Threading.Tasks;
 
 namespace Carhealth.Models
 {
-    public class NewCarItem
+    public class UpdateCarItemModel
     {
+        public string CarItemId { get; set; }
         public string Name { get; set; }
+        public bool IsTotalRideChanged { get; set; }
         public string ChangeRide { get; set; }
         public string PriceOfDetail { get; set; }
         public string DateOfReplace { get; set; }
         public string RecomendedReplace { get; set; }
-
     }
 }

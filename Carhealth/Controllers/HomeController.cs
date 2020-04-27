@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Hosting;
 using System.IO;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using Carhealth.Models.HttpModels;
 
 namespace Carhealth.Controllers
 {
@@ -23,22 +24,18 @@ namespace Carhealth.Controllers
 
         private readonly IConfiguration _configuration;
         private IWebHostEnvironment _hostingEnvironment;
-        private readonly CarContext db;
+        private readonly ICarRepository _repository;
         private UserManager<User> _userManager;
 
 
-        public HomeController(IConfiguration configuration, IWebHostEnvironment hostingEnvironment, UserManager<User> userManager, CarContext context)
+        public HomeController(IConfiguration configuration, IWebHostEnvironment hostingEnvironment, UserManager<User> userManager, ICarRepository repository)
         {
-            db = context;
+            _repository = repository;
             _configuration = configuration;
             _hostingEnvironment = hostingEnvironment;
             _userManager = userManager;
         }
 
-        public string Test()
-        {
-            return "";
-        }
 
         [Authorize]
         public IActionResult Index()
@@ -68,50 +65,30 @@ namespace Carhealth.Controllers
 
         [Authorize]
         [HttpGet("allUsersCars")]
-        public async Task<IActionResult> GetUsersCarsAsync()
+        public async Task< ActionResult< List< CarEntitySendModel>>> GetUsersCarsAsync()
         {
             string userId = _userManager.GetUserId(User);
 
-            var result = await db.CarEntities.Where(x => x.UserId == userId).Select(x => new
-            {
-                CarEntityName = x.CarEntityName,
-                Id = x.Id,
-                TotalRide = x.CarsTotalRide,
-                IsDefault = x.IsCurrent
+            var cars = await _repository.GetAllUsersCarsAsync(userId);
 
-            }).ToListAsync();
-
-            if (result != null)
+            if (cars != null)
             {
-                return Ok(JsonSerializer.Serialize(result));
+                return Ok(cars);
             }
-
-            return NotFound("{}");
-
+            return null;
         }
 
         [Authorize]
         [HttpPost("setUserCurCar")]
-        public async Task<IActionResult> PostAsync([FromBody] ChangeUserCurrentCar changeModel)
+        public async Task<IActionResult> SetUserCurCar([FromBody] ChangeUserCurrentCarModel changeModel)
         {
+            string userId = _userManager.GetUserId(User);
+
             if (ModelState.IsValid)
             {
-                string userId = _userManager.GetUserId(User);
-
-                if (await db.CarEntities.AnyAsync(x => x.UserId == userId))
+                if( await _repository.SetUserCurCarAsync(changeModel, userId) )
                 {
-
-                    if (await db.CarEntities.AnyAsync(x => x.Id == changeModel.CarEntityId))
-                    {
-                        await db.CarEntities.Where(x => x.UserId == userId).ForEachAsync(x => x.IsCurrent = false);
-
-                        db.CarEntities.FirstOrDefault(x => x.Id == changeModel.CarEntityId).IsCurrent = true;
-
-                        await db.SaveChangesAsync();
-
-                        return Ok();
-                    }
-                    return BadRequest();
+                    return Ok();
                 }
                 return NotFound();
             }
@@ -120,16 +97,15 @@ namespace Carhealth.Controllers
 
         [Authorize]
         [HttpGet("car")]
-        public async Task<ActionResult<string>> GetAsync()
+        public async Task<ActionResult<CarEntity>> GetAsync()
         {
             string userId = _userManager.GetUserId(User);
 
-            if (await db.CarEntities.AnyAsync(x => x.UserId == userId))
+            var car = await _repository.GetCurrentCarAsync(userId);
+
+            if( car != null)
             {
-                var car = await db.CarEntities.Include(x => x.CarItems).FirstOrDefaultAsync(x => x.IsCurrent == true && x.UserId == userId);
-
-                return Ok(JsonSerializer.Serialize(car));
-
+                return Ok(car);
             }
 
             return NotFound();
@@ -137,146 +113,61 @@ namespace Carhealth.Controllers
 
         [Authorize]
         [HttpPost("add/car")]
-        public async Task<IActionResult> CreateCar([FromBody] NewCar carEntity)
+        public async Task<IActionResult> AddUserNewCar([FromBody] NewCarModel carEntity)
         {
             string userId = _userManager.GetUserId(User);
 
-
-            if (carEntity != null)
+            if (ModelState.IsValid)
             {
-                if (!carEntity.IsCurrent && await db.CarEntities.AnyAsync(x => x.UserId == userId))
-                {
-                    await db.CarEntities.AddAsync(new CarEntity
-                    {
-                        CarEntityName = carEntity.CarEntityName,
-                        CarsTotalRide = int.Parse(carEntity.CarsTotalRide),
-                        IsCurrent = carEntity.IsCurrent,
-                        UserId = userId,
-                        Id = Guid.NewGuid().ToString()
-                    });
-                }
-                else
-                {
-                    await db.CarEntities.Where(x => x.UserId == userId).ForEachAsync(x => x.IsCurrent = false);
-
-                    await db.CarEntities.AddAsync(new CarEntity
-                    {
-                        CarEntityName = carEntity.CarEntityName,
-                        CarsTotalRide = int.Parse(carEntity.CarsTotalRide),
-                        IsCurrent = true,
-                        UserId = userId,
-                        Id = Guid.NewGuid().ToString()
-                    });
-                }
-
-                await db.SaveChangesAsync();
+                await _repository.AddUserNewCarAsync(carEntity, userId);
+                return Ok();
             }
             return BadRequest();
         }
 
         [Authorize]
         [HttpPut("put/car")]
-        public async Task<IActionResult> EditCar([FromBody] EditCar carEntity)
+        public async Task<IActionResult> UpdateUserCar([FromBody] EditCarModel carEntity)
         {
             string userId = _userManager.GetUserId(User);
 
-            if (await db.CarEntities.AnyAsync(x => x.UserId == userId))
+            if (ModelState.IsValid)
             {
-
-                if (carEntity != null)
+                if (await _repository.UpdateUserCarAsync(carEntity, userId))
                 {
-                    var car = await db.CarEntities.FirstOrDefaultAsync(x => x.UserId == userId && x.Id == carEntity.Id);
-
-                    if (car != null)
-                    {
-                        if (!carEntity.IsCurrent)
-                        {
-                            car.CarEntityName = carEntity.CarEntityName;
-                            car.IsCurrent = carEntity.IsCurrent;
-                        }
-                        else
-                        {
-                            await db.CarEntities.Where(x => x.UserId == userId).ForEachAsync(x => x.IsCurrent = false);
-
-                            car.CarEntityName = carEntity.CarEntityName;
-                            car.IsCurrent = true;
-                        }
-
-                        await db.SaveChangesAsync();
-
-                        return Ok();
-                    }
+                    return Ok();
                 }
-                return BadRequest();
+                return NotFound();
             }
-            return NotFound();
+            return BadRequest();
         }
 
         [Authorize]
         [HttpDelete("delete/car/{carEntityId}")]
-        public async Task<IActionResult> DeleteCar(string carEntityId)
+        public async Task<IActionResult> DeleteUserCar(string carEntityId)
         {
             string userId = _userManager.GetUserId(User);
 
-            if (await db.CarEntities.AnyAsync(x => x.UserId == userId))
+            if (await _repository.DeleteUserCarAsync(carEntityId, userId))
             {
-                if (carEntityId != null)
-                {
-                    var carToDelete = db.CarEntities.FirstOrDefault(x => x.UserId == userId && x.Id == carEntityId);
-
-                    if (carToDelete != null)
-                    {
-                        db.CarItems.RemoveRange(db.CarItems.Where(x => x.CarEntityId == carToDelete.Id));
-
-                        db.CarEntities.Remove(carToDelete);
-
-                        await db.SaveChangesAsync();
-
-                        return Ok();
-                    }
-                    return NotFound();
-                }
-                return BadRequest();
+                return Ok();
             }
             return NotFound();
         }
 
         [Authorize]
         [HttpGet("cardetails/{offset}/{limit}")]
-        public async Task<ActionResult<string>> GetAsync(int offset, int limit)
+        public async Task<ActionResult<CarItemsSendModel>> GetCarItemsAsync(int offset, int limit)
         {
             string userId = _userManager.GetUserId(User);
 
-            if (await db.CarEntities.AnyAsync(x => x.UserId == userId))
+            var carItems = await _repository.GetCarItemsAsync(offset, limit, userId);
+
+            if(carItems != null)
             {
-
-                if (offset >= 0 &&
-                limit > 0 &&
-                offset <= await db.CarItems.CountAsync() &&
-                await db.CarEntities.AnyAsync(x => x.IsCurrent == true && x.UserId == userId)
-                )
-                {
-                    var car = await db.CarEntities.FirstOrDefaultAsync(x => x.IsCurrent == true && x.UserId == userId);
-
-                    var carEntitySendData = new
-                    {
-                        CountCarsItems = await db.CarItems.Where(x => x.CarEntityId == car.Id).CountAsync(),
-                        CarItems = db.CarItems.Where(x => x.CarEntityId == car.Id).Skip(offset).Take(limit).Select(x => new
-                        {
-                            CarItemId = x.CarItemId,
-                            Name = x.Name,
-                            TotalRide = x.TotalRide,
-                            ChangeRide = x.ChangeRide,
-                            PriceOfDetail = x.PriceOfDetail,
-                            DateOfReplace = x.DateOfReplace,
-                            RecomendedReplace = x.RecomendedReplace,
-
-                        })
-                    };
-                    return Ok(JsonSerializer.Serialize(carEntitySendData));
-                }
-                return BadRequest();
+                return Ok(carItems);
             }
+
             return NotFound();
 
         }
@@ -287,19 +178,11 @@ namespace Carhealth.Controllers
         {
             string userId = _userManager.GetUserId(User);
 
-            if (await db.CarEntities.AnyAsync(x => x.UserId == userId))
+            var result = await _repository.GetTotalRideAsync(userId);
+
+            if (result != null)
             {
-
-                var car = await db.CarEntities.FirstOrDefaultAsync(x => x.IsCurrent == true && x.UserId == userId);
-
-                if (car != null)
-                {
-                    return Ok(new
-                    {
-                        CarsTotalRide = car.CarsTotalRide
-                    });
-                }
-                return NotFound();
+                return Ok(result);
             }
 
             return NotFound();
@@ -307,110 +190,52 @@ namespace Carhealth.Controllers
 
         [Authorize]
         [HttpPost("totalride/set")]
-        public async Task<IActionResult> PostAsync([FromBody]  UpdateTotalRide value)
+        public async Task<IActionResult> SetTotalRideAsync([FromBody]  UpdateTotalRideModel value)
         {
             string userId = _userManager.GetUserId(User);
 
-            if (await db.CarEntities.AnyAsync(x => x.UserId == userId))
+            if(ModelState.IsValid)
             {
-                if (value != null)
+                if (await _repository.SetTotalRideAsync(value, userId))
                 {
-
-                    var carEntity = await db.CarEntities.FirstOrDefaultAsync(x => x.Id == value.CarId && x.UserId == userId);
-
-
-                    if (value.TotalRide > 0 &&
-                        carEntity != null &&
-                        value.TotalRide > carEntity.CarsTotalRide
-                        )
-                    {
-                        int carEntityTotalRide = carEntity.CarsTotalRide;
-
-                        await db.CarItems.Where(x => x.CarEntityId == carEntity.Id).
-                            ForEachAsync(item =>
-                            {
-                                item.TotalRide += (value.TotalRide - carEntityTotalRide);
-                            });
-
-                        carEntity.CarsTotalRide = value.TotalRide;
-
-                        await db.SaveChangesAsync();
-
-                        return Ok();
-                    }
+                    return Ok();
                 }
-                return BadRequest();
+                return NotFound();
             }
-            return NotFound();
-
+            return BadRequest();
         }
 
         [Authorize]
         [HttpPost("add/caritem")]
-        public async Task<IActionResult> PostAsync([FromBody] NewCarItem data)
+        public async Task<IActionResult> AddNewCarItemAsync([FromBody] NewCarItemModel data)
         {
             string userId = _userManager.GetUserId(User);
-
-            if (await db.CarEntities.AnyAsync(x => x.UserId == userId))
+            if (ModelState.IsValid)
             {
-
-                if (data != null)
+                if (await _repository.AddNewCarItemAsync(data, userId))
                 {
-
-                    await db.CarItems.AddAsync(new CarItem
-                    {
-                        CarItemId = Guid.NewGuid().ToString(),
-                        CarEntityId = db.CarEntities.FirstOrDefault(x => x.IsCurrent == true && x.UserId == userId).Id,
-                        Name = data.Name,
-                        TotalRide = 0,
-                        ChangeRide = int.Parse(data.ChangeRide),
-                        PriceOfDetail = int.Parse(data.PriceOfDetail),
-                        RecomendedReplace = int.Parse(data.RecomendedReplace),
-                        DateOfReplace = DateTime.Parse(data.DateOfReplace)
-
-                    });
-
-                    await db.SaveChangesAsync();
-
                     return Ok();
                 }
-                return BadRequest();
+                return NotFound();
             }
-            return NotFound();
+            return BadRequest();
         }
 
         [Authorize]
         [HttpPut("put/caritem")]
-        public async Task<IActionResult> PutAsync([FromBody] UpdateCarItem value)
+        public async Task<IActionResult> UpdateCarItemAsync([FromBody] UpdateCarItemModel value)
         {
             string userId = _userManager.GetUserId(User);
 
-            if (await db.CarEntities.AnyAsync(x => x.UserId == userId))
+            if (ModelState.IsValid)
             {
-                if (value != null)
+                if (await _repository.UpdateCarItemAsync(value, userId))
                 {
-
-                    var carEntity = await db.CarEntities.FirstOrDefaultAsync(x => x.IsCurrent == true && x.UserId == userId);
-
-                    var carItem = await db.CarItems.FirstOrDefaultAsync(x => x.CarEntityId == carEntity.Id && x.CarItemId == value.CarItemId);
-
-                    if (carItem != null)
-                    {
-                        carItem.Name = value.Name;
-                        carItem.TotalRide = value.IsTotalRideChanged ? 0 : carItem.TotalRide;
-                        carItem.ChangeRide = int.Parse(value.ChangeRide);
-                        carItem.PriceOfDetail = int.Parse(value.PriceOfDetail);
-                        carItem.DateOfReplace = DateTime.Parse(value.DateOfReplace);
-                        carItem.RecomendedReplace = int.Parse(value.RecomendedReplace);
-
-                        await db.SaveChangesAsync();
-
-                        return Ok();
-                    }
+                    return Ok();
                 }
-                return BadRequest();
+                return NotFound();
             }
-            return NotFound();
+            return BadRequest();
         }
 
         [Authorize]
@@ -419,27 +244,11 @@ namespace Carhealth.Controllers
         {
             string userId = _userManager.GetUserId(User);
 
-            if (await db.CarEntities.AnyAsync(x => x.UserId == userId))
+            if(await _repository.DeleteCarItemAsync(detailId, userId))
             {
-                var carEntity = await db.CarEntities.FirstOrDefaultAsync(x => x.IsCurrent == true && x.UserId == userId);
-
-                var carItemToDelete = await db.CarItems.FirstOrDefaultAsync(x => x.CarEntityId == carEntity.Id && x.CarItemId == detailId);
-
-
-                if (carItemToDelete != null)
-                {
-                    db.CarItems.Remove(carItemToDelete);
-
-                    await db.SaveChangesAsync();
-
-                    return Ok();
-                }
-
+                return Ok();
             }
             return NotFound();
-
         }
-
-
     }
 }

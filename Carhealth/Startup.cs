@@ -27,17 +27,19 @@ namespace Carhealth
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddTransient<IRepository<List<CarEntity>>, FileRepository>();
+            services.AddDbContext<CarContext>(options =>
+          options.UseSqlServer(Configuration.GetConnectionString("CarsDb")));
 
-            services.AddDbContext<CarContext> (options =>
-            options.UseSqlServer(Configuration.GetConnectionString("CarsDb")));
+            services.AddTransient<IRepository<List<CarEntity>>, FileRepository>();
+           
+            services.AddTransient<ICarRepository, EFCarRepository>();
 
 
             services.AddDbContext<UserContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("CarHealthIdentityDb")));
 
             services.AddIdentity<User, IdentityRole>(options => //валидация пароля 
-            { 
+            {
                 options.Password.RequiredLength = 4;   // минимальная длина
                 options.Password.RequireNonAlphanumeric = false;   // требуются ли не алфавитно-цифровые символы
                 options.Password.RequireLowercase = false; // требуются ли символы в нижнем регистре
@@ -46,7 +48,7 @@ namespace Carhealth
                 options.User.RequireUniqueEmail = true; // уникальный email
             }).
             AddEntityFrameworkStores<UserContext>();// устанавливает тип хранилища, которое будет применяться в Identity для хранения 
-                                                       //данных. В качестве типа хранилища здесь указывается класс контекста данных.
+                                                    //данных. В качестве типа хранилища здесь указывается класс контекста данных.
 
 
             services.AddControllersWithViews();
@@ -64,6 +66,7 @@ namespace Carhealth
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
+
 
             app.UseHttpsRedirection();
             app.UseDefaultFiles();

@@ -39,6 +39,8 @@ class CarManager {
 
         GetUserCars(InitModalWindowMenu);
 
+        modalWindowEl.showModal();
+
         domUtil.addBubleEventListener('.car-managmend-menu', '.car-managmend-menu-item-template', 'click', globalScopes.getEventListenerState().carManagerMenuItem, function (e, actualEl, desiredEl) {
             e.preventDefault();
             e.stopPropagation();
@@ -69,15 +71,15 @@ class CarManager {
             carManagmendFormContainerEl.classList.remove('hidden');
 
 
-            var car = pageData.find(x => x.Id === itemId);
+            var car = pageData.find(x => x.id === itemId);
             carManagmendFormPutButtonEl.setAttribute('car-id', itemId);
             carManagmendFormDeleteButtonEl.setAttribute('car-id', itemId);
 
             console.log(car);
 
-            carManagmendFormEl.elements.name.value = car.CarEntityName;
-            carManagmendFormEl.elements.totalRide.value = car.TotalRide;
-            carManagmendFormEl.elements.isCurrent.checked = car.IsDefault;
+            carManagmendFormEl.elements.name.value = car.carEntityName;
+            carManagmendFormEl.elements.totalRide.value = car.totalRide;
+            carManagmendFormEl.elements.isCurrent.checked = car.isDefault;
         }
 
         function InitModalWindowMenu(data) {
@@ -90,7 +92,6 @@ class CarManager {
                 AddMenuItem(item);
             });
 
-            modalWindowEl.showModal();
 
         }
 
@@ -99,12 +100,12 @@ class CarManager {
             var clone = carManagmendMenuItemEl.cloneNode(true);
             var carName = clone.querySelector('.car-managmend-menu-item-text');
 
-            carName.innerText = item.CarEntityName;
+            carName.innerText = item.carEntityName;
 
-            clone.setAttribute('car-id', item.Id);
+            clone.setAttribute('car-id', item.id);
             clone.classList.remove('hidden');
 
-            if (item.IsDefault === true) {
+            if (item.isDefault === true) {
                 clone.classList.add('active');
             }
 
@@ -172,13 +173,11 @@ class CarManager {
             var sendData = {};
             var totalRideDataSend = {};
 
-            totalRideDataSend.CarId = carManagmendFormPutButtonEl.getAttribute('car-id');
-
             sendData.CarEntityName = carManagmendFormEl.elements.name.value ? carManagmendFormEl.elements.name.value :
                 carManagmendFormEl.elements.name.classList.add('input-field-empty-js');
 
             totalRideDataSend.TotalRide = /^\d+$/.test(carManagmendFormEl.elements.totalRide.value) ?
-                 Number(carManagmendFormEl.elements.totalRide.value) :
+                Number(carManagmendFormEl.elements.totalRide.value) :
                 carManagmendFormEl.elements.totalRide.classList.add('input-field-empty-js');
 
 
@@ -201,16 +200,19 @@ class CarManager {
             if (sendData.CarEntityName &&
                 totalRideDataSend.TotalRide) {
 
-              
+                totalRideDataSend.Id = sendData.Id;
                 console.log(totalRideDataSend);
 
                 var putUrl = `${config.urls.api}/put/car`;// used for update car
-                var url =`${config.urls.api}/totalride/set`;// used for update car`s total ride
+                var url = `${config.urls.api}/totalride/set`;// used for update car`s total ride
                 SendTotalRide(url, totalRideDataSend);
 
                 UpdateData(putUrl, sendData);
                 alert("Car has been updated");
-                location.reload();
+
+                GetUserCars(function (e) {
+                    InitModalWindowForm(sendData.Id);
+                });
             }
         });
 
@@ -219,7 +221,9 @@ class CarManager {
             var deleteUrl = `${config.urls.api}/delete/car/${carManagmendFormDeleteButtonEl.getAttribute('car-id')}`;// used for delete car
             DeleteData(deleteUrl)
             alert("Car has been deleted");
-            location.reload();
+            GetUserCars(function (data) {
+                InitModalWindowMenu(data)
+            });
         });
 
         function DeleteData(deleteUrl) {

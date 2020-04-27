@@ -8,7 +8,7 @@ class HttpUtil {
 
     httpChek(url, callBack) {
         var xhr = new XMLHttpRequest();
-        xhr.withCredentials = true; // force to show browser's default auth dialog
+     //   xhr.withCredentials = true; // force to show browser's default auth dialog
         xhr.open('GET', url);
 
 
@@ -80,7 +80,7 @@ class HttpUtil {
 
     httpGet(url, callBack) {
         var xhr = new XMLHttpRequest();
-        xhr.withCredentials = true; // force to show browser's default auth dialog
+      //  xhr.withCredentials = true; // force to show browser's default auth dialog
         xhr.open('GET', url);
 
 

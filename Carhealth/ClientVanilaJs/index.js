@@ -22,6 +22,13 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     checkingServerResponse(serverUrl, serverUrl);
 
+    domUtil.addBubleEventListener('.js-logout-button', '.js-logout-button-text', 'click', globalScopes.getEventListenerState().logout, function (e, actualEl, desiredEl) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        document.location.href = serverUrl + "/Account/Logout";
+    });
+
     helper.httpGet(serverUrl + "/config", function (config) {
         start(config);
 
@@ -52,12 +59,7 @@ function start(config) {
 
             });
 
-            domUtil.addBubleEventListener('.js-logout-button', '.js-logout-button-text', 'click', globalScopes.getEventListenerState().logout, function (e, actualEl, desiredEl) {
-                e.preventDefault();
-                e.stopPropagation();
-
-                document.location.href = config.urls.api + "/Account/Logout";
-            });
+         
 
             domUtil.addBubleEventListener('body', '[data-car-manager-id]', 'click', globalScopes.getEventListenerState().carManager, function (e, actualEl, desiredEl) {
 
@@ -76,12 +78,12 @@ function start(config) {
 
             data.forEach(element => {
 
-                if (element.IsDefault) {
+                if (element.isDefault) {
 
                     currentCar.cars.removeChild(currentCar.cars.options[0]);
                 }
 
-                var newOption = new Option(element.CarEntityName, element.Id, element.IsDefault ? true : false, element.IsDefault ? true : false);
+                var newOption = new Option(element.carEntityName, element.id, element.isDefault ? true : false, element.isDefault ? true : false);
 
                 currentCar.cars.options[currentCar.cars.options.length] = newOption;
             });
@@ -119,9 +121,6 @@ function start(config) {
         if (!!window.location.hash) {
             appRouter.processRoute(window.location.hash);
         }
-
-
-
 
     }
 

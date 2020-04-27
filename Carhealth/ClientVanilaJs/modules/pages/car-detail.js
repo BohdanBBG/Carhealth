@@ -49,24 +49,24 @@ class CarDetails {
             var putPictureEl = containerEditPictureEl.querySelector('.list-item-icon-put');
             // end edit picture elements (delete,put)
 
-            item.RecomendedReplace <= item.TotalRide ?
+            item.recomendedReplace <= item.totalRide ?
                 listItemRideContainer.classList.add('border-wrong') :
                 listItemRideContainer.classList.remove('border-wrong');
 
-            titleEl.innerText = item.Name;
-            totalRideEl.innerText = item.TotalRide;
-            changeRideEl.innerText = item.ChangeRide;
-            priceEl.innerText = item.PriceOfDetail;
-            dateEl.innerText = item.DateOfReplace.slice(0, 10);
-            recomendedReplaceEl.innerText = item.RecomendedReplace;
+            titleEl.innerText = item.name;
+            totalRideEl.innerText = item.totalRide;
+            changeRideEl.innerText = item.changeRide;
+            priceEl.innerText = item.priceOfDetail;
+            dateEl.innerText = item.dateOfReplace.slice(0, 10);
+            recomendedReplaceEl.innerText = item.recomendedReplace;
 
-            textContainer.setAttribute('item-id', i);
+            textContainer.setAttribute('item-id', item.carItemId);
             //textEl.setAttribute('item-id', i);
 
-            deletePictureEl.setAttribute('item-id', i);
-            putPictureEl.setAttribute('item-id', i);
+            deletePictureEl.setAttribute('item-id', item.carItemId);
+            putPictureEl.setAttribute('item-id', item.carItemId);
 
-            clone.setAttribute('item-id', i);
+            clone.setAttribute('item-id', item.carItemId);
             clone.classList.remove('list-item--hidden');
             itemListEl.appendChild(clone);
         }
@@ -103,8 +103,8 @@ class CarDetails {
 
         function showPage(page, limit) {
             getPageData(page, limit, function (response) {
-                totalCount = response.CountCarsItems;
-                pageData = response.CarItems;
+                totalCount = response.countCarsItems;
+                pageData = response.carItems;
                 console.log("pageData", pageData);
                 showPageData(pageData);
             });
@@ -152,10 +152,10 @@ class CarDetails {
 
             var itemId = desiredEl.getAttribute('item-id');
 
-            let result = pageData.find(x => x.CarItemId === itemId);
+            let result = pageData.find(x => x.carItemId === itemId);
 
 
-            if (confirm(`Do you want to delete ${result.Name}`)) {
+            if (confirm(`Do you want to delete ${result.name}`)) {
 
                 var idItemUrl = `${config.urls.api}/delete/caritem/${itemId}`;
                 deleteData(idItemUrl);
@@ -183,7 +183,7 @@ class CarDetails {
             var formPutButtonEl = document.querySelector('.js-put-button');
             var formIsChanchedButtonEl = document.querySelector('.is-replaced-checkbox-container');
 
-            let currentPageDataEl = pageData.find(x => x.CarItemId === numberOfItem1);
+            let currentPageDataEl = pageData.find(x => x.carItemId === numberOfItem1);
 
 
             formButtonEl.forEach(function (item) {
@@ -205,18 +205,17 @@ class CarDetails {
 
                 if (makeRequestBody(formDataSend, totalRideObj)) {
 
-                    if (/^\d+$/.test(totalRideObj.totalRide)) {
-                        var url = config.urls.api + "/totalride/set/" + totalRideObj.totalRide;
-                        SendTotalRide(url);
+                    if (/^\d+$/.test(totalRideObj.TotalRide)) {
+                        var url = config.urls.api + "/totalride/set";
+                        console.log(totalRideObj);
+                        SendTotalRide(url,totalRideObj);
                     }
 
                     formDataSend.CarItemId = numberOfItem1;
                     console.log(formDataSend);
 
                     updateData(idItemPutUrl, formDataSend);
-                    location.reload();
                     modalWindowForm.close();
-                    //location.reload()
                 }
             });
 
@@ -258,8 +257,8 @@ class CarDetails {
             });
         });// event listener on ADD button
 
-        function SendTotalRide(url) {
-            helper.httpGet(url, function (request) {
+        function SendTotalRide(url,data) {
+            helper.httpRequest(url, data, "POST", function (request) {
 
             });
         }
@@ -296,15 +295,15 @@ class CarDetails {
         function defaultFullfieldForm(data) {
             var CarItemFormEl = document.forms.NewCarItem;
 
-            CarItemFormEl.elements.name.value = data.Name;
+            CarItemFormEl.elements.name.value = data.name;
 
-            CarItemFormEl.elements.price.value = data.PriceOfDetail;
+            CarItemFormEl.elements.price.value = data.priceOfDetail;
 
-            CarItemFormEl.elements.recomendation.value = data.RecomendedReplace;
+            CarItemFormEl.elements.recomendation.value = data.recomendedReplace;
 
-            CarItemFormEl.elements.totalRace.value = pageData.CarsTotalRide;
+            CarItemFormEl.elements.totalRace.value = pageData.carsTotalRide;
 
-            CarItemFormEl.elements.date.value = data.DateOfReplace.slice(0, 10);
+            CarItemFormEl.elements.date.value = data.dateOfReplace.slice(0, 10);
 
         }
 
@@ -329,9 +328,9 @@ class CarDetails {
                 CarItemFormEl.elements.recomendation.value :
                 CarItemFormEl.elements.recomendation.classList.add('input-field-empty-js');
 
-            totalRideObj.totalRide = (CarItemFormEl.elements.totalRace.value &&
+            totalRideObj.TotalRide = (CarItemFormEl.elements.totalRace.value &&
                 (/^\d+$/.test(CarItemFormEl.elements.totalRace.value))) ?
-                CarItemFormEl.elements.totalRace.value :
+                Number(CarItemFormEl.elements.totalRace.value) :
                 CarItemFormEl.elements.totalRace.classList.add('input-field-empty-js');
 
             formDataSend.DateOfReplace = (CarItemFormEl.elements.date.value &&
@@ -340,7 +339,7 @@ class CarDetails {
                 CarItemFormEl.elements.date.classList.add('input-field-empty-js');
 
 
-            formDataSend.ChangeRide = String(Number(formDataSend.RecomendedReplace) + Number(totalRideObj.totalRide));
+            formDataSend.ChangeRide = String(Number(formDataSend.RecomendedReplace) + Number(totalRideObj.TotalRide));
 
             CarItemFormEl.elements.name.onfocus = function () {
                 if (CarItemFormEl.elements.name.classList.contains('input-field-empty-js')) {
@@ -375,7 +374,7 @@ class CarDetails {
             if (formDataSend.Name &&
                 formDataSend.PriceOfDetail &&
                 formDataSend.DateOfReplace &&
-                totalRideObj.totalRide &&
+                totalRideObj.TotalRide &&
                 formDataSend.RecomendedReplace) {
                 return true;
             }

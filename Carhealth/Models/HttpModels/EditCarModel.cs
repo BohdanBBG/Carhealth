@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Carhealth.Models
 {
-    public class EditCar
+    public class EditCarModel
     {
         public string Id { get; set; }
         public string CarEntityName { get; set; }

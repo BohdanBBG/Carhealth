@@ -87,6 +87,7 @@ class CarDetails {
         var page = 0;
         var limit = 15;
         var pageData = {};
+        var carId ="";
         var offsetCarDetails = page * limit;
         var calcPagesCount = function () {
             return Math.ceil(totalCount / limit);
@@ -104,6 +105,7 @@ class CarDetails {
         function showPage(page, limit) {
             getPageData(page, limit, function (response) {
                 totalCount = response.countCarsItems;
+                carId = response.carEntityId;
                 pageData = response.carItems;
                 console.log("pageData", pageData);
                 showPageData(pageData);
@@ -160,7 +162,6 @@ class CarDetails {
                 var idItemUrl = `${config.urls.api}/delete/caritem/${itemId}`;
                 deleteData(idItemUrl);
 
-                alert('Deleted');
                 showPage(page, limit);
             }
         });
@@ -207,6 +208,7 @@ class CarDetails {
 
                     if (/^\d+$/.test(totalRideObj.TotalRide)) {
                         var url = config.urls.api + "/totalride/set";
+                        totalRideObj.Id = carId;
                         console.log(totalRideObj);
                         SendTotalRide(url,totalRideObj);
                     }
@@ -242,17 +244,18 @@ class CarDetails {
                 if (makeRequestBody(formDataSend, totalRideObj)) {
                     var postUrl = `${config.urls.api}/add/caritem`;// used for add item
 
-                    if (/^\d+$/.test(totalRideObj.totalRide)) {
-                        SendTotalRide(config.urls.api + "/totalride/set/" + totalRideObj.totalRide);
+                    if (/^\d+$/.test(totalRideObj.TotalRide)) {
+                        var url = config.urls.api + "/totalride/set";
+                        totalRideObj.Id = carId;
+                        console.log(totalRideObj);
+                        SendTotalRide(url,totalRideObj);
                     }
 
+                    formDataSend.CarEntityId = carId;
                     sendData(postUrl, formDataSend);
                     showPage(page, limit);
                     modalWindowForm.close();
-                    //location.reload()
-                } else {
-                    // alert("Wrong input data");
-                }
+                } 
 
             });
         });// event listener on ADD button
@@ -383,13 +386,12 @@ class CarDetails {
 
         function sendData(url, data) {
             helper.httpRequest(url, data, 'POST', function (request) {
-                alert("Item was add");
+               
             });
         }
 
         function updateData(url, data, authToken) {
             helper.httpRequest(url, data, 'PUT', function (request) {
-                alert(`Item was update`);
 
             });
         }

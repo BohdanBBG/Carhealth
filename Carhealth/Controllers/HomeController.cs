@@ -65,15 +65,23 @@ namespace Carhealth.Controllers
 
         [Authorize]
         [HttpGet("allUsersCars")]
-        public async Task< ActionResult< List< CarEntitySendModel>>> GetUsersCarsAsync()
+        public async Task<ActionResult<List<CarEntitySendModel>>> GetUsersCarsAsync()
         {
             string userId = _userManager.GetUserId(User);
 
             var cars = await _repository.GetAllUsersCarsAsync(userId);
+            
 
             if (cars != null)
             {
-                return Ok(cars);
+                return Ok(cars.Select(x => new CarEntitySendModel
+                {
+                    CarEntityName = x.CarEntityName,
+                    Id = x.Id,
+                    TotalRide = x.CarsTotalRide,
+                    IsDefault = x.IsCurrent
+
+                }));
             }
             return null;
         }
@@ -86,7 +94,7 @@ namespace Carhealth.Controllers
 
             if (ModelState.IsValid)
             {
-                if( await _repository.SetUserCurCarAsync(changeModel, userId) )
+                if( await _repository.SetUserCurCarAsync(changeModel.CarEntityId, userId) )
                 {
                     return Ok();
                 }
@@ -119,7 +127,15 @@ namespace Carhealth.Controllers
 
             if (ModelState.IsValid)
             {
-                await _repository.AddUserNewCarAsync(carEntity, userId);
+                await _repository.AddUserNewCarAsync(new CarEntity
+                {
+                    CarEntityName = carEntity.CarEntityName,
+                    CarsTotalRide = int.Parse(carEntity.CarsTotalRide),
+                    IsCurrent = carEntity.IsCurrent,
+                    UserId = userId,
+                    Id = Guid.NewGuid().ToString()
+                });
+
                 return Ok();
             }
             return BadRequest();
@@ -212,7 +228,18 @@ namespace Carhealth.Controllers
             string userId = _userManager.GetUserId(User);
             if (ModelState.IsValid)
             {
-                if (await _repository.AddNewCarItemAsync(data, userId))
+                if (await _repository.AddNewCarItemAsync(new CarItem
+                {
+                    CarItemId = Guid.NewGuid().ToString(),
+                    CarEntityId = data.CarEntityId,
+                    Name = data.Name,
+                    TotalRide = 0,
+                    ChangeRide = int.Parse(data.ChangeRide),
+                    PriceOfDetail = int.Parse(data.PriceOfDetail),
+                    RecomendedReplace = int.Parse(data.RecomendedReplace),
+                    DateOfReplace = DateTime.Parse(data.DateOfReplace)
+
+                }, userId))
                 {
                     return Ok();
                 }

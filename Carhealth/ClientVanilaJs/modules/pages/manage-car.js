@@ -204,11 +204,8 @@ class CarManager {
                 console.log(totalRideDataSend);
 
                 var putUrl = `${config.urls.api}/put/car`;// used for update car
-                var url = `${config.urls.api}/totalride/set`;// used for update car`s total ride
-                SendTotalRide(url, totalRideDataSend);
 
                 UpdateData(putUrl, sendData);
-                alert("Car has been updated");
 
                 GetUserCars(function (e) {
                     InitModalWindowForm(sendData.Id);

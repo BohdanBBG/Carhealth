@@ -37,18 +37,16 @@ namespace Carhealth
                 var services = scope.ServiceProvider;
                 try
                 {
-                    //IRepository<List<CarEntity>> repository, UserManager<User> userManager, CarContext carContext
                     var userManager = services.GetRequiredService<UserManager<User>>();
                     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-                    var repository = services.GetRequiredService <IRepository<List<CarEntity>>>();
-                    var carsDb = services.GetRequiredService<CarContext>();
+                    var fileRepository = services.GetRequiredService <IRepository<List<CarEntity>>>();
+                    var carRepository = services.GetRequiredService<ICarRepository>();
 
                     await RoleInitializer.InitializeAsync(userManager, roleManager);
 
-                    if (!carsDb.CarEntities.Any())
+                    if (carRepository.IsEmptyDb())
                     {
-                        await CarsDbInitializer.InitializeAsync(repository, userManager, carsDb);
-
+                        await CarsDbInitializer.InitializeAsync(fileRepository, userManager, carRepository);
                     }
                 }
 

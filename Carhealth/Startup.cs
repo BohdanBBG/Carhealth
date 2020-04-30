@@ -31,9 +31,9 @@ namespace Carhealth
           options.UseSqlServer(Configuration.GetConnectionString("CarsDb")));
 
             services.AddTransient<IRepository<List<CarEntity>>, FileRepository>();
-           
-            services.AddTransient<ICarRepository, EFCarRepository>();
 
+            //services.AddTransient<ICarRepository, EFCarRepository>(); // EF Core data repository
+            services.AddTransient<ICarRepository, MongoCarsRepository>(); // MongoDb data repository
 
             services.AddDbContext<UserContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("CarHealthIdentityDb")));

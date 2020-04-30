@@ -7,6 +7,7 @@ namespace Carhealth.Models
 {
     public class NewCarItemModel
     {
+        public string CarEntityId { get; set; }
         public string Name { get; set; }
         public string ChangeRide { get; set; }
         public string PriceOfDetail { get; set; }

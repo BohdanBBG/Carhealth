@@ -20,32 +20,30 @@ namespace Carhealth.Repositories
             _db = db;
         }
 
-        public async Task<List<CarEntitySendModel>> GetAllUsersCarsAsync(string userId)
+        public bool IsEmptyDb()
         {
-            List<CarEntitySendModel> result = await _db.CarEntities.Where(x => x.UserId == userId).Select(x => new CarEntitySendModel
-            {
-                CarEntityName = x.CarEntityName,
-                Id = x.Id,
-                TotalRide = x.CarsTotalRide,
-                IsDefault = x.IsCurrent
+            return  _db.CarEntities.Any();
+        }
 
-            }).ToListAsync();
+        public async Task<List<CarEntity>> GetAllUsersCarsAsync(string userId)
+        {
+            List<CarEntity> result = await _db.CarEntities.Where(x => x.UserId == userId).ToListAsync();
 
             if (result != null)
             {
                 return result;
             }
-
+          
             return null;
         }
-        public async Task<bool> SetUserCurCarAsync(ChangeUserCurrentCarModel changeModel, string userId)
+        public async Task<bool> SetUserCurCarAsync(string carEntityId, string userId)
         {
 
-            if (await _db.CarEntities.AnyAsync(x => x.Id == changeModel.CarEntityId && x.UserId == userId))
+            if (await _db.CarEntities.AnyAsync(x => x.Id == carEntityId && x.UserId == userId))
             {
                 await _db.CarEntities.Where(x => x.UserId == userId).ForEachAsync(x => x.IsCurrent = false);
 
-                _db.CarEntities.FirstOrDefault(x => x.Id == changeModel.CarEntityId).IsCurrent = true;
+                _db.CarEntities.FirstOrDefault(x => x.Id == carEntityId).IsCurrent = true;
 
                 await _db.SaveChangesAsync();
 
@@ -66,35 +64,21 @@ namespace Carhealth.Repositories
 
             return null;
         }
-        public async Task AddUserNewCarAsync(NewCarModel carEntity, string userId)
+        public async Task AddUserNewCarAsync(CarEntity carEntity)
         {
-
-            if (!carEntity.IsCurrent && await _db.CarEntities.AnyAsync(x => x.UserId == userId))
+            if (!carEntity.IsCurrent)
             {
-                await _db.CarEntities.AddAsync(new CarEntity
-                {
-                    CarEntityName = carEntity.CarEntityName,
-                    CarsTotalRide = int.Parse(carEntity.CarsTotalRide),
-                    IsCurrent = carEntity.IsCurrent,
-                    UserId = userId,
-                    Id = Guid.NewGuid().ToString()
-                });
+                await _db.CarEntities.AddAsync(carEntity);
             }
             else
             {
-                await _db.CarEntities.Where(x => x.UserId == userId).ForEachAsync(x => x.IsCurrent = false);
+                await _db.CarEntities.Where(x => x.UserId == carEntity.UserId).ForEachAsync(x => x.IsCurrent = false);
 
-                await _db.CarEntities.AddAsync(new CarEntity
-                {
-                    CarEntityName = carEntity.CarEntityName,
-                    CarsTotalRide = int.Parse(carEntity.CarsTotalRide),
-                    IsCurrent = true,
-                    UserId = userId,
-                    Id = Guid.NewGuid().ToString()
-                });
+                await _db.CarEntities.AddAsync(carEntity);
             }
 
-                await _db.SaveChangesAsync();
+            await _db.SaveChangesAsync();
+
         }
         public async Task<bool> UpdateUserCarAsync(EditCarModel carEntity, string userId)
         {
@@ -103,17 +87,15 @@ namespace Carhealth.Repositories
 
             if (car != null)
             {
-                if (!carEntity.IsCurrent)
+                if(carEntity.IsCurrent)
                 {
                     car.CarEntityName = carEntity.CarEntityName;
-                    car.IsCurrent = carEntity.IsCurrent;
+                    await this.SetUserCurCarAsync(carEntity.Id, userId);
                 }
                 else
                 {
-                    await _db.CarEntities.Where(x => x.UserId == userId).ForEachAsync(x => x.IsCurrent = false);
-
                     car.CarEntityName = carEntity.CarEntityName;
-                    car.IsCurrent = true;
+                    car.IsCurrent = false;
                 }
 
                 await _db.SaveChangesAsync();
@@ -131,7 +113,12 @@ namespace Carhealth.Repositories
             {
                 if (carToDelete.IsCurrent)
                 {
-                    _db.CarEntities.FirstOrDefault(x => x.UserId == userId && x.Id != carToDelete.Id).IsCurrent = true;
+                    var car = _db.CarEntities.FirstOrDefault(x => x.UserId == userId && x.Id != carToDelete.Id);
+
+                    if(car != null)
+                    {
+                        car.IsCurrent = true;
+                    }
                 }
 
                 _db.CarItems.RemoveRange(_db.CarItems.Where(x => x.CarEntityId == carToDelete.Id));
@@ -158,6 +145,7 @@ namespace Carhealth.Repositories
                 var carEntitySendData = new CarItemsSendModel
                 {
                     CountCarsItems = await _db.CarItems.Where(x => x.CarEntityId == car.Id).CountAsync(),
+                    CarEntityId = car.Id,
                     CarItems = _db.CarItems.Where(x => x.CarEntityId == car.Id).Skip(offset).Take(limit).Select(x => new CarItemSendModel
                     {
                         CarItemId = x.CarItemId,
@@ -192,49 +180,39 @@ namespace Carhealth.Repositories
         {
             var carEntity = await _db.CarEntities.FirstOrDefaultAsync(x => x.Id == value.Id && x.UserId == userId);
 
-            if (value.TotalRide < carEntity.CarsTotalRide)
+            if (carEntity != null)
             {
-                return true;
+                if (value.TotalRide < carEntity.CarsTotalRide)
+                {
+                    return true;
+                }
+
+                if (value.TotalRide > 0 &&
+                    value.TotalRide > carEntity.CarsTotalRide
+                    )
+                {
+                    int carEntityTotalRide = carEntity.CarsTotalRide;
+
+                    await _db.CarItems.Where(x => x.CarEntityId == carEntity.Id).
+                        ForEachAsync(item =>
+                        {
+                            item.TotalRide += (value.TotalRide - carEntityTotalRide);
+                        });
+
+                    carEntity.CarsTotalRide = value.TotalRide;
+
+                    await _db.SaveChangesAsync();
+
+                    return true;
+                }
             }
-
-            if (value.TotalRide > 0 &&
-                carEntity != null &&
-                value.TotalRide > carEntity.CarsTotalRide
-                )
-            {
-                int carEntityTotalRide = carEntity.CarsTotalRide;
-
-                await _db.CarItems.Where(x => x.CarEntityId == carEntity.Id).
-                    ForEachAsync(item =>
-                    {
-                        item.TotalRide += (value.TotalRide - carEntityTotalRide);
-                    });
-
-                carEntity.CarsTotalRide = value.TotalRide;
-
-                await _db.SaveChangesAsync();
-
-                return true;
-            }
-
             return false;
         }
-        public async Task<bool> AddNewCarItemAsync(NewCarItemModel data, string userId)
+        public async Task<bool> AddNewCarItemAsync(CarItem data, string userId)
         {
-            if (await _db.CarEntities.AnyAsync(x => x.UserId == userId))
+            if (await _db.CarEntities.AnyAsync(x => x.UserId == userId && x.Id == data.CarEntityId))
             {
-                await _db.CarItems.AddAsync(new CarItem
-                {
-                    CarItemId = Guid.NewGuid().ToString(),
-                    CarEntityId = _db.CarEntities.FirstOrDefault(x => x.IsCurrent == true && x.UserId == userId).Id,
-                    Name = data.Name,
-                    TotalRide = 0,
-                    ChangeRide = int.Parse(data.ChangeRide),
-                    PriceOfDetail = int.Parse(data.PriceOfDetail),
-                    RecomendedReplace = int.Parse(data.RecomendedReplace),
-                    DateOfReplace = DateTime.Parse(data.DateOfReplace)
-
-                });
+                await _db.CarItems.AddAsync(data);
 
                 await _db.SaveChangesAsync();
 

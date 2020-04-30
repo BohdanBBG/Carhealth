@@ -9,9 +9,9 @@ namespace Carhealth.Repositories
 {
     public class CarsDbInitializer
     {
-        public static async Task InitializeAsync(IRepository<List<CarEntity>> repository, UserManager<User> userManager, CarContext carContext)
+        public static async Task InitializeAsync(IRepository<List<CarEntity>> fileRepository, UserManager<User> userManager, ICarRepository repository)
         {
-            var carEntities = repository.ImportAllData();
+            var carEntities = fileRepository.ImportAllData();
 
             var users = userManager.Users.ToList();
 
@@ -29,7 +29,7 @@ namespace Carhealth.Repositories
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 CarEntityName = "Car2",
-                                IsCurrent = false,
+                                IsCurrent = true,
                                 CarsTotalRide = car.CarsTotalRide,
                                 UserId = user.Id,
                             };
@@ -46,11 +46,13 @@ namespace Carhealth.Repositories
                             };
                         }
 
-                        carContext.CarEntities.Add(carEntity);
+                        await repository.AddUserNewCarAsync(carEntity);
+                        //carContext.CarEntities.Add(carEntity);
 
                         foreach (var details in car.CarItems)
                         {
-                            carContext.CarItems.Add( new CarItem
+
+                            await repository.AddNewCarItemAsync(new CarItem
                             {
                                 CarEntityId = carEntity.Id,
                                 CarItemId = Guid.NewGuid().ToString(),
@@ -61,10 +63,9 @@ namespace Carhealth.Repositories
                                 DateOfReplace = details.DateOfReplace,
                                 RecomendedReplace = details.RecomendedReplace,
                                 CarEntity = carEntity
-                            });
-                        }
-                        await carContext.SaveChangesAsync();
+                            }, user.Id);
 
+                        }
                     }
                 }
             }

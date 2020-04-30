@@ -8,7 +8,8 @@ namespace Carhealth.Models.HttpModels
     public class CarItemsSendModel
     {
         public int CountCarsItems { get; set; }
-        public IQueryable<CarItemSendModel> CarItems { get; set; }
+        public string CarEntityId { get; set; }
+        public IEnumerable<CarItemSendModel> CarItems { get; set; }
 
       
     }

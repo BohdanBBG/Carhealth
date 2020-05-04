@@ -1,5 +1,7 @@
 ﻿using Carhealth.Models;
+using Carhealth.Models.IdentityModels;
 using Microsoft.AspNetCore.Identity;
+using MongoDB.Bson;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,27 +29,26 @@ namespace Carhealth.Repositories
                         {
                             carEntity = new CarEntity
                             {
-                                Id = Guid.NewGuid().ToString(),
+                                Id = ObjectId.GenerateNewId().ToString(),
                                 CarEntityName = "Car2",
                                 IsCurrent = true,
                                 CarsTotalRide = car.CarsTotalRide,
-                                UserId = user.Id,
+                                UserId = user.Id.ToString(),
                             };
                         }
                         else
                         {
                             carEntity = new CarEntity
                             {
-                                Id = Guid.NewGuid().ToString(),
+                                Id = ObjectId.GenerateNewId().ToString(),
                                 CarEntityName = car.CarEntityName,
                                 IsCurrent = true,
                                 CarsTotalRide = car.CarsTotalRide,
-                                UserId = user.Id,
+                                UserId = user.Id.ToString(),
                             };
                         }
 
                         await repository.AddUserNewCarAsync(carEntity);
-                        //carContext.CarEntities.Add(carEntity);
 
                         foreach (var details in car.CarItems)
                         {
@@ -55,7 +56,7 @@ namespace Carhealth.Repositories
                             await repository.AddNewCarItemAsync(new CarItem
                             {
                                 CarEntityId = carEntity.Id,
-                                CarItemId = Guid.NewGuid().ToString(),
+                                CarItemId = ObjectId.GenerateNewId().ToString(),
                                 Name = details.Name,
                                 TotalRide = details.TotalRide,
                                 ChangeRide = details.ChangeRide,
@@ -63,7 +64,7 @@ namespace Carhealth.Repositories
                                 DateOfReplace = details.DateOfReplace,
                                 RecomendedReplace = details.RecomendedReplace,
                                 CarEntity = carEntity
-                            }, user.Id);
+                            }, user.Id.ToString());
 
                         }
                     }

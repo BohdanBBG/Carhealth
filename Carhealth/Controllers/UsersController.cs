@@ -62,7 +62,7 @@ namespace Carhealth.Controllers
 
             if (user != null)
             {
-                EditUserViewModel model = new EditUserViewModel { Id = user.Id, Email = user.Email };
+                EditUserViewModel model = new EditUserViewModel { Id = user.Id.ToString(), Email = user.Email };
 
                 return View(model);
             }
@@ -122,7 +122,7 @@ namespace Carhealth.Controllers
 
             if (user != null)
             {
-                ChangePasswordViewModel model = new ChangePasswordViewModel { Id = user.Id, Email = user.Email };
+                ChangePasswordViewModel model = new ChangePasswordViewModel { Id = user.Id.ToString(), Email = user.Email };
 
                 return View(model);
             }

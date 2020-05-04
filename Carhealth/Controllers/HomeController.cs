@@ -15,6 +15,7 @@ using System.IO;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Carhealth.Models.HttpModels;
+using Carhealth.Models.IdentityModels;
 
 namespace Carhealth.Controllers
 {

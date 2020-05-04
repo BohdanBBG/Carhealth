@@ -1,4 +1,5 @@
 ﻿using Carhealth.Models;
+using Carhealth.Models.IdentityModels;
 using Carhealth.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Carhealth.Controllers
 {
-    public class AccountController : Controller// use for test /Account
+    public class AccountController : Controller
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;

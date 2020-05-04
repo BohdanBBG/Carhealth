@@ -1,4 +1,5 @@
 ﻿using Carhealth.Models;
+using Carhealth.Models.IdentityModels;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace Carhealth.Repositories
     public class RoleInitializer
     {
         // добавляет в базу данных две роли - "admin" и "user", а также одного пользователя - администратора
-        public static async Task InitializeAsync (UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
+        public static async Task InitializeAsync (UserManager<User> userManager, RoleManager<Role> roleManager)
         {
             string adminEmail = "admin1@gmail.com";
             string user1Email = "user1@gmail.com";
@@ -19,12 +20,12 @@ namespace Carhealth.Repositories
 
             if(await roleManager.FindByNameAsync("Admin") == null)
             {
-                await roleManager.CreateAsync(new IdentityRole("Admin"));
+                await roleManager.CreateAsync(new Role("Admin"));
             }
 
             if(await userManager.FindByNameAsync("User") == null)
             {
-                await roleManager.CreateAsync(new IdentityRole("User"));
+                await roleManager.CreateAsync(new Role("User"));
             }
 
             if( await userManager.FindByNameAsync(adminEmail) == null)

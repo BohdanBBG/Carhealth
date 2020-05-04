@@ -76,7 +76,7 @@ namespace Carhealth.Controllers
                 var allRoles = _roleManager.Roles.ToList();
                 ChangeRoleViewModel model = new ChangeRoleViewModel
                 {
-                    UserId = user.Id,
+                    UserId = user.Id.ToString(),
                     UserEmail = user.Email,
                     UserRoles = userRoles,
                     AllRoles = allRoles

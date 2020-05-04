@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Carhealth.Models;
+using Carhealth.Models.IdentityModels;
 using Carhealth.Repositories;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
@@ -12,6 +13,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using MongoDB.Bson;
 
 namespace Carhealth
 {
@@ -37,9 +39,11 @@ namespace Carhealth
                 var services = scope.ServiceProvider;
                 try
                 {
-                    var userManager = services.GetRequiredService<UserManager<User>>();
-                    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-                    var fileRepository = services.GetRequiredService <IRepository<List<CarEntity>>>();
+                    var userManager = services.GetRequiredService<UserManager<User>>(); 
+
+                    var roleManager = services.GetRequiredService<RoleManager<Role>>(); 
+
+                    var fileRepository = services.GetRequiredService<IRepository<List<CarEntity>>>();
                     var carRepository = services.GetRequiredService<ICarRepository>();
 
                     await RoleInitializer.InitializeAsync(userManager, roleManager);

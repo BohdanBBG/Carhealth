@@ -111,7 +111,7 @@ namespace Carhealth.Repositories
             var filterCarEntity = builderFilter.Eq("Id", carEntity.Id);
             var update = builderUpdate.Set("CarEntityName", carEntity.CarEntityName);
 
-            var car = await CarEntities.Find(filterCarEntity & filterUser).FirstOrDefaultAsync();
+            var car = await CarEntities.Find(filterUser & filterCarEntity).FirstOrDefaultAsync();
 
             if (car != null)
             {
@@ -121,7 +121,7 @@ namespace Carhealth.Repositories
                     TotalRide = carEntity.CarsTotalRide
                 }, userId);
 
-                var nameResult = await CarEntities.UpdateOneAsync(filterUser & filterCarEntity, update);
+                await CarEntities.UpdateOneAsync(filterUser & filterCarEntity, update);
 
                 if (carEntity.IsCurrent &&
                     !(car.IsCurrent))
@@ -130,20 +130,20 @@ namespace Carhealth.Repositories
                 }
 
                 if (!carEntity.IsCurrent &&
-                    CarEntities.Find(filterCarEntity & filterUser).FirstOrDefault().IsCurrent)
+                   car.IsCurrent)
                 {
-                    await SetUserCurCarAsync(CarEntities.Find(filterUser & !filterCarEntity).FirstOrDefault().Id, userId);
+                    await SetUserCurCarAsync(CarEntities.Find(filterUser & !filterCarEntity).FirstOrDefault().Id, userId); 
                 }
                 return true;
-
             }
-
             return false;
         }
 
         public async Task<bool> DeleteUserCarAsync(string carEntityId, string userId)
         {
             var result = await CarEntities.DeleteOneAsync(x => x.Id == carEntityId && x.UserId == userId);
+
+            await CarItems.DeleteManyAsync(x => x.CarEntityId == carEntityId);
 
             if (result.DeletedCount > 0)
             {
@@ -156,31 +156,34 @@ namespace Carhealth.Repositories
         {
             var car = await CarEntities.Find(x => x.UserId == userId && x.IsCurrent == true).FirstOrDefaultAsync();
 
-            if (offset >= 0 &&
-                limit > 0 &&
-                car != null &&
-                offset <= await CarItems.Find(x => x.CarEntityId == car.Id).CountDocumentsAsync()
-               )
+            if (car != null)
             {
                 var carItems = await CarItems.Find(x => x.CarEntityId == car.Id).Skip(offset).Limit(limit).ToListAsync();
 
-                var carEntitySendData = new CarItemsSendModel
+                if (carItems.Count() != 0 &&
+                    offset >= 0 &&
+                    limit > 0 &&
+                    offset <= carItems.Count()
+                   )
                 {
-                    CountCarsItems = (int) await CarItems.Find(x => x.CarEntityId == car.Id).CountDocumentsAsync(),
-                    CarEntityId = car.Id,
-                    CarItems = carItems.Select(x => new CarItemSendModel // test if N(carItems) == 0
+                    var carEntitySendData = new CarItemsSendModel
                     {
-                        CarItemId = x.CarItemId,
-                        Name = x.Name,
-                        TotalRide = x.TotalRide,
-                        ChangeRide = x.ChangeRide,
-                        PriceOfDetail = x.PriceOfDetail,
-                        DateOfReplace = x.DateOfReplace,
-                        RecomendedReplace = x.RecomendedReplace
+                        CountCarsItems = carItems.Count(),
+                        CarEntityId = car.Id,
+                        CarItems = carItems.Select(x => new CarItemSendModel
+                        {
+                            CarItemId = x.CarItemId,
+                            Name = x.Name,
+                            TotalRide = x.TotalRide,
+                            ChangeRide = x.ChangeRide,
+                            PriceOfDetail = x.PriceOfDetail,
+                            DateOfReplace = x.DateOfReplace,
+                            RecomendedReplace = x.RecomendedReplace
 
-                    })
-                };  
-                return carEntitySendData;
+                        })
+                    };
+                    return carEntitySendData;
+                }
             }
             return null;
         }
@@ -205,14 +208,12 @@ namespace Carhealth.Repositories
 
             if (carEntity != null)
             {
-                if (value.TotalRide < carEntity.CarsTotalRide)
+                if (value.TotalRide <= carEntity.CarsTotalRide)
                 {
                     return true;
                 }
 
-                if (value.TotalRide > 0 &&
-                    value.TotalRide > carEntity.CarsTotalRide
-                    )
+                if (value.TotalRide > 0)
                 {
                     int carEntityTotalRide = carEntity.CarsTotalRide;
 

@@ -16,10 +16,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Carhealth.Models.HttpModels;
 using Carhealth.Models.IdentityModels;
+using MongoDB.Bson;
 
 namespace Carhealth.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : ControllerBase
     {
 
 
@@ -41,8 +42,9 @@ namespace Carhealth.Controllers
         [Authorize]
         public IActionResult Index()
         {
+            return Ok();
             // return _userManager.GetUserId(User);
-            return View("~/wwwroot/index.html");
+           // return View("~/wwwroot/index.html");
         }
 
         [HttpGet("ping")]
@@ -231,7 +233,7 @@ namespace Carhealth.Controllers
             {
                 if (await _repository.AddNewCarItemAsync(new CarItem
                 {
-                    CarItemId = Guid.NewGuid().ToString(),
+                    CarItemId = ObjectId.GenerateNewId().ToString(),
                     CarEntityId = data.CarEntityId,
                     Name = data.Name,
                     TotalRide = 0,

@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Hosting;
 using Carhealth.Models.IdentityModels;
 using AspNetCore.Identity.Mongo;
+using System.Linq;
 
 namespace Carhealth
 {
@@ -77,6 +78,9 @@ namespace Carhealth
 
 
             services.AddTransient<IRepository<List<CarEntity>>, FileRepository>();
+
+          
+
 
             services.AddControllersWithViews();
         }

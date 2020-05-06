@@ -158,29 +158,30 @@ namespace Carhealth.Repositories
 
             if (car != null)
             {
-                var carItems = await CarItems.Find(x => x.CarEntityId == car.Id).Skip(offset).Limit(limit).ToListAsync();
-               
+                int carItemsCount = (int) await CarItems.Find(x => x.CarEntityId == car.Id).CountDocumentsAsync();
+
                 if (
                     offset >= 0 &&
-                    limit > 0 
+                    limit > 0
                    )
                 {
                     var carEntitySendData = new CarItemsSendModel
                     {
-                        CountCarsItems = carItems.Count(),
+                        CountCarsItems = carItemsCount,
                         CarEntityId = car.Id,
-                        CarItems = carItems.Count() == 0 || carItems.Count() <= offset ? null :
-                        carItems.Select(x => new CarItemSendModel
-                        {
-                            CarItemId = x.CarItemId,
-                            Name = x.Name,
-                            TotalRide = x.TotalRide,
-                            ChangeRide = x.ChangeRide,
-                            PriceOfDetail = x.PriceOfDetail,
-                            DateOfReplace = x.DateOfReplace,
-                            RecomendedReplace = x.RecomendedReplace
+                        CarItems = carItemsCount == 0 || carItemsCount <= offset ? null :
+                         CarItems.Find(x => x.CarEntityId == car.Id).Skip(offset).Limit(limit).ToList().
+                         Select(x => new CarItemSendModel
+                         {
+                             CarItemId = x.CarItemId,
+                             Name = x.Name,
+                             TotalRide = x.TotalRide,
+                             ChangeRide = x.ChangeRide,
+                             PriceOfDetail = x.PriceOfDetail,
+                             DateOfReplace = x.DateOfReplace,
+                             RecomendedReplace = x.RecomendedReplace
 
-                        })
+                         })
                     };
                     return carEntitySendData;
                 }

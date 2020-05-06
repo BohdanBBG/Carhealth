@@ -66,6 +66,7 @@ body {
     min-height: 90%;
     height: auto;
 }
+
 /* begin dashboard */
 .dashboard-container {
     color: var(--text-color);
@@ -103,8 +104,13 @@ body {
 }
 
 @media screen and (max-width: 720px){
+
+    .brend-name
+    {
+        font-size: 2.4em;
+    }
     .info-container .info-image--top {
-        width: 17em;
+        width: 12.2em;
     }
 
     .info-container .info-row {
@@ -262,6 +268,7 @@ body {
     display: flex;
     flex-direction: row;
     min-height: 1em;
+    align-items: center;
     font-size: 1em;
     border-bottom: 1px solid rgba(255, 255, 255, 0.25);
     overflow-x: hidden;
@@ -338,6 +345,8 @@ body {
 }
 
 .container-edit-icon{
+    height: 1em;
+    align-self: baseline;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -379,18 +388,41 @@ body {
     }
 }
 @media screen and (max-width: 720px) {
+
     .list-item {
         width: 49.5%;
-        height: 60px;
+        height: 10em;
         margin: 1% 1% 0 0;
     }
+
     .list-item:nth-child(-n + 2) {
         margin-top: 0;
     }
+
     .list-item:nth-child(2n) {
         margin-right: 0;
     }
 
+    .list-item-container
+    {
+        font-size: 0.63em;
+        height: 15em;
+    }
+
+    .list-item-title
+    {
+        height: 0.8em;
+    }
+
+    .list-item-recomended-replace
+    {
+        height: 0.1em;
+    }
+
+    .item-list
+    {
+        padding: 0.4em;
+    }
 }
 
 /* BEGIN Car Managment */
@@ -591,6 +623,24 @@ body {
     border-radius: 6em;
 }
 
+@media screen and (max-width: 720px) {
+
+    .car-managmend-form-container
+    {
+        width: 13em;
+    }
+
+    .car-managmend-form
+    {
+        width: 100%;
+      box-sizing: border-box;
+    }
+
+    .car-managmend-input-field-title
+    {
+        width: 98.5%;
+    }
+}
 
 
 
@@ -635,7 +685,8 @@ body {
 .item-list-pager__button .button-icon {
 }
 
-/*begin add word form */
+/*begin add/edit item form */
+
 .data-form-container{
     display: flex;
     flex-direction: row;
@@ -772,20 +823,35 @@ body {
         width: 14.5em;
     }
 
-    .input-field-description{
-        width: 20.9em;
-    }
-
-    .input-field-example-text{
-        width: 20.9em;
-    }
-
-    .input-field-tags{
+    .input-field-recomend{
         width: 14.5em;
     }
 
     .form-dialog{
          width: 22em
     }
+
+    .price-date-container
+    {
+        width: 100%;
+    }
+
+    .input-field-price
+    {
+        width: 3.9em;
+        flex-grow: 2;
+    }
+
+    .price-date-text
+    {
+        width: 1em;
+        flex-grow: 1;
+    }
+
+    .input-field-date
+    {
+        width: 5.7em;
+        flex-grow: 2;
+    }
 }
-/* end add word form */
+/* end  add/edit item form */

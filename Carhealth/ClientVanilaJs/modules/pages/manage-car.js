@@ -5,7 +5,7 @@ let domUtil = new DomUtil();
 import globalScopes from './global-scopes.js';
 
 import HttpUtil from '../HttpUtil.js';
-let helper = new HttpUtil();
+let helper = new HttpUtil("");
 
 
 class CarManager {
@@ -215,7 +215,7 @@ class CarManager {
 
         domUtil.addBubleEventListener('.js-car-managmend-delete-button', '.js-car-managmend-delete-button', 'click', globalScopes.getEventListenerState().carManagerDeletebutton, function (e, actualEl, desiredEl) {
 
-            var deleteUrl = `${config.urls.api}/delete/car/${carManagmendFormDeleteButtonEl.getAttribute('car-id')}`;// used for delete car
+            var deleteUrl = `${config.urls.api}/delete/car?carEntityId=${carManagmendFormDeleteButtonEl.getAttribute('car-id')}`;// used for delete car
             DeleteData(deleteUrl)
             alert("Car has been deleted");
             GetUserCars(function (data) {

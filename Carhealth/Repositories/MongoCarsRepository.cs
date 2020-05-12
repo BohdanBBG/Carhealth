@@ -158,8 +158,8 @@ namespace Carhealth.Repositories
 
             if (car != null)
             {
-                var carItems = await CarItems.Find(x => x.CarEntityId == car.Id).Skip(offset).Limit(limit).ToListAsync();
-               
+                var carItems = await CarItems.Find(x => x.CarEntityId == car.Id).ToListAsync();
+                int carItemsCount = carItems.Count();
                 if (
                     offset >= 0 &&
                     limit > 0 
@@ -167,10 +167,10 @@ namespace Carhealth.Repositories
                 {
                     var carEntitySendData = new CarItemsSendModel
                     {
-                        CountCarsItems = carItems.Count(),
+                        CountCarsItems = carItemsCount,
                         CarEntityId = car.Id,
-                        CarItems = carItems.Count() == 0 || carItems.Count() <= offset ? null :
-                        carItems.Select(x => new CarItemSendModel
+                        CarItems = carItemsCount == 0 || carItemsCount <= offset ? null :
+                        carItems.Skip(offset).Take(limit).Select(x => new CarItemSendModel
                         {
                             CarItemId = x.CarItemId,
                             Name = x.Name,

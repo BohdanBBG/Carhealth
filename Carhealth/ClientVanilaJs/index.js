@@ -1,8 +1,6 @@
 //import "@babel/polyfill";
 
 
-import HttpUtil from './modules/HttpUtil.js'
-let helper = new HttpUtil();
 
 import DomUtil from './modules/DomUtil.js';
 let domUtil = new DomUtil();
@@ -15,12 +13,17 @@ let appRouter = {};
 import CarManager from './modules/pages/manage-car.js'
 
 
-var serverUrl = "https://localhost:5001";
+var serverUrl = "";
+var identityUrl = "Account/Login";
+
+import HttpUtil from './modules/HttpUtil.js'
+let helper = new HttpUtil(identityUrl);
+
 
 
 document.addEventListener("DOMContentLoaded", function (event) {
 
-    checkingServerResponse(serverUrl, serverUrl);
+    checkingServerResponse(serverUrl, identityUrl);
 
     domUtil.addBubleEventListener('.js-logout-button', '.js-logout-button-text', 'click', globalScopes.getEventListenerState().logout, function (e, actualEl, desiredEl) {
         e.preventDefault();
@@ -30,6 +33,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
     });
 
     helper.httpGet(serverUrl + "/config", function (config) {
+        
         start(config);
 
     });
@@ -129,18 +133,8 @@ function start(config) {
 
 function checkingServerResponse(apiUrl, identityUrl) {
 
-
     helper.httpChek(apiUrl + "/ping", function (response) {
-        if (response === 401 || response === 403) {
-            document.location.href = identityUrl + "/Account/Login";
-        }
-        else if (response.statusCode === 500) {
-            console.log('response', false);
-            var descriptionIssue = document.querySelector('.js-empty-data');
-            descriptionIssue.classList.replace('hidden', 'active');
-
-            appRouter.goToRoute("#no-response");
-        }
+       
     });
 
 

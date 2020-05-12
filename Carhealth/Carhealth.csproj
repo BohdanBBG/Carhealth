@@ -4,6 +4,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
     <ApplicationIcon>wwwroot\favicon.ico</ApplicationIcon>
+    <UserSecretsId>adc71927-af59-445c-9ae7-5c7ca180fec1</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,6 +23,7 @@
     <PackageReference Include="MongoDB.Driver" Version="2.10.3" />
     <PackageReference Include="MongoDB.Driver.Core" Version="2.10.3" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.4.1" />
     <PackageReference Include="System.Text.Json" Version="4.7.1" />
   </ItemGroup>
 

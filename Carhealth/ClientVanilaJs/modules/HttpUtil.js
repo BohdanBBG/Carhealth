@@ -2,19 +2,20 @@
 
 class HttpUtil {
 
-    constructor() {
-
+    constructor(identityUrl) {
+        this.identityUrl = identityUrl;
     }
 
     httpChek(url, callBack) {
+
+        var identityUrl = this.identityUrl;
+
         var xhr = new XMLHttpRequest();
      //   xhr.withCredentials = true; // force to show browser's default auth dialog
         xhr.open('GET', url);
 
 
         xhr.onload = function () {
-            var data = xhr.status;
-            callBack(data);
             if(xhr.status === 200)
             {
                 console.log("Ok")
@@ -24,6 +25,7 @@ class HttpUtil {
                 alert('Request failed.  Returned status of ' + xhr.status);
             } else if (xhr.status === 401 || xhr.status === 403) {
                 console.error('Request failed.  Returned status of ' + xhr.status);
+                document.location.href = identityUrl + "/Account/Login";
             }
             else {
                 console.error('Request failed.  Returned status of ' + xhr.status);
@@ -34,6 +36,9 @@ class HttpUtil {
         xhr.send();
     }
     httpRequest(url, data, typeOfrequest, callback) {
+
+        var identityUrl = this.identityUrl;
+
         var xhr = new XMLHttpRequest();
 
         xhr.withCredentials = true; // force to show browser's default auth dialog
@@ -50,6 +55,7 @@ class HttpUtil {
                 alert('Request failed.  Returned status of ' + xhr.status);
             } else if (xhr.status === 401 || xhr.status === 403) {
                 console.error('Request failed.  Returned status of ' + xhr.status);
+                document.location.href = identityUrl + "/Account/Login";
             }
         };
 
@@ -57,6 +63,9 @@ class HttpUtil {
     }
 
     deleteRequest(url) {
+
+        var identityUrl = this.identityUrl;
+
         var xhr = new XMLHttpRequest();
 
         xhr.withCredentials = true; // force to show browser's default auth dialog
@@ -72,6 +81,7 @@ class HttpUtil {
                 alert('Request failed.  Returned status of ' + xhr.status);
             } else if (xhr.status === 401 || xhr.status === 403) {
                 console.error('Request failed.  Returned status of ' + xhr.status);
+                document.location.href = identityUrl + "/Account/Login";
             }
         };
 
@@ -79,6 +89,9 @@ class HttpUtil {
     }
 
     httpGet(url, callBack) {
+
+        var identityUrl = this.identityUrl;
+
         var xhr = new XMLHttpRequest();
       //  xhr.withCredentials = true; // force to show browser's default auth dialog
         xhr.open('GET', url);
@@ -101,6 +114,7 @@ class HttpUtil {
             } else if (xhr.status === 401 || xhr.status === 403) {
                 console.error('Request failed.  Returned status of ' + xhr.status);
                 callBack(null);
+                document.location.href = identityUrl + "/Account/Login";
             }
             else {
                 console.error('Request failed.  Returned status of ' + xhr.status);

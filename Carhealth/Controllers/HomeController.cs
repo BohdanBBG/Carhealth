@@ -162,8 +162,8 @@ namespace Carhealth.Controllers
         }
 
         [Authorize]
-        [HttpDelete("delete/car/{carEntityId}")]
-        public async Task<IActionResult> DeleteUserCar(string carEntityId)
+        [HttpDelete("delete/car")]
+        public async Task<IActionResult> DeleteUserCar([FromQuery] string carEntityId)
         {
             string userId = _userManager.GetUserId(User);
 
@@ -175,8 +175,8 @@ namespace Carhealth.Controllers
         }
 
         [Authorize]
-        [HttpGet("cardetails/{offset}/{limit}")]
-        public async Task<ActionResult<CarItemsSendModel>> GetCarItemsAsync(int offset, int limit)
+        [HttpGet("cardetails")]
+        public async Task<ActionResult<CarItemsSendModel>> GetCarItemsAsync([FromQuery] int offset, [FromQuery] int limit)
         {
             string userId = _userManager.GetUserId(User);
 
@@ -269,8 +269,8 @@ namespace Carhealth.Controllers
         }
 
         [Authorize]
-        [HttpDelete("delete/caritem/{detailId}")]
-        public async Task<IActionResult> DeleteAsync(string detailId)
+        [HttpDelete("delete/caritem/")]
+        public async Task<IActionResult> DeleteAsync([FromQuery] string detailId)
         {
             string userId = _userManager.GetUserId(User);
 

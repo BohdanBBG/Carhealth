@@ -14,6 +14,6 @@ namespace Carhealth.Models
     //    {
     //        Database.EnsureCreated();
     //    }
-    
+
     //}
 }

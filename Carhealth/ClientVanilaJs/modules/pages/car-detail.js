@@ -5,7 +5,7 @@ let domUtil = new DomUtil();
 import globalScopes from './global-scopes.js';
 
 import HttpUtil from '../HttpUtil.js';
-let helper = new HttpUtil();
+let helper = new HttpUtil("");
 
 
 class CarDetails {
@@ -24,7 +24,7 @@ class CarDetails {
         var listItemTemplateEl = itemListContainerEl.querySelector('.js-list-item-template');
 
         function getData(offset = 0, limit = 2, callBack = null) {
-            helper.httpGet(config.urls.api + '/cardetails/' + offset + '/' + limit, function (data) {
+            helper.httpGet(config.urls.api + '/cardetails?offset=' + offset + '&limit=' + limit, function (data) {
                 console.log(2, data);
                 if (callBack !== null) {
                     callBack(data);
@@ -159,7 +159,7 @@ class CarDetails {
 
             if (confirm(`Do you want to delete ${result.name}`)) {
 
-                var idItemUrl = `${config.urls.api}/delete/caritem/${itemId}`;
+                var idItemUrl = `${config.urls.api}/delete/caritem?detailId=${itemId}`;
                 deleteData(idItemUrl);
 
                 showPage(page, limit);

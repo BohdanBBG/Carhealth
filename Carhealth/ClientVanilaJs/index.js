@@ -14,7 +14,7 @@ import CarManager from './modules/pages/manage-car.js'
 
 
 var serverUrl = "";
-var identityUrl = "Account/Login";
+var identityUrl = "";
 
 import HttpUtil from './modules/HttpUtil.js'
 let helper = new HttpUtil(identityUrl);
@@ -33,7 +33,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
     });
 
     helper.httpGet(serverUrl + "/config", function (config) {
-        
+
+        config.urls.api="";
         start(config);
 
     });

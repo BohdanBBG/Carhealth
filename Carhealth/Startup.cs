@@ -31,7 +31,7 @@ namespace Carhealth
         public void ConfigureServices(IServiceCollection services)
         {
             ConfigureMongoDb(services);
-           //ConfigureEFCoreDb(services);
+            //ConfigureEFCoreDb(services);
 
             services.AddTransient<IRepository<List<CarEntity>>, FileRepository>();
 
@@ -40,6 +40,14 @@ namespace Carhealth
             services.AddLogging();
 
             services.AddMvc();
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("default", builder =>
+                {
+                    builder.WithOrigins("*");
+                });
+            });
 
             services.AddSwaggerGen(c =>
             {
@@ -60,6 +68,7 @@ namespace Carhealth
                 app.UseHsts();
             }
 
+            app.UseCors("default");
 
             app.UseHttpsRedirection();
             app.UseDefaultFiles();
@@ -69,6 +78,8 @@ namespace Carhealth
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+
 
             app.UseSwagger();
 

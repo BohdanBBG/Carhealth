@@ -70,6 +70,44 @@ function start(config) {
 
         }
 
+        GetUserCars(function (data) {
+
+            var noOption = new Option('No car selected', '0000', true, true);
+
+            currentCar.cars.options[0] = noOption;
+
+            data.forEach(element => {
+
+                if (element.isDefault) {
+
+                    currentCar.cars.removeChild(currentCar.cars.options[0]);
+                }
+
+                var newOption = new Option(element.carEntityName, element.id, element.isDefault ? true : false, element.isDefault ? true : false);
+
+                currentCar.cars.options[currentCar.cars.options.length] = newOption;
+            });
+
+        });
+
+
+        currentCar.cars.addEventListener("change", function () {
+
+            var selectedCar = {};
+            selectedCar.CarEntityId = currentCar.cars.options[currentCar.cars.selectedIndex].value;
+            helper.httpRequest(config.urls.api + '/setUserCurCar', selectedCar, "POST", function () {
+                console.log("Current car: ", currentCar.cars.options[currentCar.cars.selectedIndex].text);
+                location.reload();
+
+            });
+        });
+
+        function GetUserCars(callback) {
+            helper.httpGet(config.urls.api + '/allUsersCars', function (data) {
+                callback(data);
+            });
+        }
+
 
         initAppMenu();
 

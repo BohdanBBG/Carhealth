@@ -15,12 +15,10 @@ namespace Carhealth.Controllers
                                               // отредактировать, удалить или добавить новых пользователей:
     {
         UserManager<User> _userManager { get; set; }
-        CarContext _db { get; set; }
 
-        public UsersController(UserManager<User> userManager, CarContext db)
+        public UsersController(UserManager<User> userManager)
         {
             _userManager = userManager;
-            _db = db;
         }
 
         public IActionResult Index()
@@ -160,32 +158,6 @@ namespace Carhealth.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> ChangeCarBind(string id)
-        {
-            User user = await _userManager.FindByIdAsync(id);
-
-            if (user != null)
-            {
-                //return View (new )
-            }
-            return NotFound();
-        }
-        [HttpPost]
-        public async Task<IActionResult> ChangeCarBind(ChangeCarBindViewModelcs model)
-        {
-            User user = await _userManager.FindByIdAsync(model.UserId);
-
-            var result = _db.CarEntities.FirstOrDefault(x => String.Equals(x.UserId, user.Id)); 
-
-            //if (user != null)
-            //{
-            //    EditUserViewModel model = new EditUserViewModel { Id = user.Id, Email = user.Email };
-
-            //    return View(model);
-            //}
-
-            return NotFound();
-        }
 
     }
 }

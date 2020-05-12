@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Carhealth.Models.IdentityModels;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,12 +11,12 @@ namespace Carhealth.ViewModels
     {
         public string UserId { get; set; }
         public string UserEmail { get; set; }
-        public List<IdentityRole> AllRoles { get; set; }
+        public List<Role> AllRoles { get; set; }
         public IList<string> UserRoles { get; set; }
 
         public ChangeRoleViewModel()
         {
-            AllRoles = new List<IdentityRole>();
+            AllRoles = new List<Role>();
             UserRoles = new List<string>();
         }
     }

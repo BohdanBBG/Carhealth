@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Carhealth.Models;
+using Carhealth.Models.IdentityModels;
 using Carhealth.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -13,10 +14,10 @@ namespace Carhealth.Controllers
     [Authorize(Roles = "Admin")]
     public class RolesController : Controller
     {
-        private RoleManager<IdentityRole> _roleManager;
+        private RoleManager<Role> _roleManager;
         private UserManager<User> _userManager;
 
-        public RolesController(RoleManager<IdentityRole> roleManager, UserManager<User> userManager)
+        public RolesController(RoleManager<Role> roleManager, UserManager<User> userManager)
         {
             _roleManager = roleManager;
             _userManager = userManager;
@@ -31,7 +32,7 @@ namespace Carhealth.Controllers
         {
             if (!string.IsNullOrEmpty(name))
             {
-                IdentityResult result = await _roleManager.CreateAsync(new IdentityRole(name));
+                IdentityResult result = await _roleManager.CreateAsync(new Role(name));
 
                 if (result.Succeeded)
                 {
@@ -53,7 +54,7 @@ namespace Carhealth.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(string id) //по id получаем роль и удаляем ее с помощью вызова метода _roleManager.DeleteAsync().
         {
-            IdentityRole role = await _roleManager.FindByIdAsync(id);
+            Role role = await _roleManager.FindByIdAsync(id);
 
             if (role != null)
             {

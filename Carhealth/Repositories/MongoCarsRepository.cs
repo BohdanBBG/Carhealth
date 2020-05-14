@@ -53,18 +53,21 @@ namespace Carhealth.Repositories
 
         public async Task<bool> SetUserCurCarAsync(string carEntityId, string userId)
         {
-            var builder = Builders<CarEntity>.Filter;
-            var filter = builder.Eq("UserId", userId) & builder.Eq("Id", carEntityId);
-
-            await CarEntities.UpdateManyAsync(builder.Eq("UserId", userId), new BsonDocument("$set", new BsonDocument("IsCurrent", false)));
-
-            var result = await CarEntities.UpdateOneAsync(
-                   filter,
-                 new BsonDocument("$set", new BsonDocument("IsCurrent", true)));
-
-            if (result.ModifiedCount > 0)
+            if (carEntityId != null && userId != null)
             {
-                return true;
+                var builder = Builders<CarEntity>.Filter;
+                var filter = builder.Eq("UserId", userId) & builder.Eq("Id", carEntityId);
+
+                await CarEntities.UpdateManyAsync(builder.Eq("UserId", userId), new BsonDocument("$set", new BsonDocument("IsCurrent", false)));
+
+                var result = await CarEntities.UpdateOneAsync(
+                       filter,
+                     new BsonDocument("$set", new BsonDocument("IsCurrent", true)));
+
+                if (result.ModifiedCount > 0)
+                {
+                    return true;
+                }
             }
             return false;
         }
@@ -141,14 +144,23 @@ namespace Carhealth.Repositories
 
         public async Task<bool> DeleteUserCarAsync(string carEntityId, string userId)
         {
-            var result = await CarEntities.DeleteOneAsync(x => x.Id == carEntityId && x.UserId == userId);
+            var car = await CarEntities.Find(x => x.Id == carEntityId && x.UserId == userId).FirstOrDefaultAsync();
 
-            await CarItems.DeleteManyAsync(x => x.CarEntityId == carEntityId);
-
-            if (result.DeletedCount > 0)
+            if (car != null)
             {
+
+                if (car.IsCurrent)
+                {
+                    await SetUserCurCarAsync(CarEntities.Find(x => x.Id != carEntityId && x.UserId == userId).FirstOrDefault().Id, userId);
+                }
+
+                var result = await CarEntities.DeleteOneAsync(x => x.Id == carEntityId && x.UserId == userId);
+
+                await CarItems.DeleteManyAsync(x => x.CarEntityId == carEntityId);
+
                 return true;
             }
+
             return false;
         }
 

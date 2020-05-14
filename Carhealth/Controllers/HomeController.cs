@@ -136,7 +136,7 @@ namespace Carhealth.Controllers
                     CarsTotalRide = int.Parse(carEntity.CarsTotalRide),
                     IsCurrent = carEntity.IsCurrent,
                     UserId = userId,
-                    Id = Guid.NewGuid().ToString()
+                    Id = ObjectId.GenerateNewId().ToString()
                 });
 
                 return Ok();

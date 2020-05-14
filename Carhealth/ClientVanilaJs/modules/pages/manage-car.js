@@ -70,7 +70,7 @@ class CarManager {
 
             carManagmendFormContainerEl.classList.remove('hidden');
 
-
+            // console.log('----sada',pageData);
             var car = pageData.find(x => x.id === itemId);
             carManagmendFormPutButtonEl.setAttribute('car-id', itemId);
             carManagmendFormDeleteButtonEl.setAttribute('car-id', itemId);
@@ -154,10 +154,13 @@ class CarManager {
                     var postUrl = `${config.urls.api}/add/car`;// used for add car
 
 
-                    console.log('-----', data);
+                    // console.log('-----', data);
                     SendData(postUrl, data);
+
                     alert("Car has been added");
-                    location.reload();
+                    GetUserCars(function (e) { });
+
+                    carManagmendCloseFormAddButtonEl.onclick();
 
                 } else {
                     // alert("Wrong input data");
@@ -201,14 +204,20 @@ class CarManager {
                 totalRideDataSend.TotalRide) {
 
                 totalRideDataSend.Id = sendData.Id;
-                console.log(totalRideDataSend);
+                // console.log(totalRideDataSend);
 
                 var putUrl = `${config.urls.api}/put/car`;// used for update car
 
                 UpdateData(putUrl, sendData);
 
-                GetUserCars(function (e) {
-                    InitModalWindowForm(sendData.Id);
+                alert("Car has been updated");
+
+                GetUserCars(function (data) {
+                    modalWindowEl.querySelector('.car-managmend-form-reset-button').onclick();
+                    carManagmendFormContainerEl.classList.add('hidden');
+
+                    InitModalWindowMenu(data);
+
                 });
             }
         });
@@ -217,8 +226,11 @@ class CarManager {
 
             var deleteUrl = `${config.urls.api}/delete/car?carEntityId=${carManagmendFormDeleteButtonEl.getAttribute('car-id')}`;// used for delete car
             DeleteData(deleteUrl)
-            alert("Car has been deleted");
             GetUserCars(function (data) {
+
+                carManagmendFormContainerEl.classList.add('hidden');
+                alert("Car has been deleted");
+
                 InitModalWindowMenu(data)
             });
         });

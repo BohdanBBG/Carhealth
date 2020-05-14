@@ -174,12 +174,12 @@ class CarManager {
         domUtil.addBubleEventListener('.js-car-managmend-put-button', '.js-car-managmend-put-button ', 'click', globalScopes.getEventListenerState().carManagerPutbutton, function (e, actualEl, desiredEl) {
 
             var sendData = {};
-            var totalRideDataSend = {};
+            // var totalRideDataSend = {};
 
             sendData.CarEntityName = carManagmendFormEl.elements.name.value ? carManagmendFormEl.elements.name.value :
                 carManagmendFormEl.elements.name.classList.add('input-field-empty-js');
 
-            totalRideDataSend.TotalRide = /^\d+$/.test(carManagmendFormEl.elements.totalRide.value) ?
+            sendData.CarsTotalRide = /^\d+$/.test(carManagmendFormEl.elements.totalRide.value) ?
                 Number(carManagmendFormEl.elements.totalRide.value) :
                 carManagmendFormEl.elements.totalRide.classList.add('input-field-empty-js');
 
@@ -201,10 +201,10 @@ class CarManager {
             sendData.IsCurrent = carManagmendFormEl.elements.isCurrent.checked;
 
             if (sendData.CarEntityName &&
-                totalRideDataSend.TotalRide) {
+                sendData.CarsTotalRide) {
 
-                totalRideDataSend.Id = sendData.Id;
-                // console.log(totalRideDataSend);
+                //totalRideDataSend.Id = sendData.Id;
+                 console.log('------',sendData);
 
                 var putUrl = `${config.urls.api}/put/car`;// used for update car
 

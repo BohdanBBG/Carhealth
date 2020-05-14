@@ -89,11 +89,16 @@ namespace Carhealth.Repositories
 
         public async Task AddUserNewCarAsync(CarEntity carEntity)
         {
-            if (carEntity.IsCurrent && !this.IsEmptyDb())
+            if (carEntity.IsCurrent)
             {
                 var builder = Builders<CarEntity>.Filter;
 
-               await CarEntities.UpdateManyAsync(builder.Eq("UserId", carEntity.UserId), new BsonDocument("$set", new BsonDocument("IsCurrent", false)));
+                await CarEntities.UpdateManyAsync(builder.Eq("UserId", carEntity.UserId), new BsonDocument("$set", new BsonDocument("IsCurrent", false)));
+            }
+
+            if ( !await CarEntities.Find(x => x.UserId == carEntity.UserId).AnyAsync())
+            {
+                carEntity.IsCurrent = true;
             }
 
             await this.SetTotalRideAsync(new UpdateTotalRideModel

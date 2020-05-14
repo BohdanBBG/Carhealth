@@ -15,6 +15,8 @@ namespace Carhealth.Repositories
         {
             var carEntities = fileRepository.ImportAllData();
 
+            carEntities.Sort();
+
             var users = userManager.Users.ToList();
 
             foreach (var car in carEntities)

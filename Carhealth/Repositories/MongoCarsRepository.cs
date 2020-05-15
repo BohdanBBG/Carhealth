@@ -13,16 +13,13 @@ namespace Carhealth.Repositories
     public class MongoCarsRepository : ICarRepository
     {
         private IMongoDatabase _database { get; set; }
+        private IMongoClient _client { get; set; }
 
-        public MongoCarsRepository(IConfiguration configuration)
+
+        public MongoCarsRepository(IMongoClient client, string database )
         {
-            // строка подключения
-            string connectionString = configuration.GetConnectionString("MongoDb");
-            var connection = new MongoUrlBuilder(connectionString);
-            // получаем клиента для взаимодействия с базой данных
-            MongoClient client = new MongoClient(connectionString);
-            // получаем доступ к самой базе данных
-            _database = client.GetDatabase(connection.DatabaseName);
+            _client = client;
+            _database = client.GetDatabase(database);
 
         }
 

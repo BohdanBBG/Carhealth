@@ -22,7 +22,7 @@ namespace Carhealth.Repositories
 
         public bool IsEmptyDb()
         {
-            return  _db.CarEntities.Any();
+            return  !_db.CarEntities.Any();
         }
 
         public async Task<List<CarEntity>> GetAllUsersCarsAsync(string userId)

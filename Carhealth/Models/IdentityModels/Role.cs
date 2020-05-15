@@ -9,7 +9,7 @@ namespace Carhealth.Models.IdentityModels
 {
     //Add any custom field for a role
     public class Role : MongoRole // MongoDb data repository
-    //public class Role : IdentityRole // EF Core data repository
+   //public class Role : IdentityRole // EF Core data repository
     {
         public Role(string name) : base(name)
         {

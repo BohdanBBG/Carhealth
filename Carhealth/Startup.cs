@@ -12,6 +12,9 @@ using Microsoft.Extensions.Hosting;
 using Carhealth.Models.IdentityModels;
 using AspNetCore.Identity.Mongo;
 using Microsoft.OpenApi.Models;
+using MongoDB.Driver;
+using Microsoft.CodeAnalysis.Options;
+using Microsoft.Extensions.Options;
 
 namespace Carhealth
 {
@@ -30,8 +33,12 @@ namespace Carhealth
 
         public void ConfigureServices(IServiceCollection services)
         {
-            ConfigureMongoDb(services);
-            //ConfigureEFCoreDb(services);
+            var config = Configuration.Get<ApplicationSettings>();
+
+            services.Configure<ApplicationSettings>(Configuration);
+
+            ConfigureMongoDb(services, config);
+            //ConfigureEFCoreDb(services, config);
 
             services.AddTransient<IRepository<List<CarEntity>>, FileRepository>();
 
@@ -45,7 +52,11 @@ namespace Carhealth
             {
                 options.AddPolicy("default", builder =>
                 {
-                    builder.WithOrigins("*");
+                    builder.AllowAnyOrigin();
+                     // .WithOrigins(config.Cors.AllowedOrigins.ToArray())
+                     // .AllowAnyMethod()
+                     // .AllowAnyHeader()
+                     // .AllowCredentials();
                 });
             });
 
@@ -96,9 +107,22 @@ namespace Carhealth
             });
         }
 
-        private void ConfigureMongoDb(IServiceCollection services)
+        private void ConfigureMongoDb(IServiceCollection services, ApplicationSettings config)
         {
-            services.AddTransient<ICarRepository, MongoCarsRepository>(); // MongoDb data repository
+
+            services.AddTransient<MongoClient>(sp =>
+            {
+                return new MongoClient(config.MongoDb.ConnectionString);
+            });
+
+
+            services.AddTransient<ICarRepository, MongoCarsRepository>(sp =>
+            {
+                var mongoClient = sp.GetService<MongoClient>();
+
+                return new MongoCarsRepository(mongoClient, config.MongoDb.MainDb);
+            }); // MongoDb data repository
+
 
             services.AddIdentityMongoDbProvider<User, Role>(identityOptions =>
             {
@@ -110,38 +134,39 @@ namespace Carhealth
                 identityOptions.User.RequireUniqueEmail = true; // уникальный email
             }, mongoIdentityOptions =>
             {
-                mongoIdentityOptions.ConnectionString = Configuration.GetConnectionString("MongoDbIdentity");
+                mongoIdentityOptions.ConnectionString = config.MongoDb.MongoDbIdentity;
             });
         }
 
-        private void ConfigureEFCoreDb(IServiceCollection services)
+        private void ConfigureEFCoreDb(IServiceCollection services, ApplicationSettings config)
         {
             /// Before changing the repo type you should do:
             /// 1. Logout from app for clear cookie in your browser.
             /// 2. In Models\IdentityModels\Role.cs AND User.cs change parent class
             /// 3. Uncomit in Models\IdentityModels\UserContext.cs
-            /// 4. Unhandled issue with UserContext and IdentityRole
+            /// 4. Everywhere change Role to IdentityRole
+            /// 5. Unhandled issue with UserContext and IdentityRole
 
 
-            services.AddTransient<ICarRepository, EFCarRepository>(); // EF Core data repository
+           // services.AddTransient<ICarRepository, EFCarRepository>(); // EF Core data repository
 
-            services.AddDbContext<CarContext>(options =>
-           options.UseSqlServer(Configuration.GetConnectionString("CarsDb"))); // for EF Core data repository
+           // services.AddDbContext<CarContext>(options =>
+           //options.UseSqlServer(config.EFCoreDb.CarsDb)); // for EF Core data repository
 
-            // services.AddDbContext<UserContext>(options =>
-            //options.UseSqlServer(Configuration.GetConnectionString("CarHealthIdentityDb")));
+           // services.AddDbContext<UserContext>(options =>
+           //options.UseSqlServer(config.EFCoreDb.CarHealthIdentityDb));
 
-            services.AddIdentity<User, Role>(options => //валидация пароля 
-            {
-                options.Password.RequiredLength = 4;   // минимальная длина
-                options.Password.RequireNonAlphanumeric = false;   // требуются ли не алфавитно-цифровые символы
-                options.Password.RequireLowercase = false; // требуются ли символы в нижнем регистре
-                options.Password.RequireUppercase = false; // требуются ли символы в верхнем регистре
-                options.Password.RequireDigit = false; // требуются ли цифры
-                options.User.RequireUniqueEmail = true; // уникальный email
-            });
-          // services.AddEntityFrameworkStores<UserContext>();// устанавливает тип хранилища, которое будет применяться в Identity для хранения 
-          //данных. В качестве типа хранилища здесь указывается класс контекста данных.
+           // services.AddIdentity<User, IdentityRole>(options => //валидация пароля 
+           // {
+           //     options.Password.RequiredLength = 4;   // минимальная длина
+           //     options.Password.RequireNonAlphanumeric = false;   // требуются ли не алфавитно-цифровые символы
+           //     options.Password.RequireLowercase = false; // требуются ли символы в нижнем регистре
+           //     options.Password.RequireUppercase = false; // требуются ли символы в верхнем регистре
+           //     options.Password.RequireDigit = false; // требуются ли цифры
+           //     options.User.RequireUniqueEmail = true; // уникальный email
+           // })
+           // .AddEntityFrameworkStores<UserContext>();// устанавливает тип хранилища, которое будет применяться в Identity для хранения 
+           //                                                 // данных.В качестве типа хранилища здесь указывается класс контекста данных.
 
         }
 

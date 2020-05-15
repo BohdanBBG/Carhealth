@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -39,6 +40,9 @@ namespace Carhealth
                 var services = scope.ServiceProvider;
                 try
                 {
+                  //  var configuration = services.GetRequiredService<IConfiguration>();
+                  //  var config = configuration.Get<ApplicationSettings>();
+
                     var userManager = services.GetRequiredService<UserManager<User>>(); 
 
                     var roleManager = services.GetRequiredService<RoleManager<Role>>(); 

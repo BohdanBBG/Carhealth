@@ -31,7 +31,7 @@ namespace Carhealth
 
             //host.Run(); // запускаем приложение
 
-
+          
 
             var host = CreateWebHostBuilder(args).Build();
 
@@ -40,8 +40,6 @@ namespace Carhealth
                 var services = scope.ServiceProvider;
                 try
                 {
-                  //  var configuration = services.GetRequiredService<IConfiguration>();
-                  //  var config = configuration.Get<ApplicationSettings>();
 
                     var userManager = services.GetRequiredService<UserManager<User>>(); 
 
@@ -68,8 +66,34 @@ namespace Carhealth
             host.Run();
         }
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-           WebHost.CreateDefaultBuilder(args)
-               .UseStartup<Startup>();
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args)
+        {
+            var builder = WebHost.CreateDefaultBuilder(args)
+              .UseConfiguration(GetConfiguration());
+
+            builder.UseStartup<Startup>();
+
+            return builder;
+        }
+
+        private static IConfiguration GetConfiguration()
+        {
+            // load env variables from .env file
+            string envFilePath = Path.Combine(Directory.GetCurrentDirectory(), ".env");
+
+            if (File.Exists(envFilePath))
+            {
+                DotNetEnv.Env.Load(envFilePath);
+            }
+
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .AddEnvironmentVariables();
+
+            var config = builder.Build();
+            return config;
+        }
+      
     }
 }

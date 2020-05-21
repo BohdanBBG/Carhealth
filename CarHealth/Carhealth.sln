@@ -5,9 +5,9 @@ VisualStudioVersion = 16.0.29503.13
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Carhealth", "Carhealth\Carhealth.csproj", "{3F0B77C9-C0F3-4BAB-86E8-C92A3A9D15CC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarHealth.Web", "CarHealth.Web\CarHealth.Web.csproj", "{9014EA0D-2285-4A4E-A3F8-916BD684333B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarHealth.Web", "CarHealth.Web\CarHealth.Web.csproj", "{9014EA0D-2285-4A4E-A3F8-916BD684333B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarHealth.Api.Identity", "CarHealth.Api.Identity\CarHealth.Api.Identity.csproj", "{BC14593B-E876-4314-B9A1-3A52D0E948EB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarHealth.Api", "CarHealth.Api\CarHealth.Api.csproj", "{EA78427C-A21D-4345-8FC0-2E90FB994A68}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,10 @@ Global
 		{9014EA0D-2285-4A4E-A3F8-916BD684333B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9014EA0D-2285-4A4E-A3F8-916BD684333B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9014EA0D-2285-4A4E-A3F8-916BD684333B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BC14593B-E876-4314-B9A1-3A52D0E948EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BC14593B-E876-4314-B9A1-3A52D0E948EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BC14593B-E876-4314-B9A1-3A52D0E948EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BC14593B-E876-4314-B9A1-3A52D0E948EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA78427C-A21D-4345-8FC0-2E90FB994A68}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA78427C-A21D-4345-8FC0-2E90FB994A68}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA78427C-A21D-4345-8FC0-2E90FB994A68}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA78427C-A21D-4345-8FC0-2E90FB994A68}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

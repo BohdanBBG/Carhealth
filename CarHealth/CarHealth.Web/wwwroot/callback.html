@@ -1,0 +1,24 @@
+﻿
+<!--This HTML file is the designated redirect_uri page once the user has logged into IdentityServer. 
+It will complete the OpenID Connect protocol sign-in handshake with IdentityServer. 
+The code for this is all provided by the UserManager class we used earlier. 
+Once the sign-in is complete, we can then redirect the user back to the main index.html page. 
+Add this code to complete the signin process-->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+<body>
+    <script src="lib/oidc-client.js"></script>
+    <script>
+        new Oidc.UserManager({ response_mode: "query" }).signinRedirectCallback().then(function () {
+            window.location = "/";
+        }).catch(function (e) {
+            console.error(e);
+        });
+    </script>
+</body>
+</html>

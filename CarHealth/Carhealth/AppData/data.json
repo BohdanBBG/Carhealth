@@ -1,0 +1,202 @@
+{
+  "Id": "1",
+  "CarsTotalRide": 1000,
+  "CarEntityName": "Default car",
+  "IsCurrent": true,
+  "CarItems": [
+    {
+      "Name": "ABS control unit",
+      "TotalRide": 10000,
+      "ChangeRide": 20000,
+      "PriceOfDetail": 258,
+      "DateOfReplace": "2018-09-12",
+      "RecomendedReplace": 30000,
+      "CarEntityId": "1"
+    },
+
+    {
+      "Name": "Generator",
+      "TotalRide": 11000,
+      "ChangeRide": 22150,
+      "PriceOfDetail": 750,
+      "DateOfReplace": "2018-06-12",
+      "RecomendedReplace": 20000,
+      "CarEntityId": "1"
+    },
+
+    {
+      "Name": "Ball",
+      "TotalRide": 11000,
+      "ChangeRide": 30150,
+      "PriceOfDetail": 1550,
+      "DateOfReplace": "2018-07-12",
+      "RecomendedReplace": 40000,
+      "CarEntityId": "1"
+    },
+
+    {
+      "Name": " Stopping support",
+      "TotalRide": 9000,
+      "ChangeRide": 30150,
+      "PriceOfDetail": 150,
+      "DateOfReplace": "2018-11-24",
+      "RecomendedReplace": 50000,
+      "CarEntityId": "1"
+    },
+
+    {
+      "Name": "Brake discs",
+      "TotalRide": 15000,
+      "ChangeRide": 30150,
+      "PriceOfDetail": 200,
+      "DateOfReplace": "2018-09-12",
+      "RecomendedReplace": 20000,
+      "CarEntityId": "1"
+    },
+
+    {
+      "Name": " Camshaft sensor ",
+      "TotalRide": 21000,
+      "ChangeRide": 40150,
+      "PriceOfDetail": 1550,
+      "DateOfReplace": "2018-08-10",
+      "RecomendedReplace": 50000,
+      "CarEntityId": "1"
+    },
+
+    {
+      "Name": "Wishbone",
+      "TotalRide": 12300,
+      "ChangeRide": 22150,
+      "PriceOfDetail": 250,
+      "DateOfReplace": "2018-02-02",
+      "RecomendedReplace": 50000,
+      "CarEntityId": "1"
+    },
+
+    {
+      "Name": " Crankshaft oil seals",
+      "TotalRide": 21000,
+      "ChangeRide": 40150,
+      "PriceOfDetail": 2050,
+      "DateOfReplace": "2018-01-11",
+      "RecomendedReplace": 50000,
+      "CarEntityId": "1"
+    },
+
+    {
+      "Name": " Driveshaft",
+      "TotalRide": 15000,
+      "ChangeRide": 50150,
+      "PriceOfDetail": 750,
+      "DateOfReplace": "2018-10-24",
+      "RecomendedReplace": 15000,
+      "CarEntityId": "1"
+    },
+
+    {
+      "Name": " Gas pump ",
+      "TotalRide": 17000,
+      "ChangeRide": 60150,
+      "PriceOfDetail": 1550,
+      "DateOfReplace": "2018-10-29",
+      "RecomendedReplace": 70000,
+      "CarEntityId": "1"
+    },
+
+    {
+      "Name": "Branch pipes",
+      "TotalRide": 17000,
+      "ChangeRide": 60150,
+      "PriceOfDetail": 1550,
+      "DateOfReplace": "2018-10-29",
+      "RecomendedReplace": 70000,
+      "CarEntityId": "1"
+    },
+
+    {
+      "Name": " Ignition switch",
+      "TotalRide": 17000,
+      "ChangeRide": 60150,
+      "PriceOfDetail": 1550,
+      "DateOfReplace": "2018-10-29",
+      "RecomendedReplace": 70000,
+      "CarEntityId": "1"
+    },
+
+    {
+      "Name": "  Room illumination ",
+      "TotalRide": 17000,
+      "ChangeRide": 60150,
+      "PriceOfDetail": 1550,
+      "DateOfReplace": "2018-10-29",
+      "RecomendedReplace": 70000,
+      "CarEntityId": "1"
+    },
+
+    {
+      "Name": " Drive shaft",
+      "TotalRide": 17000,
+      "ChangeRide": 60150,
+      "PriceOfDetail": 1550,
+      "DateOfReplace": "2018-10-29",
+      "RecomendedReplace": 70000,
+      "CarEntityId": "1"
+    },
+
+    {
+      "Name": " Interior blowing  ",
+      "TotalRide": 17000,
+      "ChangeRide": 60150,
+      "PriceOfDetail": 1550,
+      "DateOfReplace": "2018-10-29",
+      "RecomendedReplace": 70000,
+      "CarEntityId": "1"
+    },
+
+    {
+      "Name": " Brake light switch ",
+      "TotalRide": 17000,
+      "ChangeRide": 60150,
+      "PriceOfDetail": 1550,
+      "DateOfReplace": "2018-10-29",
+      "RecomendedReplace": 70000,
+      "CarEntityId": "1"
+    },
+
+    {
+      "Name": " Camshaft  ",
+      "TotalRide": 17000,
+      "ChangeRide": 60150,
+      "PriceOfDetail": 1550,
+      "DateOfReplace": "2018-10-29",
+      "RecomendedReplace": 70000,
+      "CarEntityId": "1"
+    },
+
+    {
+      "Name": " Clutch  ",
+      "TotalRide": 17000,
+      "ChangeRide": 60150,
+      "PriceOfDetail": 1550,
+      "DateOfReplace": "2018-10-29",
+      "RecomendedReplace": 70000,
+      "CarEntityId": "1"
+    },
+
+    {
+      "Name": " Crankshaft ",
+      "TotalRide": 17000,
+      "ChangeRide": 60150,
+      "PriceOfDetail": 1550,
+      "DateOfReplace": "2018-10-29",
+      "RecomendedReplace": 70000,
+      "CarEntityId": "1"
+    }
+
+
+
+
+
+  ]
+}

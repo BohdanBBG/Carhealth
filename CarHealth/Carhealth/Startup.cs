@@ -99,12 +99,6 @@ namespace Carhealth
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "CarHealth V1");
             });
 
-            app.UseEndpoints(routes =>
-            {
-                routes.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}");
-            });
         }
 
         private void ConfigureMongoDb(IServiceCollection services, ApplicationSettings config)

@@ -109,11 +109,11 @@ namespace CarHealth.Api
             });
 
 
-            services.AddTransient<ICarRepository, MongoCarsRepository>(sp =>
+            services.AddTransient<ICarRepository, MongoRepository>(sp =>
             {
                 var mongoClient = sp.GetService<MongoClient>();
 
-                return new MongoCarsRepository(mongoClient, config.MongoDb.MainDb);
+                return new MongoRepository(mongoClient, config.MongoDb.MainDb);
             }); // MongoDb data repository
 
 

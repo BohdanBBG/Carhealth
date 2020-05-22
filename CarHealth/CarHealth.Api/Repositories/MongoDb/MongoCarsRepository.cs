@@ -10,13 +10,13 @@ using System.Threading.Tasks;
 
 namespace CarHealth.Api.Repositories
 {
-    public class MongoCarsRepository : ICarRepository
+    public class MongoRepository : ICarRepository
     {
         private IMongoDatabase _database { get; set; }
         private IMongoClient _client { get; set; }
 
 
-        public MongoCarsRepository(IMongoClient client, string database )
+        public MongoRepository(IMongoClient client, string database )
         {
             _client = client;
             _database = client.GetDatabase(database);

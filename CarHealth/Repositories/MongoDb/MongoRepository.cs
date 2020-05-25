@@ -10,13 +10,13 @@ using System.Threading.Tasks;
 
 namespace Carhealth.Repositories
 {
-    public class MongoCarsRepository : ICarRepository
+    public class MongoRepository : ICarRepository
     {
         private IMongoDatabase _database { get; set; }
         private IMongoClient _client { get; set; }
 
 
-        public MongoCarsRepository(IMongoClient client, string database )
+        public MongoRepository(IMongoClient client, string database )
         {
             _client = client;
             _database = client.GetDatabase(database);
@@ -166,22 +166,8 @@ namespace Carhealth.Repositories
             return false;
         }
 
-        public async Task<IList<CarItem>> FindCarItem(string name, string userId)
+        public Task<IList<CarItem>> FindCarItem(string name, string userId)
         {
-            var car = await CarEntities.Find(x => x.UserId == userId && x.IsCurrent == true).FirstOrDefaultAsync();
-
-            if (car != null)
-            {
-                var builder = new FilterDefinitionBuilder<CarItem>();
-                var filter = builder.Empty; // фильтр для выборки всех документов
-
-                if (!String.IsNullOrWhiteSpace(name)) // фильтр по имени
-                {
-                    filter = filter & builder.Regex("Name", new BsonRegularExpression(name)) & builder.Eq("CarEntityId", car.Id);
-                }
-
-                return await CarItems.Find(filter).ToListAsync();
-            }
             return null;
         }
 

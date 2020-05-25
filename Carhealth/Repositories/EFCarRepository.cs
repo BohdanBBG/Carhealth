@@ -132,6 +132,10 @@ namespace Carhealth.Repositories
 
             return false;
         }
+        public Task<IList<CarItem>> FindCarItem(string name, string userId)
+        {
+            return null;
+        }
         public async Task<CarItemsSendModel> GetCarItemsAsync(int offset, int limit, string userId)
         {
             var car = await _db.CarEntities.FirstOrDefaultAsync(x => x.IsCurrent == true && x.UserId == userId);

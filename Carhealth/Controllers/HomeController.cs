@@ -175,6 +175,22 @@ namespace Carhealth.Controllers
         }
 
         [Authorize]
+        [HttpGet("find/caritem")]
+        public async Task<ActionResult<IList<CarItem>>> FindCarItem([FromQuery] string name)
+        {
+            if (ModelState.IsValid)
+            {
+                string userId = _userManager.GetUserId(User);
+                var carItems = await _repository.FindCarItem(name, userId);
+                if(carItems != null)
+                {
+                    return Ok(carItems);
+                }
+            }
+            return NotFound();
+        }
+
+        [Authorize]
         [HttpGet("cardetails")]
         public async Task<ActionResult<CarItemsSendModel>> GetCarItemsAsync([FromQuery] int offset, [FromQuery] int limit)
         {

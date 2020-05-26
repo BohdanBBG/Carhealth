@@ -10,12 +10,14 @@ let helper = new HttpUtil("");
 
 class CarManager {
 
-    constructor(config) {
+    constructor(user, config) {
+        this.user = user;
         this.config = config;
     }
 
     handler(targetEl) {
 
+        var user = this.user;
         var config = this.config;
 
         var modalWindowEl = document.querySelector('.car-managmend-form-dialog');
@@ -236,25 +238,25 @@ class CarManager {
         });
 
         function DeleteData(deleteUrl) {
-            helper.httpRequest(deleteUrl, null, "DELETE", function (response) {
+            helper.httpRequest(deleteUrl, null, "DELETE", user.access_token, function (response) {
 
             });
         }
 
         function UpdateData(putUrl, data) {
-            helper.httpRequest(putUrl, data, "PUT", function (response) {
+            helper.httpRequest(putUrl, data, "PUT", user.access_token, function (response) {
 
             });
         }
 
         function SendData(postUrl, data) {
-            helper.httpRequest(postUrl, data, "POST", function (response) {
+            helper.httpRequest(postUrl, data, "POST", user.access_token, function (response) {
 
             });
         }
 
         function SendTotalRide(url, value) {
-            helper.httpRequest(url, value, "POST", function (request) {
+            helper.httpRequest(url, value, "POST", user.access_token, function (request) {
             });
         }
 
@@ -307,7 +309,7 @@ class CarManager {
                 pageData = data;
                 console.log("Cars: ", data);
                 callback(data);
-            });
+            }, user.access_token);
         }
     }
 

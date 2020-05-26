@@ -10,12 +10,14 @@ let helper = new HttpUtil("");
 
 class CarDetails {
 
-    constructor(config) {
+    constructor(user, config) {
+        this.user = user;
         this.config = config;
     }
 
     pageHandler(pageEl) {
 
+        var user = this.user;
         var config = this.config;
 
 
@@ -29,7 +31,7 @@ class CarDetails {
                 if (callBack !== null) {
                     callBack(data);
                 }
-            });
+            }, user.access_token);
         }
 
         function addDataItemsBlock(item, i) {
@@ -390,16 +392,16 @@ class CarDetails {
             });
         }
 
-        function updateData(url, data, authToken) {
-            helper.httpRequest(url, data, 'PUT', function (request) {
+        function updateData(url, data) {
+            helper.httpRequest(url, data, 'PUT', user.access_token, function (request) {
 
             });
         }
 
-        function deleteData(url, authToken) {
+        function deleteData(url, ) {
 
             console.log("Delete to", url);
-            helper.deleteRequest(url, authToken);
+            helper.deleteRequest(url,user.access_token);
 
         }
 

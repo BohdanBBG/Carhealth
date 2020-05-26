@@ -1,4 +1,4 @@
-
+import {userUtil} from '../index.js';
 
 class HttpUtil {
 
@@ -6,7 +6,7 @@ class HttpUtil {
         this.identityUrl = identityUrl;
     }
 
-    httpChek(url, callBack) {
+    httpChek(url, authToken = null, callBack) {
 
         var identityUrl = this.identityUrl;
 
@@ -33,9 +33,14 @@ class HttpUtil {
 
         };
 
+        if (authToken !== null) {
+            xhr.setRequestHeader("Authorization", "Bearer " + authToken);
+        }
+
         xhr.send();
     }
-    httpRequest(url, data, typeOfrequest, callback) {
+
+    httpRequest(url, data, typeOfrequest, authToken = null, callback) {
 
         var identityUrl = this.identityUrl;
 
@@ -59,10 +64,14 @@ class HttpUtil {
             }
         };
 
+        if (authToken !== null) {
+            xhr.setRequestHeader("Authorization", "Bearer " + authToken);
+        }
+
         xhr.send(JSON.stringify(data));
     }
 
-    deleteRequest(url) {
+    deleteRequest(url, authToken = null) {
 
         var identityUrl = this.identityUrl;
 
@@ -85,10 +94,13 @@ class HttpUtil {
             }
         };
 
+        if (authToken !== null) {
+            xhr.setRequestHeader("Authorization", "Bearer " + authToken);
+        }
         xhr.send();
     }
 
-    httpGet(url, callBack) {
+    httpGet(url, callBack, authToken = null) {
 
         var identityUrl = this.identityUrl;
 
@@ -122,6 +134,10 @@ class HttpUtil {
             }
 
         };
+
+        if (authToken !== null) {
+            xhr.setRequestHeader("Authorization", "Bearer " + authToken);
+        }
 
         xhr.send();
     }

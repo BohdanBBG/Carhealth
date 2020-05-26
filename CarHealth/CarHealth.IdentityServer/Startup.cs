@@ -172,6 +172,7 @@ namespace CarHealth.IdentityServer
                     Claims = new List<Claim>
                     {
                         new Claim("name","Alice"),
+                        new Claim("email","user@email.com"),
                         new Claim("website","https://alice.com"),
                         new Claim("role","user")
                     }
@@ -185,6 +186,7 @@ namespace CarHealth.IdentityServer
                      Claims = new List<Claim>
                      {
                         new Claim("name", "Bob"),
+                        new Claim("email","admin@email.com"),
                         new Claim("website", "https://bob.com"),
                         new Claim("role", "admin"),
                      }

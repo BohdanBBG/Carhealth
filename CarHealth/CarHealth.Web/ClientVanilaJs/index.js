@@ -19,34 +19,43 @@ var identityUrl = "https://localhost:5001";
 import HttpUtil from './modules/HttpUtil.js'
 let helper = new HttpUtil(identityUrl);
 
+import CarManager from './modules/pages/manage-car.js'
+let carManager = {};
+
+import UserUtil from './modules/UserUtil.js';
+export let userUtil = {};
 
 
 document.addEventListener("DOMContentLoaded", function (event) {
 
-    checkingServerResponse(serverUrl, identityUrl);
-
-    domUtil.addBubleEventListener('.js-logout-button', '.js-logout-button-text', 'click', globalScopes.getEventListenerState().logout, function (e, actualEl, desiredEl) {
-        e.preventDefault();
-        e.stopPropagation();
-
-        document.location.href = serverUrl + "/Account/Logout";
-    });
-
     helper.httpGet(serverUrl + "/config", function (config) {
-
         //config.urls.api="";
         start(config);
-
     });
 });
 
 function start(config) {
 
-    appRouter = new AppRouter(config);
-    let carManager = new CarManager(config);
-    runApp(config);
+    userUtil = new UserUtil(config);
 
-    function runApp(config) {
+    userUtil.getUser(function (user) {
+
+        if (user) {
+            userUtil.checkIdentityApi(user);
+            console.log('User:', user);
+            appRouter = new AppRouter(user, config);
+            carManager = new CarManager(user, config);
+            runApp(user, config);
+
+        } else {
+            console.log("User not logged in");
+            userUtil.login();
+        }
+    });
+
+
+
+    function runApp(user, config) {
 
 
         /**
@@ -64,7 +73,13 @@ function start(config) {
 
             });
 
-         
+            domUtil.addBubleEventListener('.js-logout-button', '.js-logout-button-text', 'click', globalScopes.getEventListenerState().logout, function (e, actualEl, desiredEl) {
+                e.stopPropagation();
+
+                userUtil.logout();
+            });
+
+
 
             domUtil.addBubleEventListener('body', '[data-car-manager-id]', 'click', globalScopes.getEventListenerState().carManager, function (e, actualEl, desiredEl) {
 
@@ -94,10 +109,10 @@ function start(config) {
 
 }
 
-function checkingServerResponse(apiUrl, identityUrl) {
+function checkingServerResponse(apiUrl, user) {
 
-    helper.httpChek(apiUrl + "/ping", function (response) {
-       
+    helper.httpChek(apiUrl + "/ping", user.access_token, function (response) {
+
     });
 
 

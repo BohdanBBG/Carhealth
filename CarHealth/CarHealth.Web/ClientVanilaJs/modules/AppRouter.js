@@ -9,7 +9,7 @@ class AppRouter {
         this.pages = {
             'dashboard': new Dashboard(),
            // 'manage-car': new CarManager(config),
-            'car-details': new CarDetails(config),
+            'car-details': new CarDetails(user, config),
         };
     }
 

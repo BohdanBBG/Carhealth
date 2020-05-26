@@ -5,7 +5,7 @@ import CarDetails from './pages/car-detail.js';
 
 class AppRouter {
 
-    constructor( config) {
+    constructor(user, config){
         this.pages = {
             'dashboard': new Dashboard(),
            // 'manage-car': new CarManager(config),

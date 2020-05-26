@@ -2,13 +2,11 @@ import {userUtil} from '../index.js';
 
 class HttpUtil {
 
-    constructor(identityUrl) {
-        this.identityUrl = identityUrl;
+    constructor() {
     }
 
     httpChek(url, authToken = null, callBack) {
 
-        var identityUrl = this.identityUrl;
 
         var xhr = new XMLHttpRequest();
      //   xhr.withCredentials = true; // force to show browser's default auth dialog
@@ -25,7 +23,7 @@ class HttpUtil {
                 alert('Request failed.  Returned status of ' + xhr.status);
             } else if (xhr.status === 401 || xhr.status === 403) {
                 console.error('Request failed.  Returned status of ' + xhr.status);
-                document.location.href = identityUrl + "/Account/Login";
+               // document.location.href = identityUrl + "/Account/Login";
             }
             else {
                 console.error('Request failed.  Returned status of ' + xhr.status);
@@ -60,7 +58,7 @@ class HttpUtil {
                 alert('Request failed.  Returned status of ' + xhr.status);
             } else if (xhr.status === 401 || xhr.status === 403) {
                 console.error('Request failed.  Returned status of ' + xhr.status);
-                document.location.href = identityUrl + "/Account/Login";
+             //   document.location.href = identityUrl + "/Account/Login";
             }
         };
 
@@ -90,7 +88,7 @@ class HttpUtil {
                 alert('Request failed.  Returned status of ' + xhr.status);
             } else if (xhr.status === 401 || xhr.status === 403) {
                 console.error('Request failed.  Returned status of ' + xhr.status);
-                document.location.href = identityUrl + "/Account/Login";
+               // document.location.href = identityUrl + "/Account/Login";
             }
         };
 
@@ -126,7 +124,7 @@ class HttpUtil {
             } else if (xhr.status === 401 || xhr.status === 403) {
                 console.error('Request failed.  Returned status of ' + xhr.status);
                 callBack(null);
-                document.location.href = identityUrl + "/Account/Login";
+               // document.location.href = identityUrl + "/Account/Login";
             }
             else {
                 console.error('Request failed.  Returned status of ' + xhr.status);

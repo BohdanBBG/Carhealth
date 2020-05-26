@@ -1,7 +1,5 @@
 //import "@babel/polyfill";
 
-
-
 import DomUtil from './modules/DomUtil.js';
 let domUtil = new DomUtil();
 
@@ -11,16 +9,14 @@ import AppRouter from './modules/AppRouter.js';
 let appRouter = {};
 
 import CarManager from './modules/pages/manage-car.js'
+let carManager = {};
 
 
-var serverUrl = "https://localhost:5001";
-var identityUrl = "https://localhost:5001";
+var serverUrl = "http://localhost:5000";
 
 import HttpUtil from './modules/HttpUtil.js'
-let helper = new HttpUtil(identityUrl);
+let helper = new HttpUtil();
 
-import CarManager from './modules/pages/manage-car.js'
-let carManager = {};
 
 import UserUtil from './modules/UserUtil.js';
 export let userUtil = {};
@@ -41,7 +37,6 @@ function start(config) {
     userUtil.getUser(function (user) {
 
         if (user) {
-            userUtil.checkIdentityApi(user);
             console.log('User:', user);
             appRouter = new AppRouter(user, config);
             carManager = new CarManager(user, config);

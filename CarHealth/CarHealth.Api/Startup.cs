@@ -10,6 +10,7 @@ using AspNetCore.Identity.Mongo;
 using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
 using CarHealth.Api.Models.IdentityModels;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace CarHealth.Api
 {
@@ -32,7 +33,7 @@ namespace CarHealth.Api
 
             services.Configure<ApplicationSettings>(Configuration);
 
-            ConfigureMongoDb(services, config);
+            //ConfigureMongoDb(services, config);
             //ConfigureEFCoreDb(services, config);
 
             services.AddTransient<IRepository<List<CarEntity>>, FileRepository>();
@@ -41,27 +42,50 @@ namespace CarHealth.Api
 
             services.AddLogging();
 
-            services.AddMvcCore()
-               // добавляем авторизацию, благодаря этому будут работать атрибуты Authorize
-               .AddAuthorization(options =>
-                   // политики позволяют не работать с Roles magic strings, содержащими перечисления ролей через запятую
-                   options.AddPolicy("AdminsOnly", policyUser =>
-                   {
-                       policyUser.RequireClaim("role", "admin");
-                   })
-               );
+            services.AddMvcCore();
+            //добавляем авторизацию, благодаря этому будут работать атрибуты Authorize
+            services.AddAuthorization(options =>
+               // политики позволяют не работать с Roles magic strings, содержащими перечисления ролей через запятую
+               options.AddPolicy("AdminsOnly", policyUser =>
+               {
+                   policyUser.RequireClaim("role", "admin");
+               })
+           );
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme =
+                                           JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme =
+                                           JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(o =>
+            {
+                o.Authority = "http://localhost:5005";
+                o.Audience = "CarHealth.Api";
+                o.RequireHttpsMetadata = false;
+            });
 
             services.AddCors(options =>
             {
-                options.AddPolicy("default", builder =>
+                // задаём политику CORS, чтобы наше клиентское приложение могло отправить запрос на сервер API
+                options.AddPolicy("default", policy =>
                 {
-                    builder.AllowAnyOrigin();
-                     // .WithOrigins(config.Cors.AllowedOrigins.ToArray())
-                     // .AllowAnyMethod()
-                     // .AllowAnyHeader()
-                     // .AllowCredentials();
+                    policy.WithOrigins("http://localhost:5003")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
                 });
             });
+
+            //services.AddCors(options =>
+            //{
+            //    options.AddPolicy("default", builder =>
+            //    {
+            //        builder.AllowAnyOrigin();
+            //         // .WithOrigins(config.Cors.AllowedOrigins.ToArray())
+            //         // .AllowAnyMethod()
+            //         // .AllowAnyHeader()
+            //         // .AllowCredentials();
+            //    });
+            //});
 
             services.AddSwaggerGen(c =>
             {
@@ -79,40 +103,17 @@ namespace CarHealth.Api
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                app.UseHsts();
+               // app.UseHsts();
             }
 
             app.UseCors("default");
 
-            app.UseHttpsRedirection();
+           // app.UseHttpsRedirection();
 
             app.UseRouting();
 
-            //app.UseAuthentication();
-            //app.UseAuthorization();
-
-            // добавляем middleware для заполнения объекта пользователя из OpenId  Connect JWT-токенов
-            app.UseIdentityServerAuthentication(new IdentityServerAuthenticationOptions
-            {
-                // наш IdentityServer
-                Authority = "http://localhost:5005",
-                // говорим, что нам не требуется HTTPS при общении с IdentityServer, должно быть true на продуктиве
-                RequireHttpsMetadata = false,
-
-                // это значение будет сравниваться со значением поля aud внутри access_token JWT
-                ApiName = "CarHealth.Api",
-
-                // можно так написать, если мы хотим разделить наш api на отдельные scopes и всё же сохранить валидацию scope
-                // AllowedScopes = { "api1.read", "api1.write" }
-
-                // читать JWT-токен и добавлять claims оттуда в HttpContext.User даже если не используется атрибут Authorize со схемоЙ, соответствующей токену
-              //  AutomaticAuthenticate = true,
-                // назначаем этот middleware как используемый для формирования authentication challenge
-             //   AutomaticChallenge = true,
-
-                // требуется для [Authorize], для IdentityServerAuthenticationOptions - значение по умолчанию
-                RoleClaimType = "role",
-            });
+            app.UseAuthentication();
+            app.UseAuthorization();
 
 
             app.UseSwagger();

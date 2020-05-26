@@ -1,4 +1,3 @@
-<reference path="../wwwroot/lib/oidc-client.js" />
 
 import Oidc from 'oidc-client';
 
@@ -31,7 +30,7 @@ class UserUtil {
             // http://openid.net/specs/openid-connect-core-1_0.html#Authentication
             response_type: "id_token token",
             // Получить subject id пользователя, а также поля профиля в id_token, а также получить access_token для доступа к api1 (см. наcтройки IdentityServer)
-            scope: "openid email CarHealth.Web",
+            scope: "openid profile CarHealth.Api",
             // Страница, на которую нужно перенаправить пользователя в случае инициированного им логаута
             post_logout_redirect_uri: "http://localhost:5003/index.html",
             // следить за состоянием сессии на IdentityServer, по умолчанию true
@@ -47,11 +46,12 @@ class UserUtil {
             loadUserInfo: true,
         };
 
+        this.userManager = new Oidc.UserManager( this.authConfig);
 
         // setup logging
 
         Oidc.Log.logger = console;
-        Oidc.Log.level = Oidc.Log.INFO;
+        Oidc.Log.level = 4;
 
         this.userManager.events.addUserLoaded(function () {
             console.log("userLoaded");
@@ -70,8 +70,7 @@ class UserUtil {
         });
 
 
-        Oidc.Log.logger = console;
-        Oidc.Log.level = 4;
+       
     }
 
     getUser(callback) {
@@ -84,47 +83,14 @@ class UserUtil {
 
     login() {
         // Инициировать логин
-        userManager.signinRedirect();
+        this.userManager.signinRedirect();
     }
     logout() {
         // Инициировать логаут
-        userManager.signoutRedirect();
+        this.userManager.signoutRedirect();
     }
 
-    // function displayUser() {
-    //     mgr.getUser().then(function (user) {
-    //         if (user) {
-    //             log("User logged in", user.profile);
-    //         }
-    //         else {
-    //             log("User not logged in");
-    //         }
-    //     });
-    // }
 
-    // function api() {
-    //     // возвращает все claims пользователя
-    //     requestUrl(mgr, "http://localhost:5001/identity");
-    // }
-
-    // function getSuperpowers() {
-    //     // этот endpoint доступен только админам
-    //     requestUrl(mgr, "http://localhost:5001/superpowers");
-    // }
-
-    // function logout() {
-    //     // Инициировать логаут
-    //     mgr.signoutRedirect();
-    // }
-
-    // document.getElementById("login").addEventListener("click", login, false);
-    // document.getElementById("api").addEventListener("click", api, false);
-    // document.getElementById("getSuperpowers").addEventListener("click", getSuperpowers, false);
-    // document.getElementById("logout").addEventListener("click", logout, false);
-    // document.getElementById("getUser").addEventListener("click", displayUser, false);
-
-    // отобразить данные о пользователе после загрузки
-    // displayUser();
 
     requestUrl(mgr, url) {
         mgr.getUser().then(function (user) {
@@ -152,14 +118,6 @@ class UserUtil {
             document.getElementById('results').innerHTML += msg + '\r\n';
         });
     }
-
-
-
-
-
-    // https://github.com/IdentityModel/oidc-client-js/wiki
-
-    // check user logged in
 
 }
 

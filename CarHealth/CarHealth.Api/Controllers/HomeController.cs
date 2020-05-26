@@ -36,11 +36,10 @@ namespace CarHealth.Api.Controllers
         [Authorize]
         public IActionResult Index()
         {
-            return Ok();
-            // return _userManager.GetUserId(User);
-           // return View("~/wwwroot/index.html");
+            return new RedirectResult("~/swagger");
         }
 
+        [Authorize]
         [HttpGet("ping")]
         public IActionResult Ping()
         {
@@ -59,6 +58,8 @@ namespace CarHealth.Api.Controllers
             return "{ \"urls\" :{ \"api\" :\" https://localhost:5001\"} }";
 
         }
+
+     
 
         [Authorize]
         [HttpGet("allUsersCars")]

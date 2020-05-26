@@ -12,21 +12,19 @@ namespace CarHealth.Api.Controllers
     public class IdentityController : Controller
     {
         [HttpGet]
-        public async Task<ActionResult<string>> Get()
+        [Route("superpowers")]
+        [Authorize(Policy = "AdminsOnly")]
+        public IActionResult Superpowers()
         {
-            //ClaimsPrincipal currentUser = this.User;
-            //string currentUserId = null;
+            return new JsonResult("Superpowers!");
+        }
 
-            //if (currentUser.HasClaim(x => x.Type == ClaimTypes.NameIdentifier))
-            //{
-            //    currentUserId = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
-            //}
-            //else if (currentUser.HasClaim(x => x.Type == JwtClaimTypes.Subject))
-            //{
-            //    currentUserId = currentUser.FindFirst(JwtClaimTypes.Subject).Value;
-            //}
-            //return BaseJsonResponse(currentUserId);
-            return null;
+        [HttpGet]
+        [Route("powers")]
+        [Authorize]
+        public IActionResult Powers()
+        {
+            return new JsonResult("Powers!");
         }
     }
 }

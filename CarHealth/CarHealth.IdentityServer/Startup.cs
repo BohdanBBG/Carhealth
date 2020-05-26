@@ -95,10 +95,10 @@ namespace CarHealth.IdentityServer
             {
                 // "sub" claim
                 new IdentityResources.OpenId(),
-               new IdentityResources.Email(), // profile Claims: email and email_verified
+              // new IdentityResources.Email(), // profile Claims: email and email_verified
                  // стандартные claims в соответствии с profile scope
                  // http://openid.net/specs/openid-connect-core-1_0.html#ScopeClaims
-               // new IdentityResources.Profile(),//  profile Claims: name, family_name, given_name, middle_name, nickname etc
+               new IdentityResources.Profile(),//  profile Claims: name, family_name, given_name, middle_name, nickname etc
             };
 
         }
@@ -109,10 +109,10 @@ namespace CarHealth.IdentityServer
             // claims этих scopes будут включены в access_token
             return new List<ApiResource>
             {
-                // определяем scope "TestApi1" для IdentityServer
+                // определяем scope "CarHealth.Api" для IdentityServer
                 new ApiResource("CarHealth.Api","Carhealth Api",
                 // эти claims войдут в scope api1
-                new[] { "email", "role"})
+                new[] { "name", "role"})
 
             };
         }
@@ -147,7 +147,7 @@ namespace CarHealth.IdentityServer
                     AllowedScopes =
                     {
                         IdentityServerConstants.StandardScopes.OpenId,
-                        IdentityServerConstants.StandardScopes.Email,
+                        IdentityServerConstants.StandardScopes.Profile,
                         "CarHealth.Api"
                     },
                     AccessTokenLifetime = 3600,// секунд, это значение по умолчанию

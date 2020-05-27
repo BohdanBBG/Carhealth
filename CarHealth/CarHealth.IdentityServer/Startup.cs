@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace CarHealth.IdentityServer
 {
@@ -46,7 +47,7 @@ namespace CarHealth.IdentityServer
                 };
 
                 // IdentitySever использует cookie для хранения своей сессии
-                options.Authentication = new IdentityServer4.Configuration.AuthenticationOptions
+                options.Authentication = new AuthenticationOptions
                 {
                     CookieLifetime = TimeSpan.FromDays(1)
                 };
@@ -69,11 +70,11 @@ namespace CarHealth.IdentityServer
                 .AddTestUsers(GetUsers());
 
 
-            //For IdentityServer UI check and install into project https://github.com/IdentityServer/IdentityServer4.Quickstart.UI/releases/tag/1.5.0
+            //For IdentityServer UI check and install into project https://github.com/IdentityServer/IdentityServer4.Quickstart/releases/tag/1.5.0
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -85,7 +86,7 @@ namespace CarHealth.IdentityServer
             app.UseIdentityServer();
 
             app.UseStaticFiles();
-            app.UseMvcWithDefaultRoute();
+            //app.UseMvcWithDefaultRoute();
         }
 
         public static IEnumerable<IdentityResource> GetIdentityResources()//Настройки информации для клиентских приложений

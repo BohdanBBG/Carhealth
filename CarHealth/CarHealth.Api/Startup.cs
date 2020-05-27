@@ -148,18 +148,18 @@ namespace CarHealth.Api
             }); // MongoDb data repository
 
 
-            services.AddIdentityMongoDbProvider<User, Role>(identityOptions =>
-            {
-                identityOptions.Password.RequiredLength = 4;   // минимальная длина
-                identityOptions.Password.RequireNonAlphanumeric = false;   // требуются ли не алфавитно-цифровые символы
-                identityOptions.Password.RequireLowercase = false; // требуются ли символы в нижнем регистре
-                identityOptions.Password.RequireUppercase = false; // требуются ли символы в верхнем регистре
-                identityOptions.Password.RequireDigit = false; // требуются ли цифры
-                identityOptions.User.RequireUniqueEmail = true; // уникальный email
-            }, mongoIdentityOptions =>
-            {
-                mongoIdentityOptions.ConnectionString = config.MongoDb.MongoDbIdentity;
-            });
+            //services.AddIdentityMongoDbProvider<User, Role>(identityOptions =>
+            //{
+            //    identityOptions.Password.RequiredLength = 4;   // минимальная длина
+            //    identityOptions.Password.RequireNonAlphanumeric = false;   // требуются ли не алфавитно-цифровые символы
+            //    identityOptions.Password.RequireLowercase = false; // требуются ли символы в нижнем регистре
+            //    identityOptions.Password.RequireUppercase = false; // требуются ли символы в верхнем регистре
+            //    identityOptions.Password.RequireDigit = false; // требуются ли цифры
+            //    identityOptions.User.RequireUniqueEmail = true; // уникальный email
+            //}, mongoIdentityOptions =>
+            //{
+            //    mongoIdentityOptions.ConnectionString = config.MongoDb.MongoDbIdentity;
+            //});
         }
 
         private void ConfigureEFCoreDb(IServiceCollection services, ApplicationSettings config)

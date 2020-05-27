@@ -89,7 +89,7 @@ namespace CarHealth.Api
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "CarHealth", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "CarHealth.Api", Version = "v1" });
             });
         }
 
@@ -120,7 +120,7 @@ namespace CarHealth.Api
 
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "CarHealth V1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "CarHealth.Api V1");
             });
 
             app.UseEndpoints(routes =>

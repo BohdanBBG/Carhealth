@@ -1,0 +1,45 @@
+2020-05-29 12:34:37.508 +03:00 [INF] Starting IdentityServer4 version 3.1.3.0
+2020-05-29 12:34:37.593 +03:00 [INF] You are using the in-memory version of the persisted grant store. This will store consent decisions, authorization codes, refresh and reference tokens in memory only. If you are using any of those features in production, you want to switch to a different store implementation.
+2020-05-29 12:34:37.609 +03:00 [INF] Using the default authentication scheme Identity.Application for IdentityServer
+2020-05-29 12:34:37.614 +03:00 [DBG] Using Identity.Application as default ASP.NET Core scheme for authentication
+2020-05-29 12:34:37.616 +03:00 [DBG] Using Identity.External as default ASP.NET Core scheme for sign-in
+2020-05-29 12:34:37.618 +03:00 [DBG] Using Identity.External as default ASP.NET Core scheme for sign-out
+2020-05-29 12:34:37.623 +03:00 [DBG] Using Identity.Application as default ASP.NET Core scheme for challenge
+2020-05-29 12:34:37.627 +03:00 [DBG] Using Identity.Application as default ASP.NET Core scheme for forbid
+2020-05-29 12:34:51.901 +03:00 [DBG] CORS request made for path: /.well-known/openid-configuration from origin: http://localhost:5003
+2020-05-29 12:34:51.940 +03:00 [DBG] Client list checked and origin: http://localhost:5003 is allowed
+2020-05-29 12:34:51.955 +03:00 [DBG] CorsPolicyService allowed origin: http://localhost:5003
+2020-05-29 12:34:51.991 +03:00 [DBG] Login Url: /Account/Login
+2020-05-29 12:34:51.994 +03:00 [DBG] Login Return Url Parameter: ReturnUrl
+2020-05-29 12:34:51.999 +03:00 [DBG] Logout Url: /Account/Logout
+2020-05-29 12:34:52.001 +03:00 [DBG] ConsentUrl Url: /consent
+2020-05-29 12:34:52.005 +03:00 [DBG] Consent Return Url Parameter: returnUrl
+2020-05-29 12:34:52.007 +03:00 [DBG] Error Url: /home/error
+2020-05-29 12:34:52.010 +03:00 [DBG] Error Id Parameter: errorId
+2020-05-29 12:34:52.039 +03:00 [DBG] Request path /.well-known/openid-configuration matched to endpoint type Discovery
+2020-05-29 12:34:53.781 +03:00 [DBG] Endpoint enabled: Discovery, successfully created handler: IdentityServer4.Endpoints.DiscoveryEndpoint
+2020-05-29 12:34:53.784 +03:00 [INF] Invoking IdentityServer endpoint: IdentityServer4.Endpoints.DiscoveryEndpoint for /.well-known/openid-configuration
+2020-05-29 12:34:53.789 +03:00 [DBG] Start discovery request
+2020-05-29 12:34:53.956 +03:00 [DBG] Request path /connect/authorize matched to endpoint type Authorize
+2020-05-29 12:34:54.052 +03:00 [DBG] Endpoint enabled: Authorize, successfully created handler: IdentityServer4.Endpoints.AuthorizeEndpoint
+2020-05-29 12:34:54.056 +03:00 [INF] Invoking IdentityServer endpoint: IdentityServer4.Endpoints.AuthorizeEndpoint for /connect/authorize
+2020-05-29 12:34:54.060 +03:00 [DBG] Start authorize request
+2020-05-29 12:34:54.074 +03:00 [DBG] No user present in authorize request
+2020-05-29 12:34:54.082 +03:00 [DBG] Start authorize request protocol validation
+2020-05-29 12:34:54.104 +03:00 [DBG] client configuration validation for client CarHealth.Web succeeded.
+2020-05-29 12:34:54.157 +03:00 [DBG] Calling into custom validator: IdentityServer4.Validation.DefaultCustomAuthorizeRequestValidator
+2020-05-29 12:34:54.177 +03:00 [DBG] ValidatedAuthorizeRequest
+{"ClientId":"CarHealth.Web","ClientName":"Web","RedirectUri":"http://localhost:5003/callback.html","AllowedRedirectUris":["http://localhost:5003/callback.html","http://localhost:5003/callback-silent.html"],"SubjectId":"anonymous","ResponseType":"id_token token","ResponseMode":"fragment","GrantType":"implicit","RequestedScopes":"openid profile CarHealth.Api","State":"3c01c93557e04e8388b2072c77180bb0","UiLocales":null,"Nonce":"aa0d2299c39449f5986f4a804ee0a61a","AuthenticationContextReferenceClasses":null,"DisplayMode":null,"PromptMode":null,"MaxAge":null,"LoginHint":null,"SessionId":"","Raw":{"client_id":"CarHealth.Web","redirect_uri":"http://localhost:5003/callback.html","response_type":"id_token token","scope":"openid profile CarHealth.Api","state":"3c01c93557e04e8388b2072c77180bb0","nonce":"aa0d2299c39449f5986f4a804ee0a61a"},"$type":"AuthorizeRequestValidationLog"}
+2020-05-29 12:34:54.205 +03:00 [INF] Showing login: User is not authenticated
+2020-05-29 12:34:54.383 +03:00 [DBG] Start authorize request protocol validation
+2020-05-29 12:34:54.386 +03:00 [DBG] client configuration validation for client CarHealth.Web succeeded.
+2020-05-29 12:34:54.389 +03:00 [DBG] Calling into custom validator: IdentityServer4.Validation.DefaultCustomAuthorizeRequestValidator
+2020-05-29 12:34:54.392 +03:00 [DBG] client configuration validation for client CarHealth.Web succeeded.
+2020-05-29 12:35:18.313 +03:00 [DBG] CORS request made for path: /Account/Login from origin: null but was ignored because path was not for an allowed IdentityServer CORS endpoint
+2020-05-29 12:35:18.394 +03:00 [DBG] Start authorize request protocol validation
+2020-05-29 12:35:18.396 +03:00 [DBG] client configuration validation for client CarHealth.Web succeeded.
+2020-05-29 12:35:18.404 +03:00 [DBG] Calling into custom validator: IdentityServer4.Validation.DefaultCustomAuthorizeRequestValidator
+2020-05-29 12:35:18.410 +03:00 [DBG] Start authorize request protocol validation
+2020-05-29 12:35:18.412 +03:00 [DBG] client configuration validation for client CarHealth.Web succeeded.
+2020-05-29 12:35:18.414 +03:00 [DBG] Calling into custom validator: IdentityServer4.Validation.DefaultCustomAuthorizeRequestValidator
+2020-05-29 12:35:18.419 +03:00 [DBG] client configuration validation for client CarHealth.Web succeeded.

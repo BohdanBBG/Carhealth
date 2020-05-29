@@ -59,7 +59,42 @@ namespace CarHealth.Api.Controllers
 
         }
 
-     
+        [HttpGet]
+        [Route("identity")]
+        public IActionResult Get()
+        {
+            return new JsonResult(from c in User.Claims select new { c.Type, c.Value });
+        }
+
+        [HttpGet]
+        [Route("testser")]
+        public IActionResult Gets()
+        {
+            return new JsonResult(_userManager.GetUserId(User));
+        }
+
+        [HttpGet]
+        [Route("HomeSuperpowers")]
+        [Authorize(Policy = "AdminsOnly")]
+        public IActionResult Superpowers()
+        {
+            return new JsonResult("Superpowers!");
+        }
+
+        [HttpGet]
+        [Route("HomePowers")]
+        [Authorize]
+        public IActionResult Powers()
+        {
+            return new JsonResult("Powers!");
+        }
+
+        [HttpGet]
+        [Route("UClaims")]
+        public IActionResult Getsss()
+        {
+            return new JsonResult(from c in User.Claims select new { c.Type, c.Value });
+        }
 
         [Authorize]
         [HttpGet("allUsersCars")]

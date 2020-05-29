@@ -5,11 +5,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace  CarHealth.Api.Models.IdentityModels
+namespace CarHealth.IdentityServer4.Models.IdentityModels
 {
     //Add any custom field for a role
-    public class Role : MongoRole // MongoDb data repository
-   //public class Role : IdentityRole // EF Core data repository
+   // public class Role : MongoRole // MongoDb data repository
+   public class Role : IdentityRole // EF Core data repository
     {
         public Role(string name) : base(name)
         {

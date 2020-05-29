@@ -13,19 +13,57 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using CarHealth.IdentityServer4.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Logging;
 
 namespace CarHealth.IdentityServer4
 {
     public class Startup
     {
+
+        IWebHostEnvironment _env;
+        public IConfiguration Configuration { get; }
+
+        public Startup(IWebHostEnvironment env, IConfiguration configuration)
+        {
+            Configuration = configuration;
+            _env = env;
+        }
+
         public void ConfigureServices(IServiceCollection services)
         {
+            var config = Configuration.Get<ApplicationSettings>();
+
+            services.Configure<ApplicationSettings>(Configuration);
+
             services.AddMvc(options =>
             {
                 options.EnableEndpointRouting = false;
             });
 
             services.AddLogging();
+
+
+
+            services.AddDbContext<UserContext>(options =>
+           options.UseSqlServer(config.EFCoreDb.CarHealthIdentityDb));
+
+            services.AddIdentity<User, IdentityRole>(options => //валидация пароля 
+            {
+                options.Password.RequiredLength = 4;   // минимальная длина
+                options.Password.RequireNonAlphanumeric = false;   // требуются ли не алфавитно-цифровые символы
+                options.Password.RequireLowercase = false; // требуются ли символы в нижнем регистре
+                options.Password.RequireUppercase = false; // требуются ли символы в верхнем регистре
+                options.Password.RequireDigit = false; // требуются ли цифры
+                options.User.RequireUniqueEmail = true; // уникальный email
+            })
+            .AddEntityFrameworkStores<UserContext>()
+            .AddDefaultTokenProviders();// устанавливает тип хранилища, которое будет применяться в Identity для хранения 
+                                        // данных.В качестве типа хранилища здесь указывается класс контекста данных.
 
             services.AddIdentityServer(options =>
             {
@@ -72,8 +110,9 @@ namespace CarHealth.IdentityServer4
                 .AddInMemoryApiResources(GetApiResources())
                 // настройки клиентских приложений
                 .AddInMemoryClients(GetClients())
-                // тестовые пользователи
-                .AddTestUsers(GetUsers());
+                .AddAspNetIdentity<User>();
+            // тестовые пользователи
+            //  .AddTestUsers(GetUsers());
 
 
             services.AddSwaggerGen(c =>
@@ -86,11 +125,17 @@ namespace CarHealth.IdentityServer4
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostEnvironment env, ILoggerFactory loggerFactory)
         {
             if (env.IsDevelopment())
             {
+                IdentityModelEventSource.ShowPII = true; // show detail of error and see the problem
                 app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseExceptionHandler("/Home/Error");
+                // app.UseHsts();
             }
 
             app.UseDeveloperExceptionPage();
@@ -119,7 +164,7 @@ namespace CarHealth.IdentityServer4
             {
                 // "sub" claim
                 new IdentityResources.OpenId(),
-              // new IdentityResources.Email(), // profile Claims: email and email_verified
+               // new IdentityResources.Email(), // profile Claims: email and email_verified
                  // стандартные claims в соответствии с profile scope
                  // http://openid.net/specs/openid-connect-core-1_0.html#ScopeClaims
                new IdentityResources.Profile(),//  profile Claims: name, family_name, given_name, middle_name, nickname etc
@@ -172,6 +217,7 @@ namespace CarHealth.IdentityServer4
                     {
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
+                         IdentityServerConstants.StandardScopes.Email,
                         "CarHealth.Api"
                     },
                     AccessTokenLifetime = 3600,// секунд, это значение по умолчанию

@@ -1,20 +1,27 @@
-﻿using CarHealth.Api.Models;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using AspNetCore.Identity.Mongo;
+using Carhealth.Seed;
+using CarHealth.Seed.Models;
+using CarHealth.Seed.Models.IdentityModels;
+using CarHealth.Seed.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using CarHealth.Api.Repositories;
-using System.Collections.Generic;
 using Microsoft.Extensions.Hosting;
-using AspNetCore.Identity.Mongo;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
-using CarHealth.Api.Models.IdentityModels;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
 
-namespace CarHealth.Api
+namespace CarHealth.Seed
 {
     public class Startup
     {
@@ -40,58 +47,27 @@ namespace CarHealth.Api
 
             services.AddTransient<IRepository<List<CarEntity>>, FileRepository>();
 
-            services.AddControllersWithViews();
+           // services.AddControllersWithViews();
 
             services.AddLogging();
 
-            services.AddMvcCore();
-            //добавляем авторизацию, благодаря этому будут работать атрибуты Authorize
-            services.AddAuthorization(options =>
-               // политики позволяют не работать с Roles magic strings, содержащими перечисления ролей через запятую
-               options.AddPolicy("AdminsOnly", policyUser =>
-               {
-                   policyUser.RequireClaim("role", "admin");
-               })
-           );
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme =
-                                           JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme =
-                                           JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(o =>
-            {
-                o.Authority = "http://localhost:5005";
-                o.Audience = "CarHealth.Api";
-                o.RequireHttpsMetadata = false;
-            });
-
-            services.AddCors(options =>
-            {
-                // задаём политику CORS, чтобы наше клиентское приложение могло отправить запрос на сервер API
-                options.AddPolicy("default", policy =>
-                {
-                    policy.WithOrigins("http://localhost:5003")
-                        .AllowAnyHeader()
-                        .AllowAnyMethod();
-                });
-            });
+           // services.AddMvc();
 
             //services.AddCors(options =>
             //{
             //    options.AddPolicy("default", builder =>
             //    {
             //        builder.AllowAnyOrigin();
-            //         // .WithOrigins(config.Cors.AllowedOrigins.ToArray())
-            //         // .AllowAnyMethod()
-            //         // .AllowAnyHeader()
-            //         // .AllowCredentials();
+            //        // .WithOrigins(config.Cors.AllowedOrigins.ToArray())
+            //        // .AllowAnyMethod()
+            //        // .AllowAnyHeader()
+            //        // .AllowCredentials();
             //    });
             //});
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "CarHealth.Api", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "CarHealth", Version = "v1" });
             });
         }
 
@@ -105,49 +81,44 @@ namespace CarHealth.Api
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-               // app.UseHsts();
+                app.UseHsts();
             }
 
-            app.UseCors("default");
+            //app.UseCors("default");
 
            // app.UseHttpsRedirection();
+           // app.UseDefaultFiles();
+           // app.UseStaticFiles();
 
-            app.UseRouting();
+          //  app.UseRouting();
 
-            app.UseAuthentication();
-            app.UseAuthorization();
-
+           // app.UseAuthentication();
+           // app.UseAuthorization();
 
             app.UseSwagger();
 
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "CarHealth.Api V1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "CarHealth V1");
             });
 
-            app.UseEndpoints(routes =>
-            {
-                routes.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}");
-            });
         }
 
         private void ConfigureMongoDb(IServiceCollection services, ApplicationSettings config)
         {
 
-            services.AddTransient<MongoClient>(sp =>
-            {
-                return new MongoClient(config.MongoDb.ConnectionString);
-            });
+            //services.AddTransient<MongoClient>(sp =>
+            //{
+            //    return new MongoClient(config.MongoDb.ConnectionString);
+            //});
 
 
-            services.AddTransient<ICarRepository, MongoRepository>(sp =>
-            {
-                var mongoClient = sp.GetService<MongoClient>();
+            //services.AddTransient<ICarRepository, MongoCarsRepository>(sp =>
+            //{
+            //    var mongoClient = sp.GetService<MongoClient>();
 
-                return new MongoRepository(mongoClient, config.MongoDb.MainDb);
-            }); // MongoDb data repository
+            //    return new MongoCarsRepository(mongoClient, config.MongoDb.MainDb);
+            //}); // MongoDb data repository
 
 
             //services.AddIdentityMongoDbProvider<User, Role>(identityOptions =>
@@ -161,7 +132,7 @@ namespace CarHealth.Api
             //}, mongoIdentityOptions =>
             //{
             //    mongoIdentityOptions.ConnectionString = config.MongoDb.MongoDbIdentity;
-            //});
+           // });
         }
 
         private void ConfigureEFCoreDb(IServiceCollection services, ApplicationSettings config)

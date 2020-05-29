@@ -26,5 +26,13 @@ namespace CarHealth.Api.Controllers
         {
             return new JsonResult("Powers!");
         }
+
+        [HttpGet]
+        [Route("us")]
+        [Authorize]
+        public IActionResult Users()
+        {
+            return new JsonResult(this.User);
+        }
     }
 }

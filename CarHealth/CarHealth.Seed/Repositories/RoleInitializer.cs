@@ -1,6 +1,7 @@
 ﻿using CarHealth.Seed.Models;
 using CarHealth.Seed.Models.IdentityModels;
 using Microsoft.AspNetCore.Identity;
+using MongoDB.Bson;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,7 +31,13 @@ namespace CarHealth.Seed.Repositories
 
             if( await userManager.FindByNameAsync(adminEmail) == null)
             {
-                User admin = new User { Email = adminEmail, UserName = adminEmail };
+                User admin = new User
+                {
+                    Email = user1Email,
+                    UserName = user1Email,
+                    Id = ObjectId.GenerateNewId().ToString()
+
+                };
 
                 var result = await userManager.CreateAsync(admin, password);
 
@@ -43,7 +50,13 @@ namespace CarHealth.Seed.Repositories
 
             if( await userManager.FindByNameAsync(user1Email) == null)
             {
-                User user1 = new User { Email = user1Email, UserName = user1Email };
+                User user1 = new User 
+                { 
+                    Email = user1Email,
+                    UserName = user1Email,
+                    Id = ObjectId.GenerateNewId().ToString()
+
+                };
 
                 var result = await userManager.CreateAsync(user1, password);
 

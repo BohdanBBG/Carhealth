@@ -30,7 +30,7 @@ class UserUtil {
             // http://openid.net/specs/openid-connect-core-1_0.html#Authentication
             response_type: "id_token token",
             // Получить subject id пользователя, а также поля профиля в id_token, а также получить access_token для доступа к api1 (см. наcтройки IdentityServer)
-            scope: "openid profile CarHealth.Api",
+            scope: "openid profile email CarHealth.Api",
             // Страница, на которую нужно перенаправить пользователя в случае инициированного им логаута
             post_logout_redirect_uri: "http://localhost:5003/index.html",
             // следить за состоянием сессии на IdentityServer, по умолчанию true

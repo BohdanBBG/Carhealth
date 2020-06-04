@@ -1,2 +1,3 @@
-dotnet run --project ..\CarHealth\CarHealth.Seed
-pause
+dotnet run --project ..\CarHealth\CarHealth.Seed --launch-profile CarHealth.Seed_DevelopmentLocalhost
+pause 
+

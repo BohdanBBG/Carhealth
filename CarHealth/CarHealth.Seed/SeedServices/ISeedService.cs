@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CarHealth.Seed.Seed
+namespace CarHealth.Seed.SeedServices
 {
-    interface ISeedService
+    public interface ISeedService
     {
         Task SeedAsync();
         Task RemoveDatabaseAsync();

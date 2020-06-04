@@ -9,7 +9,7 @@ using System.Text.Json;
 
 namespace CarHealth.Seed.Repositories
 {
-    public class FileRepository: IRepository<List<CarEntity>>
+    public class FileRepository: IMainDbSeed<List<CarEntity>>
     {
         //private string _filePath = "./AppData/data.json";
         private string _filePath;

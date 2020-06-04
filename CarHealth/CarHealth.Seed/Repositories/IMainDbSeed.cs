@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CarHealth.Seed.Repositories
 {
-    public interface IRepository<T>
+    public interface IMainDbSeed<T>
     {
         T ImportAllData();
 

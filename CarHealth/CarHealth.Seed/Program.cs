@@ -5,22 +5,55 @@ using System.Threading.Tasks;
 using Carhealth.Seed;
 using CarHealth.Seed.Models;
 using CarHealth.Seed.Repositories;
-using CarHealth.Seed.Seed;
+using CarHealth.Seed.SeedServices;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace CarHealth.Seed
 {
     public class Program
     {
+        public static string Environment
+        {
+            get
+            {
+                // for web projects
+                string env = System.Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+
+                // for console projects
+                if (String.IsNullOrEmpty(env))
+                {
+                    env = System.Environment.GetEnvironmentVariable("Environment");
+                }
+
+                if (String.IsNullOrEmpty(env))
+                {
+                    // if we get here then Environment is possibly set in hostsettings.json and can't be accessed
+                    // only using 'hostingContext.HostingEnvironment.EnvironmentName', so it is not in
+                    // 'Environment' env variable
+                    throw new Exception("Neither ASPNETCORE_ENVIRONMENT not Environment is set! Recheck startup configuration.");
+                }
+
+                return env;
+            }
+        }
+
         public static async Task Main(string[] args)
         {
             Console.Title = "CarHealth.Seed";
 
             var configuration = BuildConfiguration();
             var serviceProvider = RegisterServices(configuration);
+            var logger = serviceProvider.GetService<ILogger<Program>>();
+
+            logger.LogInformation(" \n");
+            logger.LogInformation("Parameters:");
+            logger.LogInformation("Environment: {Environment}", System.Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"));
+            logger.LogInformation("\n");
 
             var seedService = serviceProvider.GetService<ISeedService>();
 
@@ -59,48 +92,34 @@ namespace CarHealth.Seed
             //register directly to access using DI
             services.AddTransient(sp => configuration);
 
+            services.AddLogging(configure => configure.AddConsole())
+                .AddTransient<Program>();
+
             // Override the current ILogger implementation to use Serilog
-            //  services.AddLogging(configure => configure.AddSerilog());
 
             // TODO //ConfigureMongoDb(services, config);
             ConfigureEFCoreDb(services, config);
 
-            services.AddTransient<IRepository<List<CarEntity>>, FileRepository>(xp =>
-            { 
+            services.AddTransient<IMainDbSeed<List<CarEntity>>, FileRepository>(xp =>
+            {
                 return new FileRepository("AppData/data.json");
             });
 
-            services.AddLogging();
 
-            services.AddTransient<ISeedService, SeedServiceDevelopmentLocalhost>();
+            if (Environment == "DevelopmentLocalhost")
+            {
+                services.AddTransient<ISeedService, SeedServiceDevelopmentLocalhost>();
+            }
 
-    // TODO //if (HostingEnvironmentHelper.IsDevelopmentLocalhost())
-            //{
-            //    services.AddTransient<ISeedService, SeedServiceDevelopmentLocalhost>();
-            //}
-            //else if (HostingEnvironmentHelper.IsDevelopmentHeroku())
-            //{
-            //    services.AddTransient<ISeedService, SeedServiceDevelopmentHeroku>();
-            //}
-            //else if (HostingEnvironmentHelper.IsProductionHeroku())
-            //{
-            //    services.AddTransient<ISeedService, SeedServiceProductionHeroku>();
-            //}
 
             return services.BuildServiceProvider();
         }
 
+
         private static void ConfigureEFCoreDb(IServiceCollection services, ApplicationSettings config)
         {
-            /// Before changing the repo type you should do:
-            /// 1. Logout from app for clear cookie in your browser.
-            /// 2. In Models\IdentityModels\Role.cs AND User.cs change parent class
-            /// 3. Uncomit in Models\IdentityModels\UserContext.cs
-            /// 4. Everywhere change Role to IdentityRole
-            /// 5. Unhandled issue with UserContext and IdentityRole
 
-
-            services.AddTransient<ICarRepository, EFCarRepository>(); // EF Core data repository
+            services.AddTransient<ICarRepository, EFMainDbSeed>(); // EF Core data repository
 
             services.AddDbContext<CarContext>(options =>
            options.UseSqlServer(config.EFCoreDb.CarsDb)); // for EF Core data repository

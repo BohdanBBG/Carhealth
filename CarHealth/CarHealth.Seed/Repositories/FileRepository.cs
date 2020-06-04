@@ -11,14 +11,14 @@ namespace CarHealth.Seed.Repositories
 {
     public class FileRepository: IRepository<List<CarEntity>>
     {
-        private readonly IWebHostEnvironment _hostingEnvironment;
-        private string _filePath = "./AppData/data.json";
+        //private string _filePath = "./AppData/data.json";
+        private string _filePath;
 
-
-        public FileRepository(IWebHostEnvironment hostingEnvironment)
+        public FileRepository(string filePath)
         {
-            _hostingEnvironment = hostingEnvironment;
-            Path.Combine(_hostingEnvironment.ContentRootPath, _filePath);
+            _filePath = filePath;
+            //_hostingEnvironment = hostingEnvironment;
+            // Path.Combine(_hostingEnvironment.ContentRootPath, _filePath);
         }
 
 

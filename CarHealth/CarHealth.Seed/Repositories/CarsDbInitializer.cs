@@ -15,7 +15,6 @@ namespace CarHealth.Seed.Repositories
         {
             var carEntities = fileRepository.ImportAllData();
 
-            carEntities.Sort();
 
             var users = userManager.Users.ToList();
 

@@ -13,6 +13,8 @@ using CarHealth.Api.Models.IdentityModels;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using CarHealth.Api.Helpers;
+using Microsoft.Extensions.Logging;
 
 namespace CarHealth.Api
 {
@@ -42,9 +44,11 @@ namespace CarHealth.Api
 
             services.AddControllersWithViews();
 
-            services.AddLogging();
+            services.AddLogging(configure => configure.AddConsole())
+                 .AddTransient<Program>();
 
             services.AddMvcCore();
+
             //добавляем авторизацию, благодаря этому будут работать атрибуты Authorize
             services.AddAuthorization(options =>
                // политики позволяют не работать с Roles magic strings, содержащими перечисления ролей через запятую
@@ -61,7 +65,7 @@ namespace CarHealth.Api
                                            JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(o =>
             {
-                o.Authority = "http://localhost:5005";
+                o.Authority = "https://localhost:5006";
                 o.Audience = "CarHealth.Api";
                 o.RequireHttpsMetadata = false;
             });
@@ -71,7 +75,7 @@ namespace CarHealth.Api
                 // задаём политику CORS, чтобы наше клиентское приложение могло отправить запрос на сервер API
                 options.AddPolicy("default", policy =>
                 {
-                    policy.WithOrigins("http://localhost:5003")
+                    policy.WithOrigins("https://localhost:5004")
                         .AllowAnyHeader()
                         .AllowAnyMethod();
                 });
@@ -98,7 +102,7 @@ namespace CarHealth.Api
         public void Configure(IApplicationBuilder app)
         {
 
-            if (_env.IsDevelopment())
+            if (HostingEnvironmentHelper.IsDevelopmentLocalhost())
             {
                 app.UseDeveloperExceptionPage();
             }
@@ -107,6 +111,8 @@ namespace CarHealth.Api
                 app.UseExceptionHandler("/Home/Error");
                // app.UseHsts();
             }
+
+            app.UseHttpsRedirection();
 
             app.UseCors("default");
 

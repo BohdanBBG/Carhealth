@@ -132,6 +132,7 @@ namespace CarHealth.IdentityServer4
 
             app.UseStaticFiles();
 
+            app.UseHttpsRedirection();
             // app.UseCors("default");
 
             app.UseIdentityServer();
@@ -197,13 +198,13 @@ namespace CarHealth.IdentityServer4
                     RedirectUris =
                     {
                         // адрес перенаправления после логина
-                        "http://localhost:5003/callback.html",
+                        "https://localhost:5004/callback.html",
                         // адрес перенаправления при автоматическом обновлении access_token через iframe
-                         "http://localhost:5003/callback-silent.html"
+                         "https://localhost:5004/callback-silent.html"
                     },
-                    PostLogoutRedirectUris= { "http://localhost:5003/index.html" },
+                    PostLogoutRedirectUris= { "https://localhost:5004/index.html" },
                     // адрес клиентского приложения, просим сервер возвращать нужные CORS-заголовки
-                    AllowedCorsOrigins = { "http://localhost:5003" },
+                    AllowedCorsOrigins = { "https://localhost:5004" },
                      // список scopes, разрешённых именно для данного клиентского приложения
                     AllowedScopes =
                     {

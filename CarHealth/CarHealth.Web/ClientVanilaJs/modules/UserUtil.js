@@ -20,11 +20,11 @@ class UserUtil {
             // silentRequestTimeout: 10000,
             // accessTokenExpiringNotificationTime: 3 * 60, // 3 mins in secs
 
-            authority: "http://localhost:5005", // Адрес нашего IdentityServer
+            authority: "https://localhost:5006", // Адрес нашего IdentityServer
             client_id: "CarHealth.Web", // должен совпадать с указанным на IdentityServer
             // Адрес страницы, на которую будет перенаправлен браузер после прохождения пользователем аутентификации
             // и получения от пользователя подтверждений - в соответствии с требованиями OpenId Connect
-            redirect_uri: "http://localhost:5003/callback.html",
+            redirect_uri: "https://localhost:5004/callback.html",
             // Response Type определяет набор токенов, получаемых от Authorization Endpoint
             // Данное сочетание означает, что мы используем Implicit Flow
             // http://openid.net/specs/openid-connect-core-1_0.html#Authentication
@@ -32,7 +32,7 @@ class UserUtil {
             // Получить subject id пользователя, а также поля профиля в id_token, а также получить access_token для доступа к api1 (см. наcтройки IdentityServer)
             scope: "openid profile email CarHealth.Api",
             // Страница, на которую нужно перенаправить пользователя в случае инициированного им логаута
-            post_logout_redirect_uri: "http://localhost:5003/index.html",
+            post_logout_redirect_uri: "https://localhost:5004/index.html",
             // следить за состоянием сессии на IdentityServer, по умолчанию true
             monitorSession: true,
             // интервал в миллисекундах, раз в который нужно проверять сессию пользователя, по умолчанию 2000

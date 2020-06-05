@@ -44,7 +44,7 @@ namespace CarHealth.Web
               //  app.UseHsts();
             }
 
-            //app.UseHttpsRedirection();
+            app.UseHttpsRedirection();
             app.UseDefaultFiles();
             app.UseStaticFiles();
 

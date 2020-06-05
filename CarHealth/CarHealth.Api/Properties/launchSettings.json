@@ -15,11 +15,12 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "CarHealth.Api.Identity": {
+    "CarHealth.Api": {
       "commandName": "Project",
       "launchBrowser": true,
-      "applicationUrl": "https://localhost:5001;http://localhost:5000",
+      "applicationUrl": "https://localhost:5001",
       "environmentVariables": {
+        // "ASPNETCORE_ENVIRONMENT": "DevelopmentLocalhost"
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     }

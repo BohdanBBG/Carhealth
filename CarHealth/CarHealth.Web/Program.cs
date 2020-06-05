@@ -19,7 +19,7 @@ namespace CarHealth.Web
             var host = new WebHostBuilder()
                 .UseKestrel()
                 // задаём порт, и адрес на котором Kestrel будет слушать
-                .UseUrls(new[] { "http://localhost:5003", "https://localhost:5004" })
+                .UseUrls("https://localhost:5004" )
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseIISIntegration()
                 .UseStartup<Startup>()

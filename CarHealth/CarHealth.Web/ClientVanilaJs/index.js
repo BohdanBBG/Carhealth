@@ -12,7 +12,7 @@ import CarManager from './modules/pages/manage-car.js'
 let carManager = {};
 
 
-var serverUrl = "http://localhost:5000";
+var serverUrl = "https://localhost:5001";
 
 import HttpUtil from './modules/HttpUtil.js'
 let helper = new HttpUtil();

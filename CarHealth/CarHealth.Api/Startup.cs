@@ -66,8 +66,8 @@ namespace CarHealth.Api
                                            JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(o =>
             {
-                o.Authority = "https://localhost:5006";
-                o.Audience = "CarHealth.Api";
+                o.Authority = config.JwtBearerAuth.Authority;
+                o.Audience = config.JwtBearerAuth.Audience;
                 o.RequireHttpsMetadata = false;
             });
 
@@ -76,23 +76,11 @@ namespace CarHealth.Api
                 // задаём политику CORS, чтобы наше клиентское приложение могло отправить запрос на сервер API
                 options.AddPolicy("default", policy =>
                 {
-                    policy.WithOrigins("https://localhost:5004")
+                     policy.WithOrigins(config.Cors.AllowedOrigins.ToArray())
                         .AllowAnyHeader()
                         .AllowAnyMethod();
                 });
             });
-
-            //services.AddCors(options =>
-            //{
-            //    options.AddPolicy("default", builder =>
-            //    {
-            //        builder.AllowAnyOrigin();
-            //         // .WithOrigins(config.Cors.AllowedOrigins.ToArray())
-            //         // .AllowAnyMethod()
-            //         // .AllowAnyHeader()
-            //         // .AllowCredentials();
-            //    });
-            //});
 
             services.AddSwaggerGen(c =>
             {
@@ -121,7 +109,6 @@ namespace CarHealth.Api
 
             app.UseAuthentication();
             app.UseAuthorization();
-
 
             app.UseSwagger();
 

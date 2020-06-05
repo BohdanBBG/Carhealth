@@ -11,6 +11,8 @@ namespace CarHealth.Api
         public MongoDbSettings MongoDb { get; set; }
         public UrlsSettings Urls { get; set; }
 
+        public JwtBearerAuthSettings JwtBearerAuth { get; set; }
+
         public EFCoreDbSettings EFCoreDb { get; set; }
     }
 
@@ -26,6 +28,13 @@ namespace CarHealth.Api
         public string CarHealthIdentityDb { get; set; }
         public string CarsDb { get; set; }
     }
+
+    public class JwtBearerAuthSettings
+    {
+        public string Authority { get; set; }
+        public string Audience { get; set; }
+    }
+
 
     public class UrlsSettings
     {

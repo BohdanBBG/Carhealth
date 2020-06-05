@@ -28,6 +28,8 @@ namespace CarHealth.Api
                 return 1;
             }
 
+
+
             Console.Title = "CarHealth.Api";
 
             var host = CreateWebHostBuilder(args).Build();
@@ -46,12 +48,11 @@ namespace CarHealth.Api
               .UseConfiguration(GetConfiguration());
             //builder.UseUrls(new[] { "http://localhost:5000", "https://localhost:5001" });
 
-            builder.UseUrls($"https://localhost:5001");
-            //if (HostingEnvironmentHelper.IsDevelopmentLocalhost())
-            //{
-            //    builder.UseUrls($"http://localhost:5000");
-            //}
-
+            // builder.UseUrls($"https://localhost:5001");
+            if (HostingEnvironmentHelper.IsDevelopmentLocalhost())
+            {
+                builder.UseUrls($"https://localhost:5001");
+            }
 
             builder.UseStartup<Startup>();
 
@@ -71,7 +72,7 @@ namespace CarHealth.Api
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{HostingEnvironmentHelper.Environment}.json", optional: true, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{HostingEnvironmentHelper.Environment}.json", optional: false, reloadOnChange: true)
                 .AddEnvironmentVariables();
 
             var config = builder.Build();

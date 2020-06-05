@@ -33,7 +33,7 @@ namespace CarHealth.Api.Controllers
         }
 
 
-        [Authorize]
+       // [Authorize]
         public IActionResult Index()
         {
             return new RedirectResult("~/swagger");

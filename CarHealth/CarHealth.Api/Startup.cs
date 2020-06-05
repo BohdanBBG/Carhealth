@@ -15,6 +15,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using CarHealth.Api.Helpers;
 using Microsoft.Extensions.Logging;
+using System;
 
 namespace CarHealth.Api
 {
@@ -101,8 +102,8 @@ namespace CarHealth.Api
 
         public void Configure(IApplicationBuilder app)
         {
-
-            if (HostingEnvironmentHelper.IsDevelopmentLocalhost())
+           
+            if (HostingEnvironmentHelper.IsDevelopmentAny())
             {
                 app.UseDeveloperExceptionPage();
             }
@@ -115,8 +116,6 @@ namespace CarHealth.Api
             app.UseHttpsRedirection();
 
             app.UseCors("default");
-
-           // app.UseHttpsRedirection();
 
             app.UseRouting();
 

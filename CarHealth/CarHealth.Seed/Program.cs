@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Carhealth.Seed;
+using CarHealth.Seed.Contexts;
 using CarHealth.Seed.Models;
 using CarHealth.Seed.Repositories;
 using CarHealth.Seed.SeedServices;
+using CarHealth.Seed.SeedServices.IdentityServer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -95,15 +97,16 @@ namespace CarHealth.Seed
             services.AddLogging(configure => configure.AddConsole())
                 .AddTransient<Program>();
 
-            // Override the current ILogger implementation to use Serilog
+            services.AddTransient<IIdentityServerConfig, IdentityServerConfig>();
+
+            
+            services.AddTransient<IMainDbSeed<List<CarEntity>>, FileRepository>(xp =>
+            {
+                return new FileRepository(config.Import.FilePath);
+            });
 
             // TODO //ConfigureMongoDb(services, config);
             ConfigureEFCoreDb(services, config);
-
-            services.AddTransient<IMainDbSeed<List<CarEntity>>, FileRepository>(xp =>
-            {
-                return new FileRepository("AppData/data.json");
-            });
 
 
             if (Environment == "DevelopmentLocalhost")
@@ -124,8 +127,11 @@ namespace CarHealth.Seed
             services.AddDbContext<CarContext>(options =>
            options.UseSqlServer(config.EFCoreDb.CarsDb)); // for EF Core data repository
 
+            services.AddDbContext<IdentityServerContext>(options =>
+           options.UseSqlServer(config.EFCoreDb.ClientsIdentityDb)); // repository for IdentityServer (clients, scopes, etc)
+
             services.AddDbContext<UserContext>(options =>
-           options.UseSqlServer(config.EFCoreDb.CarHealthIdentityDb));
+           options.UseSqlServer(config.EFCoreDb.UsersIdentityDb));
 
             services.AddIdentity<User, IdentityRole>(options => //валидация пароля 
             {

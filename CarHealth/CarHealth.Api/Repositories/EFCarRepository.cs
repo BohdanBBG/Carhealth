@@ -178,6 +178,7 @@ namespace CarHealth.Api.Repositories
         }
         public async Task<bool> SetTotalRideAsync(UpdateTotalRideModel value, string userId)
         {
+            
             var carEntity = await _db.CarEntities.FirstOrDefaultAsync(x => x.Id == value.Id && x.UserId == userId);
 
             if (carEntity != null)

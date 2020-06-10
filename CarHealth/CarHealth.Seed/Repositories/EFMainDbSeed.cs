@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
+using CarHealth.Seed.Contexts;
 
 namespace CarHealth.Seed.Repositories
 {

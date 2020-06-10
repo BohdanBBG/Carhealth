@@ -11,6 +11,10 @@ namespace CarHealth.Seed.Models.IdentityModels
    // public class Role : MongoRole // MongoDb data repository
    public class Role : IdentityRole // EF Core data repository
     {
+        public Role()
+        {
+
+        }
         public Role(string name) : base(name)
         {
         }

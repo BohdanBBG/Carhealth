@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Events;
@@ -37,6 +38,7 @@ namespace CarHealth.IdentityServer4
         public static IWebHostBuilder CreateWebHostBuilder(string[] args)
         {
             var builder = WebHost.CreateDefaultBuilder(args)
+                .UseConfiguration(GetConfiguration())
                 .UseStartup<Startup>()
                 .UseSerilog((context, configuration) =>
             {
@@ -46,12 +48,38 @@ namespace CarHealth.IdentityServer4
                     .MinimumLevel.Override("System", LogEventLevel.Warning)
                     .MinimumLevel.Override("Microsoft.AspNetCore.Authentication", LogEventLevel.Information)
                     .Enrich.FromLogContext()
-                    .WriteTo.File(@"serilog-logs/identityserver4_log.txt")
-                    // .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{NewLine}", theme: AnsiConsoleTheme.Literate);
+                   // .WriteTo.File(@"serilog-logs/identityserver4_log.txt")
+                     .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{NewLine}", theme: AnsiConsoleTheme.Literate)
                     .WriteTo.Console(outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss}|{Level} RequestPath:{RequestPath} => {SourceContext}{NewLine} {Message}{NewLine}{Exception}", theme: AnsiConsoleTheme.Literate);
             });
 
+
+            if (System.Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "DevelopmentLocalhost")
+            {
+                builder.UseUrls($"https://localhost:5006");
+            }
+
             return builder;
+        }
+
+        private static IConfiguration GetConfiguration()
+        {
+            // load env variables from .env file
+            string envFilePath = Path.Combine(Directory.GetCurrentDirectory(), ".env");
+
+            if (File.Exists(envFilePath))
+            {
+                DotNetEnv.Env.Load(envFilePath);
+            }
+
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{System.Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", optional: true, reloadOnChange: true)
+                .AddEnvironmentVariables();
+
+            var config = builder.Build();
+            return config;
         }
     }
 }

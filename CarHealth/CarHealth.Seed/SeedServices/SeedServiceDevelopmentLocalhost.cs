@@ -1,7 +1,13 @@
 ﻿using Carhealth.Seed;
+using CarHealth.Seed.Contexts;
 using CarHealth.Seed.Models;
+using CarHealth.Seed.Models.IdentityServer4Models;
 using CarHealth.Seed.Repositories;
+using CarHealth.Seed.SeedServices.IdentityServer;
+using IdentityServer4.EntityFramework.Mappers;
+using IdentityServer4.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
@@ -16,35 +22,31 @@ namespace CarHealth.Seed.SeedServices
     {
 
         private readonly ApplicationSettings _config;
-       // private readonly Lexiconner.IdentityServer4.ApplicationSettings _identityConfig;
         private readonly ILogger<ISeedService> _logger;
         private readonly IMainDbSeed<List<CarEntity>> _carTxtImporter;
         private readonly ICarRepository _carRepository;
-       // private readonly IIdentityDataRepository _identityRepository;
-       // private readonly IIdentityServerConfig _identityServerConfig;
-
+        private readonly IIdentityServerConfig _identityServerConfig;
+        private readonly IdentityServerContext _identityContex;
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
 
         public SeedServiceDevelopmentLocalhost(
               IOptions<ApplicationSettings> config,
-              // IOptions<Lexiconner.IdentityServer4.ApplicationSettings> identityConfig,
               ILogger<ISeedService> logger,
               IMainDbSeed<List<CarEntity>> carTxtImporter,
               ICarRepository carRepository,
-              // IIdentityDataRepository identityRepository,
-              // IIdentityServerConfig identityServerConfig,
+              IIdentityServerConfig identityServerConfig,
+              IdentityServerContext identityContex,
               UserManager<User> userManager,
               RoleManager<IdentityRole> roleManager
           )
         {
             _config = config.Value;
-            // _identityConfig = identityConfig.Value;
             _logger = logger;
             _carTxtImporter = carTxtImporter;
             _carRepository = carRepository;
-            // _identityRepository = identityRepository;
-            //_identityServerConfig = identityServerConfig;
+            _identityServerConfig = identityServerConfig;
+            _identityContex = identityContex;
             _userManager = userManager;
             _roleManager = roleManager;
         }
@@ -71,32 +73,55 @@ namespace CarHealth.Seed.SeedServices
             _logger.LogInformation("Start seeding identity DB...");
 
 
-            string password = "1234";
-
-            var roles =  new List<IdentityRole>
+            // Client
+            _logger.LogInformation("Clients...");
+            foreach (var client in _identityServerConfig.GetClients(_config))
             {
-                new IdentityRole
+                if (!_identityContex.Clients.AsEnumerable().Where(x => x.ClientId == client.ClientId).Any())
                 {
-                    Name = "Admin"
-                },
-                 new IdentityRole
-                {
-                    Name = "User"
+                    await _identityContex.Clients.AddAsync(client.ToEntity());
+                    await _identityContex.SaveChangesAsync();
                 }
-            };
+            }
+            _logger.LogInformation("Clients Done.");
 
+            // IdentityResource
+            _logger.LogInformation("IdentityResources...");
+            foreach(var resource in _identityServerConfig.GetIdentityResources())
+            {
+                if (!_identityContex.IdentityResources.AsEnumerable().Where(x => x.Name == resource.Name).Any())
+                {
+                    await _identityContex.IdentityResources.AddAsync(resource.ToEntity());
+                    await _identityContex.SaveChangesAsync();
+                }
+            }
+            _logger.LogInformation("IdentityResources Done.");
+
+            // ApiResource
+            _logger.LogInformation("ApiResources...");
+            foreach (var api in _identityServerConfig.GetApiResources())
+            {
+                if (!_identityContex.ApiResources.AsEnumerable().Where(x => x.Name == api.Name).Any())
+                {
+                    await _identityContex.AddAsync(api.ToEntity());
+                    await _identityContex.SaveChangesAsync();
+                }
+            }
+            _logger.LogInformation("ApiResources Done.");
+
+            //Roles
             _logger.LogInformation("Roles...");
 
-            foreach (var role in roles)
+            foreach(var role in _identityServerConfig.GetInitialIdentityRoles())
             {
-                if (await _roleManager.FindByNameAsync(role.Name) == null)
+                var existing = _roleManager.FindByNameAsync(role.Name).GetAwaiter().GetResult();
+                if (existing == null)
                 {
-                    _logger.LogInformation($"Role '{role}': creating.");
-                    var result = await _roleManager.CreateAsync(role);
-
-                    if(!result.Succeeded)
+                    _logger.LogInformation($"Role '{role.Name}': creating.");
+                    var result = _roleManager.CreateAsync(role);
+                    if (!result.Result.Succeeded)
                     {
-                        var errorList = result.Errors.ToList();
+                        var errorList = result.Result.Errors.ToList();
                         throw new Exception(string.Join("; ", errorList));
                     }
                 }
@@ -108,31 +133,19 @@ namespace CarHealth.Seed.SeedServices
 
             _logger.LogInformation("Roles Done.");
 
-
+            //Users
             _logger.LogInformation("Users...");
 
-            var users = new List<User>
-            {
-                new User
-                {
-                    Email = "admin1@gmail.com",
-                    UserName = "admin1@gmail.com"
-                },
-                new User
-                {
-                     Email = "user1@gmail.com",
-                     UserName ="user1@gmail.com"
-                }
-            };
+          
 
             _logger.LogInformation("Roles...");
 
-            foreach (var user in users)
+            foreach (var user in _identityServerConfig.GetInitialdentityUsers())
             {
                 if (await _userManager.FindByNameAsync(user.Email) == null)
                 {
                     _logger.LogInformation($"User '{user.Email}': creating.");
-                    var result = await _userManager.CreateAsync(user, password);
+                    var result = await _userManager.CreateAsync(user, _identityServerConfig.DefaultUserPassword);
 
                     if (result.Succeeded && user.Email == "admin1@gmail.com")
                     {

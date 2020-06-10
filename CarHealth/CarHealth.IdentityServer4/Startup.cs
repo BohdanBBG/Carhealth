@@ -19,6 +19,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Logging;
+using CarHealth.IdentityServer4.Models.IdentityModels;
 
 namespace CarHealth.IdentityServer4
 {
@@ -50,10 +51,10 @@ namespace CarHealth.IdentityServer4
 
 
             services.AddDbContext<UserContext>(options =>
-                options.UseSqlServer(config.EFCoreDb.CarHealthIdentityDb)
+                options.UseSqlServer(config.EFCoreDb.UsersIdentityDb)
             );
 
-            services.AddIdentity<User, IdentityRole>(options => //валидация пароля 
+            services.AddIdentity<User, Role>(options => //валидация пароля 
             {
                 options.Password.RequiredLength = 4;   // минимальная длина
                 options.Password.RequireNonAlphanumeric = false;   // требуются ли не алфавитно-цифровые символы
@@ -67,19 +68,12 @@ namespace CarHealth.IdentityServer4
                                         // данных.В качестве типа хранилища здесь указывается класс контекста данных.
 
 
-            var builder = services.AddIdentityServer(options =>
+            var identityServerBuilder = services.AddIdentityServer(options =>
             {
                 options.Events.RaiseErrorEvents = true;
                 options.Events.RaiseInformationEvents = true;
                 options.Events.RaiseFailureEvents = true;
                 options.Events.RaiseSuccessEvents = true;
-                options.UserInteraction.LoginUrl = "/Account/Login";
-                options.UserInteraction.LogoutUrl = "/Account/Logout";
-                options.Authentication = new AuthenticationOptions()
-                {
-                    CookieLifetime = TimeSpan.FromHours(10), // ID server cookie timeout set to 10 hours
-                    CookieSlidingExpiration = true
-                };
             })
   
                   // добавляет тестовые ключи для подписи JWT-токенов, а именно id_token, access_token
@@ -99,17 +93,6 @@ namespace CarHealth.IdentityServer4
                 // настройки клиентских приложений
                 .AddInMemoryClients(GetClients())
                 .AddAspNetIdentity<User>();
-
-
-       
-
-
-
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "CarHealth.Identity", Version = "v1" });
-            });
-
 
             //For IdentityServer UI check and install into project https://github.com/IdentityServer/IdentityServer4.Quickstart/releases/tag/1.5.0
         }
@@ -139,15 +122,6 @@ namespace CarHealth.IdentityServer4
 
             app.UseMvcWithDefaultRoute();
 
-
-
-            app.UseSwagger();
-
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "CarHealth.Identity V1");
-            });
-
         }
 
         public static IEnumerable<IdentityResource> GetIdentityResources()//Настройки информации для клиентских приложений
@@ -173,7 +147,7 @@ namespace CarHealth.IdentityServer4
             {
                 // определяем scope "CarHealth.Api" для IdentityServer
                 new ApiResource("CarHealth.Api","Carhealth Api",
-                // эти claims войдут в scope api1
+                // эти claims войдут в scope CarHealth.Api
                 new[] { "UserName", "email"})
 
             };

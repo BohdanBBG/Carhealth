@@ -4,11 +4,11 @@
       "commandName": "Project",
       "environmentVariables": {
         // change this to seed different DB
-        "Environment": "DevelopmentLocalhost"
-       // "ASPNETCORE_ENVIRONMENT": "Development"
+        "Environment": "DevelopmentLocalhost",
+        "ASPNETCORE_ENVIRONMENT": "DevelopmentLocalhost"
       }
     }
-  },
+  }
 
 
   

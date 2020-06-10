@@ -23,13 +23,16 @@ namespace CarHealth.IdentityServer4
 
     public class EFCoreDbSettings
     {
-        public string CarHealthIdentityDb { get; set; }
+        public string ClientsIdentityDb { get; set; }
+        public string UsersIdentityDb { get; set; }
         public string CarsDb { get; set; }
     }
 
     public class UrlsSettings
     {
         public string Api { get; set; }
+        public string Identity { get; set; }
+        public string WebSpa { get; set; }
     }
 
     public class CorsSettings

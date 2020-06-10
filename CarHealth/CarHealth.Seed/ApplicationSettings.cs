@@ -8,10 +8,16 @@ namespace Carhealth.Seed
     public class ApplicationSettings
     {
         public CorsSettings Cors { get; set; }
+        public ImportSettings Import { get; set; }
         public MongoDbSettings MongoDb { get; set; }
         public UrlsSettings Urls { get; set; }
 
         public EFCoreDbSettings EFCoreDb { get; set; }
+    }
+
+    public class ImportSettings
+    {
+        public string FilePath { get; set; }
     }
 
     public class MongoDbSettings
@@ -23,13 +29,16 @@ namespace Carhealth.Seed
 
     public class EFCoreDbSettings
     {
-        public string CarHealthIdentityDb { get; set; }
+        public string ClientsIdentityDb { get; set; }
+        public string UsersIdentityDb { get; set; }
         public string CarsDb { get; set; }
     }
 
     public class UrlsSettings
     {
         public string Api { get; set; }
+        public string Identity { get; set; }
+        public string WebSpa { get; set; } 
     }
 
     public class CorsSettings

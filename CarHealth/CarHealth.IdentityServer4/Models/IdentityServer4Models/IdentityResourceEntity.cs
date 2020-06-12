@@ -1,6 +1,7 @@
-﻿using IdentityServer4.EntityFramework.Entities;
+﻿using IdentityServer4.Models;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -8,26 +9,28 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CarHealth.Seed.Models.IdentityServer4Models
+namespace CarHealth.IdentityServer4.Models.IdentityServer4Models
 {
     public class IdentityResourceEntity
     {
-        public IdentityResourceEntity()
-        {
-            IdentityResourceId = ObjectId.GenerateNewId().ToString();
-            IdentityResource = new IdentityResource();
-        }
-        public IdentityResourceEntity(IdentityResource resource)
-        {
-            IdentityResourceId = ObjectId.GenerateNewId().ToString();
-            IdentityResource = resource;
-        }
-
-        public IdentityResource IdentityResource { get; set; }
+        public string IdentityResourceData { get; set; }
 
         [Key]
-        [BsonId]
-        [Required]
-        public string IdentityResourceId { get; set; }
+        public string IdentityResourceName { get; set; }
+
+        [NotMapped]
+        public IdentityResource IdentityResource { get; set; }
+
+        public void AddDataToEntity()
+        {
+            IdentityResourceData = JsonConvert.SerializeObject(IdentityResource);
+            IdentityResourceName = IdentityResource.Name;
+        }
+
+        public void MapDataFromEntity()
+        {
+            IdentityResource = JsonConvert.DeserializeObject<IdentityResource>(IdentityResourceData);
+            IdentityResourceName = IdentityResource.Name;
+        }
     }
 }

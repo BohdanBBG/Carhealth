@@ -4,6 +4,7 @@ using CarHealth.Seed.Models.IdentityModels;
 using IdentityServer4;
 using IdentityServer4.Models;
 using Microsoft.AspNetCore.Identity;
+using MongoDB.Bson;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +25,7 @@ namespace CarHealth.Seed.SeedServices.IdentityServer
                 // определяем scope "CarHealth.Api" для IdentityServer
                 new ApiResource("CarHealth.Api","Carhealth Api",
                 // эти claims войдут в scope CarHealth.Api
-                new[] { "UserName", "email"}),
+                new List<string>{}),
 
             };
         }
@@ -47,16 +48,16 @@ namespace CarHealth.Seed.SeedServices.IdentityServer
                     // перенаправить User Agent, важно для безопасности
                     RedirectUris =
                     {
-                        $"{config.Urls.WebSpa}",
-                        $"{config.Urls.WebSpa}/index.html",
-                        // адрес перенаправления после логина
-                        $"{config.Urls.WebSpa}/callback.html",
-                          // адрес перенаправления при автоматическом обновлении access_token через iframe
-                         $"{config.Urls.WebSpa}/callback-silent.html"
+                         // адрес перенаправления после логина
+                         $"{config.Urls.WebSpa}/callback.html",
+                        // адрес перенаправления при автоматическом обновлении access_token через iframe
+                          $"{config.Urls.WebSpa}/callback-silent.html"
+
                     },
-                    PostLogoutRedirectUris= {    $"{config.Urls.WebSpa}/index.html" },
+                    PostLogoutRedirectUris= {  $"{config.Urls.WebSpa}/index.html" },
                     // адрес клиентского приложения, просим сервер возвращать нужные CORS-заголовки
                     AllowedCorsOrigins = {  $"{config.Urls.WebSpa}" },
+
                      // список scopes, разрешённых именно для данного клиентского приложения
                     AllowedScopes =
                     {
@@ -79,14 +80,14 @@ namespace CarHealth.Seed.SeedServices.IdentityServer
         {
             // определяет, какие scopes будут доступны IdentityServer
             return new List<IdentityResource>
-            {
-                // "sub" claim
-                new IdentityResources.OpenId(),
-               new IdentityResources.Email(), // profile Claims: email and email_verified
-                 // стандартные claims в соответствии с profile scope
-                 // http://openid.net/specs/openid-connect-core-1_0.html#ScopeClaims
-               new IdentityResources.Profile(),//  profile Claims: name, family_name, given_name, middle_name, nickname etc
-            };
+                {
+                    // "sub" claim
+                    new IdentityResources.OpenId(),
+                   new IdentityResources.Email(), // profile Claims: email and email_verified
+                     // стандартные claims в соответствии с profile scope
+                     // http://openid.net/specs/openid-connect-core-1_0.html#ScopeClaims
+                   new IdentityResources.Profile(),//  profile Claims: name, family_name, given_name, middle_name, nickname etc
+                };
         }
 
         public List<User> GetInitialdentityUsers()
@@ -95,11 +96,13 @@ namespace CarHealth.Seed.SeedServices.IdentityServer
             {
                new User
                 {
+                    Id = ObjectId.GenerateNewId().ToString(),
                     Email = "admin1@gmail.com",
                     UserName = "admin1@gmail.com"
                 },
                 new User
                 {
+                     Id = ObjectId.GenerateNewId().ToString(),
                      Email = "user1@gmail.com",
                      UserName ="user1@gmail.com"
                 }

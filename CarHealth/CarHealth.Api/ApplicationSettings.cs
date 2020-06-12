@@ -25,7 +25,8 @@ namespace CarHealth.Api
 
     public class EFCoreDbSettings
     {
-        public string CarHealthIdentityDb { get; set; }
+        public string ClientsIdentityDb { get; set; }
+        public string UsersIdentityDb { get; set; }
         public string CarsDb { get; set; }
     }
 

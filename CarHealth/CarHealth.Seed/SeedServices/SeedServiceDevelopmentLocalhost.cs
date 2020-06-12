@@ -3,9 +3,9 @@ using CarHealth.Seed.Contexts;
 using CarHealth.Seed.Models;
 using CarHealth.Seed.Models.IdentityServer4Models;
 using CarHealth.Seed.Repositories;
+using IdentityServer4.EntityFramework;
 using CarHealth.Seed.SeedServices.IdentityServer;
 using IdentityServer4.EntityFramework.Mappers;
-using IdentityServer4.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -23,7 +23,7 @@ namespace CarHealth.Seed.SeedServices
 
         private readonly ApplicationSettings _config;
         private readonly ILogger<ISeedService> _logger;
-        private readonly IMainDbSeed<List<CarEntity>> _carTxtImporter;
+        private readonly IDbFileReader<List<CarEntity>> _carTxtImporter;
         private readonly ICarRepository _carRepository;
         private readonly IIdentityServerConfig _identityServerConfig;
         private readonly IdentityServerContext _identityContex;
@@ -33,7 +33,7 @@ namespace CarHealth.Seed.SeedServices
         public SeedServiceDevelopmentLocalhost(
               IOptions<ApplicationSettings> config,
               ILogger<ISeedService> logger,
-              IMainDbSeed<List<CarEntity>> carTxtImporter,
+              IDbFileReader<List<CarEntity>> carTxtImporter,
               ICarRepository carRepository,
               IIdentityServerConfig identityServerConfig,
               IdentityServerContext identityContex,
@@ -63,9 +63,10 @@ namespace CarHealth.Seed.SeedServices
             await SeedIdentityDb();
             await SeedMainDb();
 
-            _logger.LogInformation("Start seeding data...");
+            _logger.LogInformation("End seeding data...");
 
         }
+
 
         private async Task SeedIdentityDb()
         {
@@ -75,11 +76,16 @@ namespace CarHealth.Seed.SeedServices
 
             // Client
             _logger.LogInformation("Clients...");
-            foreach (var client in _identityServerConfig.GetClients(_config))
+            if (!_identityContex.Clients.Any())
             {
-                if (!_identityContex.Clients.AsEnumerable().Where(x => x.ClientId == client.ClientId).Any())
+                foreach (var client in _identityServerConfig.GetClients(_config))
                 {
-                    await _identityContex.Clients.AddAsync(client.ToEntity());
+
+                    ClientEntity clientEntity = new ClientEntity();
+                    clientEntity.Client = client;
+                    clientEntity.AddDataToEntity();
+
+                    await _identityContex.Clients.AddAsync(clientEntity);
                     await _identityContex.SaveChangesAsync();
                 }
             }
@@ -87,11 +93,16 @@ namespace CarHealth.Seed.SeedServices
 
             // IdentityResource
             _logger.LogInformation("IdentityResources...");
-            foreach(var resource in _identityServerConfig.GetIdentityResources())
+            if (!_identityContex.IdentityResources.Any())
             {
-                if (!_identityContex.IdentityResources.AsEnumerable().Where(x => x.Name == resource.Name).Any())
+                foreach (var resource in _identityServerConfig.GetIdentityResources())
                 {
-                    await _identityContex.IdentityResources.AddAsync(resource.ToEntity());
+
+                    IdentityResourceEntity identityResourceEntity = new IdentityResourceEntity();
+                    identityResourceEntity.IdentityResource = resource;
+                    identityResourceEntity.AddDataToEntity();
+
+                    await _identityContex.IdentityResources.AddAsync(identityResourceEntity);
                     await _identityContex.SaveChangesAsync();
                 }
             }
@@ -99,11 +110,16 @@ namespace CarHealth.Seed.SeedServices
 
             // ApiResource
             _logger.LogInformation("ApiResources...");
-            foreach (var api in _identityServerConfig.GetApiResources())
+            if (!_identityContex.ApiResources.Any())
             {
-                if (!_identityContex.ApiResources.AsEnumerable().Where(x => x.Name == api.Name).Any())
+                foreach (var api in _identityServerConfig.GetApiResources())
                 {
-                    await _identityContex.AddAsync(api.ToEntity());
+
+                    ApiResourceEntity apiResourceEntity = new ApiResourceEntity();
+                    apiResourceEntity.ApiResource = api;
+                    apiResourceEntity.AddDataToEntity();
+
+                    await _identityContex.AddAsync(apiResourceEntity);
                     await _identityContex.SaveChangesAsync();
                 }
             }
@@ -112,7 +128,7 @@ namespace CarHealth.Seed.SeedServices
             //Roles
             _logger.LogInformation("Roles...");
 
-            foreach(var role in _identityServerConfig.GetInitialIdentityRoles())
+            foreach (var role in _identityServerConfig.GetInitialIdentityRoles())
             {
                 var existing = _roleManager.FindByNameAsync(role.Name).GetAwaiter().GetResult();
                 if (existing == null)
@@ -136,9 +152,6 @@ namespace CarHealth.Seed.SeedServices
             //Users
             _logger.LogInformation("Users...");
 
-          
-
-            _logger.LogInformation("Roles...");
 
             foreach (var user in _identityServerConfig.GetInitialdentityUsers())
             {
@@ -173,6 +186,14 @@ namespace CarHealth.Seed.SeedServices
 
         private async Task SeedMainDb()
         {
+
+            if(!_carRepository.IsEmptyDb())
+            {
+                _logger.LogInformation("\n\n");
+                _logger.LogInformation("Main DB is already exists...");
+
+                return;
+            }
 
             _logger.LogInformation("\n\n");
             _logger.LogInformation("Start seeding main DB...");

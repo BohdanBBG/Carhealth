@@ -153,7 +153,7 @@ class CarManager {
 
 
                 if (makeRequestBody(data)) {
-                    var postUrl = `${config.urls.api}/add/car`;// used for add car
+                    var postUrl = `${config.Api}/add/car`;// used for add car
 
 
                     // console.log('-----', data);
@@ -208,7 +208,7 @@ class CarManager {
                 //totalRideDataSend.Id = sendData.Id;
                  console.log('------',sendData);
 
-                var putUrl = `${config.urls.api}/put/car`;// used for update car
+                var putUrl = `${config.Api}/put/car`;// used for update car
 
                 UpdateData(putUrl, sendData);
 
@@ -226,7 +226,7 @@ class CarManager {
 
         domUtil.addBubleEventListener('.js-car-managmend-delete-button', '.js-car-managmend-delete-button', 'click', globalScopes.getEventListenerState().carManagerDeletebutton, function (e, actualEl, desiredEl) {
 
-            var deleteUrl = `${config.urls.api}/delete/car?carEntityId=${carManagmendFormDeleteButtonEl.getAttribute('car-id')}`;// used for delete car
+            var deleteUrl = `${config.Api}/delete/car?carEntityId=${carManagmendFormDeleteButtonEl.getAttribute('car-id')}`;// used for delete car
             DeleteData(deleteUrl)
             GetUserCars(function (data) {
 
@@ -305,7 +305,7 @@ class CarManager {
         };// removes all input fields with red border when click on "reset"
 
         function GetUserCars(callback) {
-            helper.httpGet(config.urls.api + '/allUsersCars', function (data) {
+            helper.httpGet(config.Api + '/allUsersCars', function (data) {
                 pageData = data;
                 console.log("Cars: ", data);
                 callback(data);

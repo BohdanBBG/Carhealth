@@ -11,11 +11,6 @@ namespace CarHealth.IdentityServer4.Extensions
 {
     public static class IdentityServerExtensions
     {
-        static public IIdentityServerBuilder AddConfig (IIdentityServerBuilder builder)
-        {
-           // builder.Services.AddSingleton<>;
-            return builder;
-        }
 
         static public IIdentityServerBuilder AddClients(this IIdentityServerBuilder builder)
         {

@@ -1,4 +1,5 @@
 ﻿using CarHealth.IdentityServer4.Models;
+using IdentityServer4.EntityFramework.Mappers;
 using IdentityServer4.Models;
 using IdentityServer4.Stores;
 using Microsoft.EntityFrameworkCore;
@@ -12,14 +13,20 @@ namespace CarHealth.IdentityServer4.Stores.EFCoreStores
 {
     public class EFCoreClientStore : IClientStore
     {
-        private IdentityContex _identityDb { get; set; }
-        public EFCoreClientStore(IdentityContex identityDb)
+        private IdentityServerContext _identityDb { get; set; }
+        public EFCoreClientStore(IdentityServerContext identityDb)
         {
             _identityDb = identityDb;
         }
 
 
-        public async Task<Client> FindClientByIdAsync(string clientId) => await _identityDb.Clients.FirstOrDefaultAsync(x => x.ClientId == clientId);
+        public async Task<Client> FindClientByIdAsync(string clientId)
+        {
+            var client = _identityDb.Clients.First(t => t.ClientId == clientId);
+            client.MapDataFromEntity();
+            return client.Client;
+
+        }
 
     }
 }

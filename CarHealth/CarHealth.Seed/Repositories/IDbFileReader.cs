@@ -6,13 +6,9 @@ using System.Threading.Tasks;
 
 namespace CarHealth.Seed.Repositories
 {
-    public interface IMainDbSeed<T>
+    public interface IDbFileReader<T>
     {
         T ImportAllData();
-
-        void UpdateAllData(T carEntities);
-
-        bool RecalcCarItemsRides(string idCarEntity, int totalRideDiff);
 
     }
  }

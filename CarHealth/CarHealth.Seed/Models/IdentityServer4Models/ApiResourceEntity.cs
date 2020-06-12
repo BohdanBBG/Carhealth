@@ -1,6 +1,7 @@
-﻿using IdentityServer4.EntityFramework.Entities;
+﻿using IdentityServer4.Models;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -12,23 +13,24 @@ namespace CarHealth.Seed.Models.IdentityServer4Models
 {
     public class ApiResourceEntity
     {
-
-        public ApiResourceEntity()
-        {
-            ApiResourceId = ObjectId.GenerateNewId().ToString();
-            ApiResource = new ApiResource();
-        }
-        public ApiResourceEntity(ApiResource resource)
-        {
-            ApiResourceId = ObjectId.GenerateNewId().ToString();
-            ApiResource = resource;
-        }
-
-        public ApiResource ApiResource { get; set; }
+        public string ApiResourceData { get; set; }
 
         [Key]
-        [BsonId]
-        [Required]
-        public string ApiResourceId { get; set; }
+        public string ApiResourceName { get; set; }
+
+        [NotMapped]
+        public ApiResource ApiResource { get; set; }
+
+        public void AddDataToEntity()
+        {
+            ApiResourceData = JsonConvert.SerializeObject(ApiResource);
+            ApiResourceName = ApiResource.Name;
+        }
+
+        public void MapDataFromEntity()
+        {
+            ApiResource = JsonConvert.DeserializeObject<ApiResource>(ApiResourceData);
+            ApiResourceName = ApiResource.Name;
+        }
     }
 }

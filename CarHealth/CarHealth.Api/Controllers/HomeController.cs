@@ -54,8 +54,8 @@ namespace CarHealth.Api.Controllers
         [HttpGet("config")]
         public ActionResult<string> Config()
         {
-            string host = _configuration["Urls"];
-            return "{ \"urls\" :{ \"api\" :\" https://localhost:5001\"} }";
+            return _configuration.Get<ApplicationSettings>().Urls.ToJson();
+            // return "{ \"urls\" :{ \"api\" :\" https://localhost:5001\"} }";
 
         }
 

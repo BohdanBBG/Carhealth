@@ -7,36 +7,8 @@ class HttpUtil {
 
     httpChek(url, authToken = null, callBack) {
 
-
-    //     var xhr = new XMLHttpRequest();
-    //  //   xhr.withCredentials = true; // force to show browser's default auth dialog
-    //     xhr.open('GET',  "http://localhost:5000/config");
-
-
-    //     xhr.onload = function () {
-    //         if(xhr.status === 200)
-    //         {
-    //             console.log("Ok"); c = xhr.ResponseText;
-    //         }
-    //         else if (xhr.status === 500) {
-    //             console.error('Request failed.  Returned status of ' + xhr.status);
-    //             alert('Request failed.  Returned status of ' + xhr.status);
-    //         } else if (xhr.status === 401 || xhr.status === 403) {
-    //             console.error('Request failed.  Returned status of ' + xhr.status);
-    //            // document.location.href = identityUrl + "/Account/Login";
-    //         }
-    //         else {
-    //             console.error('Request failed.  Returned status of ' + xhr.status);
-    //         }
-
-    //     };
-
-    //         xhr.setRequestHeader("Authorization", "Bearer " + );
-
-    //     xhr.send();
-
         var xhr = new XMLHttpRequest();
-     //   xhr.withCredentials = true; // force to show browser's default auth dialog
+        //xhr.withCredentials = true; // force to show browser's default auth dialog
         xhr.open('GET', url);
 
 
@@ -71,7 +43,7 @@ class HttpUtil {
 
         var xhr = new XMLHttpRequest();
 
-        xhr.withCredentials = true; // force to show browser's default auth dialog
+     //   xhr.withCredentials = true; // force to show browser's default auth dialog
         xhr.open(typeOfrequest, url, true);
 
         xhr.setRequestHeader('Content-Type', 'application/json');
@@ -102,7 +74,7 @@ class HttpUtil {
 
         var xhr = new XMLHttpRequest();
 
-        xhr.withCredentials = true; // force to show browser's default auth dialog
+      //  xhr.withCredentials = true; // force to show browser's default auth dialog
         xhr.open('DELETE', url, true);
 
         xhr.onload = function () {
@@ -130,7 +102,7 @@ class HttpUtil {
         var identityUrl = this.identityUrl;
 
         var xhr = new XMLHttpRequest();
-      //  xhr.withCredentials = true; // force to show browser's default auth dialog
+     //   xhr.withCredentials = true; // force to show browser's default auth dialog
         xhr.open('GET', url);
 
 

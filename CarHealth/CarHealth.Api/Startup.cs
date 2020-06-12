@@ -172,7 +172,7 @@ namespace CarHealth.Api
            options.UseSqlServer(config.EFCoreDb.CarsDb)); // for EF Core data repository
 
             services.AddDbContext<UserContext>(options =>
-           options.UseSqlServer(config.EFCoreDb.CarHealthIdentityDb));
+           options.UseSqlServer(config.EFCoreDb.UsersIdentityDb));
 
             services.AddIdentity<User, IdentityRole>(options => //валидация пароля 
             {

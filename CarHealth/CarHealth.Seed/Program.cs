@@ -100,9 +100,9 @@ namespace CarHealth.Seed
             services.AddTransient<IIdentityServerConfig, IdentityServerConfig>();
 
             
-            services.AddTransient<IMainDbSeed<List<CarEntity>>, FileRepository>(xp =>
+            services.AddTransient<IDbFileReader<List<CarEntity>>, DbFileReader>(xp =>
             {
-                return new FileRepository(config.Import.FilePath);
+                return new DbFileReader(config.Import.FilePath);
             });
 
             // TODO //ConfigureMongoDb(services, config);

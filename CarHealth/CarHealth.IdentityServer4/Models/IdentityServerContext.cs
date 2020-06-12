@@ -1,5 +1,4 @@
-﻿using CarHealth.Seed.Models;
-using CarHealth.Seed.Models.IdentityServer4Models;
+﻿using CarHealth.IdentityServer4.Models.IdentityServer4Models;
 using IdentityServer4.EntityFramework.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -7,14 +6,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CarHealth.Seed.Contexts
+namespace CarHealth.IdentityServer4.Models
 {
     public class IdentityServerContext: DbContext
     {
         public IdentityServerContext(DbContextOptions<IdentityServerContext> options)
-           : base(options)
+          : base(options)
         {
-            Database.EnsureCreated();
         }
 
         public DbSet<ClientEntity> Clients { get; set; }

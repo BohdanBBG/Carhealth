@@ -1,9 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using CarHealth.IdentityServer4.Models;
+using IdentityServer4;
+using IdentityServer4.Extensions;
+using IdentityServer4.Models;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Events;
@@ -27,10 +34,8 @@ namespace CarHealth.IdentityServer4
             //    .Build();
 
             //host.Run();
-
-
-
             var host = CreateWebHostBuilder(args).Build();
+
             host.Run();
 
         }
@@ -81,5 +86,6 @@ namespace CarHealth.IdentityServer4
             var config = builder.Build();
             return config;
         }
+
     }
 }

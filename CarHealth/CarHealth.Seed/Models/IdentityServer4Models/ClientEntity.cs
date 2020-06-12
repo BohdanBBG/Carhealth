@@ -1,6 +1,7 @@
-﻿using IdentityServer4.EntityFramework.Entities;
+﻿using IdentityServer4.Models;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -12,21 +13,24 @@ namespace CarHealth.Seed.Models.IdentityServer4Models
 {
     public class ClientEntity
     {
-        public ClientEntity()
-        {
-            ClientId = ObjectId.GenerateNewId().ToString();
-        }
-        public ClientEntity(Client client)
-        {
-            ClientId = ObjectId.GenerateNewId().ToString();
-            this.Client = client;
-        }
-
-        public Client Client { get; set; }
+        public string ClientData { get; set; }
 
         [Key]
-        [BsonId]
-        [Required]
         public string ClientId { get; set; }
+
+        [NotMapped]
+        public Client Client { get; set; }
+
+        public void AddDataToEntity()
+        {
+            ClientData = JsonConvert.SerializeObject(Client);
+            ClientId = Client.ClientId;
+        }
+
+        public void MapDataFromEntity()
+        {
+            Client = JsonConvert.DeserializeObject<Client>(ClientData);
+            ClientId = Client.ClientId;
+        }
     }
 }

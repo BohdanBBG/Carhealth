@@ -238,26 +238,26 @@ class CarManager {
         });
 
         function DeleteData(deleteUrl) {
-            helper.httpRequest(deleteUrl, null, "DELETE", user.access_token, function (response) {
+            helper.httpRequest(deleteUrl, null, "DELETE", function (response) {
 
-            });
+            }, user.access_token);
         }
 
         function UpdateData(putUrl, data) {
-            helper.httpRequest(putUrl, data, "PUT", user.access_token, function (response) {
+            helper.httpRequest(putUrl, data, "PUT", function (response) {
 
-            });
+            }, user.access_token);
         }
 
         function SendData(postUrl, data) {
-            helper.httpRequest(postUrl, data, "POST", user.access_token, function (response) {
+            helper.httpRequest(postUrl, data, "POST", function (response) {
 
-            });
+            }, user.access_token);
         }
 
         function SendTotalRide(url, value) {
-            helper.httpRequest(url, value, "POST", user.access_token, function (request) {
-            });
+            helper.httpRequest(url, value, "POST", function (request) {
+            }, user.access_token);
         }
 
         function makeRequestBody(sendData) {

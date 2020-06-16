@@ -5,7 +5,7 @@ class HttpUtil {
     constructor() {
     }
 
-    httpChek(url, authToken = null, callBack) {
+    httpChek(url, callBack, authToken = null) {
 
         var xhr = new XMLHttpRequest();
         //xhr.withCredentials = true; // force to show browser's default auth dialog
@@ -37,7 +37,7 @@ class HttpUtil {
         xhr.send();
     }
 
-    httpRequest(url, data, typeOfrequest, authToken = null, callback) {
+    httpRequest(url, data, typeOfrequest, callback, authToken = null) {
 
         var identityUrl = this.identityUrl;
 

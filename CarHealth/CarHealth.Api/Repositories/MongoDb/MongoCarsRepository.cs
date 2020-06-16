@@ -166,6 +166,26 @@ namespace CarHealth.Api.Repositories
             return false;
         }
 
+        public async Task<IList<CarItem>> FindCarItem(string name, string userId)
+        {
+            var car = await CarEntities.Find(x => x.UserId == userId && x.IsCurrent == true).FirstOrDefaultAsync();
+
+            if (car != null)
+            {
+                var builder = new FilterDefinitionBuilder<CarItem>();
+                var filter = builder.Empty; // фильтр для выборки всех документов
+
+                if (!String.IsNullOrWhiteSpace(name)) // фильтр по имени
+                {
+                    filter = filter & builder.Regex("Name", new BsonRegularExpression(name)) & builder.Eq("CarEntityId", car.Id);
+                }
+
+                return await CarItems.Find(filter).ToListAsync();
+            }
+            return null;
+        }
+
+
         public async Task<CarItemsSendModel> GetCarItemsAsync(int offset, int limit, string userId)
         {
             var car = await CarEntities.Find(x => x.UserId == userId && x.IsCurrent == true).FirstOrDefaultAsync();

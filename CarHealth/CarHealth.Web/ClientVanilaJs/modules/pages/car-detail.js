@@ -89,7 +89,7 @@ class CarDetails {
         var page = 0;
         var limit = 15;
         var pageData = {};
-        var carId ="";
+        var carId = "";
         var offsetCarDetails = page * limit;
         var calcPagesCount = function () {
             return Math.ceil(totalCount / limit);
@@ -226,6 +226,33 @@ class CarDetails {
         });// event listener on PUT button
 
 
+        if (!globalScopes.getEventListenerState().findCarItemInput.state) {
+
+            itemListContainerEl.querySelector('.find-car-item-input').oninput = Delay(function (e) {
+
+                if (this.value === "") {
+                    showPage(0, limit);
+                }
+                else {
+                    helper.httpGet(config.urls.api + '/find/caritem?name=' + this.value, function (searchResult) {
+                        showPageData(searchResult);
+                    }, user.access_token);
+                }
+            }, 1000)
+        }
+
+        function Delay(callback, ms) { // for search car item
+            var timer = 0;
+            return function () {
+                var context = this, args = arguments;
+                clearTimeout(timer);
+                timer = setTimeout(function () {
+                    callback.apply(context, args);
+                }, ms || 0);
+            };
+        }
+
+
         domUtil.addBubleEventListener(itemListContainerEl, '.item-list-pager__add-button', 'click', globalScopes.getEventListenerState().itemListAddButton, function (e, actualEl, desiredEl) {
             e.stopPropagation();
 
@@ -265,7 +292,7 @@ class CarDetails {
         function SendTotalRide(url,data) {
             helper.httpRequest(url, data, "POST", function (request) {
 
-            });
+            }, user.access_token);
         }
 
         var formResetButton = document.querySelector('.reset-button');
@@ -389,19 +416,19 @@ class CarDetails {
         function sendData(url, data) {
             helper.httpRequest(url, data, 'POST', function (request) {
                
-            });
+            }, user.access_token);
         }
 
         function updateData(url, data) {
-            helper.httpRequest(url, data, 'PUT', user.access_token, function (request) {
+            helper.httpRequest(url, data, 'PUT', function (request) {
 
-            });
+            }, user.access_token);
         }
 
-        function deleteData(url, ) {
+        function deleteData(url) {
 
             console.log("Delete to", url);
-            helper.deleteRequest(url,user.access_token);
+            helper.deleteRequest(url, user.access_token);
 
         }
 

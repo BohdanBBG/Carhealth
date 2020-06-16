@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 namespace CarHealth.Api.Repositories
 {
@@ -132,6 +133,20 @@ namespace CarHealth.Api.Repositories
 
             return false;
         }
+
+        public async Task<IList<CarItem>> FindCarItem(string name, string userId)
+        {
+            var car = await _db.CarEntities.FirstOrDefaultAsync(x => x.UserId == userId && x.IsCurrent == true);
+
+            if (car != null)
+            {
+                Regex regex = new Regex(name);
+
+                return await _db.CarItems.Where(x => EF.Functions.Like(x.Name, "%" + name + "%") && x.CarEntityId == car.Id).ToListAsync();
+            }
+            return null;
+        }
+
         public async Task<CarItemsSendModel> GetCarItemsAsync(int offset, int limit, string userId)
         {
             var car = await _db.CarEntities.FirstOrDefaultAsync(x => x.IsCurrent == true && x.UserId == userId);

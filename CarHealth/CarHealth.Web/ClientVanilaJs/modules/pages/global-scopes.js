@@ -17,6 +17,7 @@ class GlobalScopes {
             itemListAddButton: { state: false },
             formPutButton: { state: false },
             formAddButton: { state: false },
+            findCarItemInput: { state: false },
 
             carManager:{ state: false },
             carManagerMenuItem: { state: false },

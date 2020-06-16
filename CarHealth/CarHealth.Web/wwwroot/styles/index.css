@@ -800,7 +800,23 @@ body {
 
 .item-list-add-button-container{
     margin: 0em 1em 1em 1em;
+    display: flex;
+    flex-direction: row;
+    color: var( --text-color);
 }
+
+.car-details-search{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-left: 1.4em;
+    font-size: 1.5em;
+}
+
+.car-details-search-text{
+    margin-right: 0.4em;
+}
+
 .item-list-pager__add-button{
     display: flex;
     flex-direction: row;

@@ -11,9 +11,6 @@ let appRouter = {};
 import CarManager from './modules/pages/manage-car.js'
 let carManager = {};
 
-
-var serverUrl = "https://localhost:5001";
-
 import HttpUtil from './modules/HttpUtil.js'
 let helper = new HttpUtil();
 
@@ -24,8 +21,7 @@ export let userUtil = {};
 
 document.addEventListener("DOMContentLoaded", function (event) {
 
-    helper.httpGet(serverUrl + "/config", function (config) {
-        //config.urls.api="";
+    helper.httpGet("/config", function (config) {
         start(config);
     });
 });

@@ -8,31 +8,19 @@ class UserUtil {
 
         this.authConfig = {
 
-            // authority: this.config.auth.authority,
-            // client_id: this.config.auth.clientId,
-            // redirect_uri: this.config.auth.redirectUri,
-            // response_type: this.config.auth.responseType,
-            // scope: this.config.auth.scope,
-            // post_logout_redirect_uri: this.config.auth.postLogoutRedirectUri,
-
-            // // access_token renew
-            // automaticSilentRenew: true,
-            // silentRequestTimeout: 10000,
-            // accessTokenExpiringNotificationTime: 3 * 60, // 3 mins in secs
-
-            authority: "https://localhost:5006", // Адрес нашего IdentityServer
-            client_id: "CarHealth.Web", // должен совпадать с указанным на IdentityServer
+            authority: this.config.auth.authority, // Адрес нашего IdentityServer
+            client_id: this.config.auth.clientId, // должен совпадать с указанным на IdentityServer
             // Адрес страницы, на которую будет перенаправлен браузер после прохождения пользователем аутентификации
             // и получения от пользователя подтверждений - в соответствии с требованиями OpenId Connect
-            redirect_uri: "https://localhost:5004/callback.html",
+            redirect_uri: this.config.auth.redirectUri,
             // Response Type определяет набор токенов, получаемых от Authorization Endpoint
             // Данное сочетание означает, что мы используем Implicit Flow
             // http://openid.net/specs/openid-connect-core-1_0.html#Authentication
-            response_type: "id_token token",
+            response_type: this.config.auth.responseType,
             // Получить subject id пользователя, а также поля профиля в id_token, а также получить access_token для доступа к api1 (см. наcтройки IdentityServer)
-            scope: "openid profile email CarHealth.Api",
+            scope: this.config.auth.scope,
             // Страница, на которую нужно перенаправить пользователя в случае инициированного им логаута
-            post_logout_redirect_uri: "https://localhost:5004/index.html",
+            post_logout_redirect_uri: this.config.auth.postLogoutRedirectUri,
             // следить за состоянием сессии на IdentityServer, по умолчанию true
             monitorSession: true,
             // интервал в миллисекундах, раз в который нужно проверять сессию пользователя, по умолчанию 2000
@@ -43,7 +31,7 @@ class UserUtil {
             // https://github.com/IdentityModel/oidc-client-js/blob/1.3.0/src/JoseUtil.js#L95
             clockSkew: 300,
             // делать ли запрос к UserInfo endpoint для того, чтоб добавить данные в профиль пользователя
-            loadUserInfo: true,
+            //loadUserInfo: true,
         };
 
         this.userManager = new Oidc.UserManager( this.authConfig);

@@ -158,13 +158,6 @@ namespace CarHealth.Api
 
         private void ConfigureEFCoreDb(IServiceCollection services, ApplicationSettings config)
         {
-            /// Before changing the repo type you should do:
-            /// 1. Logout from app for clear cookie in your browser.
-            /// 2. In Models\IdentityModels\Role.cs AND User.cs change parent class
-            /// 3. Uncomit in Models\IdentityModels\UserContext.cs
-            /// 4. Everywhere change Role to IdentityRole
-            /// 5. Unhandled issue with UserContext and IdentityRole
-
 
             services.AddTransient<ICarRepository, EFCarRepository>(); // EF Core data repository
 

@@ -3,6 +3,8 @@
 
 
 using CarHealth.IdentityServer4.Models;
+using CarHealth.IdentityServer4.Models.IdentityModels;
+using CarHealth.IdentityServer4.ViewModels;
 using IdentityModel;
 using IdentityServer4.Events;
 using IdentityServer4.Extensions;
@@ -14,6 +16,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -55,6 +58,16 @@ namespace IdentityServer4.Quickstart
             _clientStore = clientStore;
             _schemeProvider = schemeProvider;
             _events = events;
+        }
+
+        [HttpGet]
+        public async Task<bool> IsAdmin([FromQuery]string email)
+        {
+
+            var userRoles = await _userManager.GetRolesAsync(await _userManager.FindByEmailAsync(email));
+
+            return userRoles.Contains("Admin");
+
         }
 
         /// <summary>
@@ -210,6 +223,50 @@ namespace IdentityServer4.Quickstart
             }
 
             return View("LoggedOut", vm);
+        }
+
+        [HttpGet]
+        public IActionResult Register()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null) // returnUrl is for come back from registration to login
+        {
+            if (ModelState.IsValid)
+            {
+                User user = new User
+                { 
+                    Id = ObjectId.GenerateNewId().ToString(),
+                    Email = model.Email, 
+                    UserName = model.Email 
+                };
+                // добавл€ем пользовател€
+                var result = await _userManager.CreateAsync(user, model.Password); // пользователь  добавл€етс€ в базу данных
+                                                                                   // ¬ качестве параметра передаетс€ сам пользователь и его пароль.
+                                                                                   // ƒанный метод возвращает объект IdentityResult,
+                                                                                   // с помощью которого можно узнать успешность выполненной операции
+
+                if (result.Succeeded)
+                {
+                    // установка куки
+                    await _signInManager.SignInAsync(user, false); // устанавливаем аутентификационные куки дл€ добавленного пользовател€
+                                                                   // ¬ этот метод передаетс€ объект пользовател€, который аутентифицируетс€, 
+                                                                   // и логическое значение, указывающее, надо ли сохран€ть куки в течение продолжительного времени
+
+                    return Redirect(model.ReturnUrl);
+                }
+                else
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description); //≈сли добавление прошло неудачно, то добавл€ем к состо€нию модели с помощью метода
+                                                                                   // ModelState все возникшие при добавлении ошибки, и отправленна€ модель возвращаетс€ в представление.
+                    }
+                }
+            }
+            return View(model);
         }
 
         [HttpGet]

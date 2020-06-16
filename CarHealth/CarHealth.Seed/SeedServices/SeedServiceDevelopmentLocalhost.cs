@@ -15,6 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CarHealth.Seed.Models.IdentityModels;
 
 namespace CarHealth.Seed.SeedServices
 {
@@ -28,7 +29,7 @@ namespace CarHealth.Seed.SeedServices
         private readonly IIdentityServerConfig _identityServerConfig;
         private readonly IdentityServerContext _identityContex;
         private readonly UserManager<User> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly RoleManager<Role> _roleManager;
 
         public SeedServiceDevelopmentLocalhost(
               IOptions<ApplicationSettings> config,
@@ -38,7 +39,7 @@ namespace CarHealth.Seed.SeedServices
               IIdentityServerConfig identityServerConfig,
               IdentityServerContext identityContex,
               UserManager<User> userManager,
-              RoleManager<IdentityRole> roleManager
+              RoleManager<Role> roleManager
           )
         {
             _config = config.Value;

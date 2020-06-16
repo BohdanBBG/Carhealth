@@ -163,6 +163,10 @@ body {
 
 /* menu */
 
+.js-for-admins-only.hidden{
+    display: none;
+}
+
 .main-block-menu{
     background-color: var(--background-color-menu);
     width: 100%;

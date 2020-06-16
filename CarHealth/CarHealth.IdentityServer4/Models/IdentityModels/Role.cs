@@ -11,8 +11,6 @@ namespace CarHealth.IdentityServer4.Models.IdentityModels
    // public class Role : MongoRole // MongoDb data repository
    public class Role : IdentityRole // EF Core data repository
     {
-        public Role(string name) : base(name)
-        {
-        }
+      
     }
 }

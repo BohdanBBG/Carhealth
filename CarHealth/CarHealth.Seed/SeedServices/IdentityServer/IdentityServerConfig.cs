@@ -109,16 +109,18 @@ namespace CarHealth.Seed.SeedServices.IdentityServer
             };
         }
 
-        public List<IdentityRole> GetInitialIdentityRoles()
+        public List<Role> GetInitialIdentityRoles()
         {
-            return new List<IdentityRole>
+            return new List<Role>
             {
-                new IdentityRole
+                new Role
                 {
+                    Id = ObjectId.GenerateNewId().ToString(),
                     Name = "Admin"
                 },
-                 new IdentityRole
+                 new Role
                 {
+                    Id = ObjectId.GenerateNewId().ToString(),
                     Name = "User"
                 }
             };

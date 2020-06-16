@@ -19,7 +19,7 @@ namespace CarHealth.Seed.SeedServices.IdentityServer
         IEnumerable<Client> GetClients(ApplicationSettings config);
 
 
-        List<IdentityRole> GetInitialIdentityRoles();
+        List<Role> GetInitialIdentityRoles();
         List<User> GetInitialdentityUsers();
     }
 }

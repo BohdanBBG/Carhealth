@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Carhealth.Seed;
 using CarHealth.Seed.Contexts;
 using CarHealth.Seed.Models;
+using CarHealth.Seed.Models.IdentityModels;
 using CarHealth.Seed.Repositories;
 using CarHealth.Seed.SeedServices;
 using CarHealth.Seed.SeedServices.IdentityServer;
@@ -133,7 +134,7 @@ namespace CarHealth.Seed
             services.AddDbContext<UserContext>(options =>
            options.UseSqlServer(config.EFCoreDb.UsersIdentityDb));
 
-            services.AddIdentity<User, IdentityRole>(options => //валидация пароля 
+            services.AddIdentity<User, Role>(options => //валидация пароля 
             {
                 options.Password.RequiredLength = 4;   // минимальная длина
                 options.Password.RequireNonAlphanumeric = false;   // требуются ли не алфавитно-цифровые символы

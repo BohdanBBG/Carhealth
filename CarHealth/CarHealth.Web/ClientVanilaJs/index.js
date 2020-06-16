@@ -64,6 +64,12 @@ function start(config) {
 
             });
 
+            domUtil.addBubleEventListener('body', '[data-car-manager-id]', 'click', globalScopes.getEventListenerState().carManager, function (e, actualEl, desiredEl) {
+
+                carManager.handler();
+
+            });
+
             domUtil.addBubleEventListener('.js-logout-button', '.js-logout-button-text', 'click', globalScopes.getEventListenerState().logout, function (e, actualEl, desiredEl) {
                 e.stopPropagation();
 
@@ -71,14 +77,27 @@ function start(config) {
             });
 
 
+            
 
-            domUtil.addBubleEventListener('body', '[data-car-manager-id]', 'click', globalScopes.getEventListenerState().carManager, function (e, actualEl, desiredEl) {
+            helper.httpGet(`${config.auth.authority}/Account/IsAdmin?email=${user.profile.email}`, function (response) {
 
-                carManager.handler();
+                console.log("-------",response);
+                if (response === true) {
 
-            });
+                    document.querySelector(".js-for-admins-only").classList.remove('hidden');
 
+                    domUtil.addBubleEventListener('body', '.js-for-admins-only', 'click', globalScopes.getEventListenerState().AdminsOnly, function (e, actualEl, desiredEl) {
+                        e.preventDefault();
+                        e.stopPropagation();
 
+                        document.location.href = `${config.auth.authority}/Users`;
+                    });
+                }
+                else
+                {
+                    document.querySelector(".js-for-admins-only").classList.add('hidden');
+                }
+            }, user.access_token);
         }
 
 

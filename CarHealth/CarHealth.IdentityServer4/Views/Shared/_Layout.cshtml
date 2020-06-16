@@ -36,6 +36,7 @@
                 </a>
             </div>
 
+            
             @if (!string.IsNullOrWhiteSpace(name))
             {
                 <ul class="nav navbar-nav">
@@ -44,6 +45,12 @@
                         <ul class="dropdown-menu">
                             <li><a asp-action="Logout" asp-controller="Account">Logout</a></li>
                         </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a asp-controller="Home" asp-action="Index" asp-host="localhost:5004" asp-protocol="https">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a asp-controller="Home" asp-action="Index" asp-host="localhost:5001" asp-protocol="https">API</a>
                     </li>
                 </ul>
             }

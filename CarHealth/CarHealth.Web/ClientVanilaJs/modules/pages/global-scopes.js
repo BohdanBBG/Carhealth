@@ -4,7 +4,7 @@ class GlobalScopes {
         this.eventListenerState = {
             menuLinks: { state: false },
             logout: { state: false },
-            rideSendButton: { state: false },
+            AdminsOnly: { state: false },
             logoutButton: { state: false },
            
             itemListFirstButton: { state: false },

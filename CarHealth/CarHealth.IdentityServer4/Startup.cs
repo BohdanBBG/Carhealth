@@ -58,7 +58,7 @@ namespace CarHealth.IdentityServer4
                 options.UseSqlServer(config.EFCoreDb.UsersIdentityDb)
             );
 
-            services.AddIdentity<User, IdentityRole>(options => //валидация пароля 
+            services.AddIdentity<User, Role>(options => //валидация пароля 
             {
                 options.Password.RequiredLength = 4;   // минимальная длина
                 options.Password.RequireNonAlphanumeric = false;   // требуются ли не алфавитно-цифровые символы

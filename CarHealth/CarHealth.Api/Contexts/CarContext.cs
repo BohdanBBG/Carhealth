@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using CarHealth.Api.Repositories;
-using Microsoft.AspNetCore.Identity;
+﻿using CarHealth.Api.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
-namespace CarHealth.Api.Models
+namespace CarHealth.Api.Contexts
 {
     public class CarContext: DbContext
     {

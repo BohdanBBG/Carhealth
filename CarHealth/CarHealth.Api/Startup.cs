@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Identity;
 using CarHealth.Api.Helpers;
 using Microsoft.Extensions.Logging;
 using System;
+using CarHealth.Api.Contexts;
 
 namespace CarHealth.Api
 {
@@ -41,9 +42,8 @@ namespace CarHealth.Api
             //ConfigureMongoDb(services, config);
             ConfigureEFCoreDb(services, config);
 
-            services.AddTransient<IRepository<List<CarEntity>>, FileRepository>();
 
-            services.AddControllersWithViews();
+            services.AddControllers();
 
             services.AddLogging(configure => configure.AddConsole())
                  .AddTransient<Program>();
@@ -144,6 +144,7 @@ namespace CarHealth.Api
 
             //services.AddIdentityMongoDbProvider<User, Role>(identityOptions =>
             //{
+            //    identityOptions.
             //    identityOptions.Password.RequiredLength = 4;   // минимальная длина
             //    identityOptions.Password.RequireNonAlphanumeric = false;   // требуются ли не алфавитно-цифровые символы
             //    identityOptions.Password.RequireLowercase = false; // требуются ли символы в нижнем регистре
@@ -167,7 +168,7 @@ namespace CarHealth.Api
             services.AddDbContext<UserContext>(options =>
            options.UseSqlServer(config.EFCoreDb.UsersIdentityDb));
 
-            services.AddIdentity<User, IdentityRole>(options => //валидация пароля 
+            services.AddIdentity<User, Role>(options => //валидация пароля 
             {
                 options.Password.RequiredLength = 4;   // минимальная длина
                  options.Password.RequireNonAlphanumeric = false;   // требуются ли не алфавитно-цифровые символы

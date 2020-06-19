@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using CarHealth.Api.Models.HttpModels;
 using MongoDB.Bson;
+using CarHealth.Api.Models.IdentityModels;
 
 namespace CarHealth.Api.Controllers
 {

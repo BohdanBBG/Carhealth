@@ -1,13 +1,14 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using CarHealth.Api.Models.IdentityModels;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace  CarHealth.Api.Models
+namespace  CarHealth.Api.Contexts
 {
-    public class UserContext : IdentityDbContext<User>
+    public class UserContext : IdentityDbContext<User, Role, string>
     {
         public UserContext(DbContextOptions<UserContext> options)
             : base(options)

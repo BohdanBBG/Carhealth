@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Carhealth.Models;
 using CarHealth.IdentityServer4.Models;
+using CarHealth.IdentityServer4.Models.IdentityModels;
 using CarHealth.IdentityServer4.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 
-namespace Carhealth.Controllers
+namespace Carhealth.IdentityServer4.Controllers
 {
     [Authorize(Roles = "Admin")]
     public class UsersController : Controller // Для администрирования пользователей. При обращении к методу Index контроллера Users мы сможем увидеть список пользователей, 

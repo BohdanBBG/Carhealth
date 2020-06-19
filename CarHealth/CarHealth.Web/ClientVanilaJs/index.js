@@ -81,7 +81,6 @@ function start(config) {
 
             helper.httpGet(`${config.auth.authority}/Account/IsAdmin?email=${user.profile.email}`, function (response) {
 
-                console.log("-------",response);
                 if (response === true) {
 
                     document.querySelector(".js-for-admins-only").classList.remove('hidden');

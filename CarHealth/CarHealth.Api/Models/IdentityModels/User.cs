@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace  CarHealth.Api.Models
+namespace  CarHealth.Api.Models.IdentityModels
 {
     //public class User : MongoUser
     public class User : IdentityUser

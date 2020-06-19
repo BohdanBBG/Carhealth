@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
+using CarHealth.Api.Contexts;
 
 namespace CarHealth.Api.Repositories
 {

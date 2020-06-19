@@ -15,7 +15,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Security.Principal;
 using System.Threading.Tasks;
-using CarHealth.IdentityServer4.Models;
+using CarHealth.IdentityServer4.Models.IdentityModels;
 
 namespace IdentityServer4.Quickstart
 {

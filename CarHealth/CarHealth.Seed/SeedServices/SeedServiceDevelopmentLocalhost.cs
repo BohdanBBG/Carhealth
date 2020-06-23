@@ -25,9 +25,10 @@ namespace CarHealth.Seed.SeedServices
         private readonly ApplicationSettings _config;
         private readonly ILogger<ISeedService> _logger;
         private readonly IDbFileReader<List<CarEntity>> _carTxtImporter;
-        private readonly ICarRepository _carRepository;
+        private readonly ISeedRepository _seedRepository;
         private readonly IIdentityServerConfig _identityServerConfig;
-        private readonly IdentityServerContext _identityContex;
+
+        private readonly IIdentitySeedRepository _identityContex;
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<Role> _roleManager;
 
@@ -35,9 +36,10 @@ namespace CarHealth.Seed.SeedServices
               IOptions<ApplicationSettings> config,
               ILogger<ISeedService> logger,
               IDbFileReader<List<CarEntity>> carTxtImporter,
-              ICarRepository carRepository,
+              ISeedRepository carRepository,
               IIdentityServerConfig identityServerConfig,
-              IdentityServerContext identityContex,
+
+              IIdentitySeedRepository identityContex,
               UserManager<User> userManager,
               RoleManager<Role> roleManager
           )
@@ -45,7 +47,7 @@ namespace CarHealth.Seed.SeedServices
             _config = config.Value;
             _logger = logger;
             _carTxtImporter = carTxtImporter;
-            _carRepository = carRepository;
+            _seedRepository = carRepository;
             _identityServerConfig = identityServerConfig;
             _identityContex = identityContex;
             _userManager = userManager;
@@ -77,7 +79,7 @@ namespace CarHealth.Seed.SeedServices
 
             // Client
             _logger.LogInformation("Clients...");
-            if (!_identityContex.Clients.Any())
+            if (!_identityContex.IsClientCollectionEmpty())
             {
                 foreach (var client in _identityServerConfig.GetClients(_config))
                 {
@@ -86,15 +88,15 @@ namespace CarHealth.Seed.SeedServices
                     clientEntity.Client = client;
                     clientEntity.AddDataToEntity();
 
-                    await _identityContex.Clients.AddAsync(clientEntity);
-                    await _identityContex.SaveChangesAsync();
+                    await _identityContex.AddClientAsync(clientEntity);
+                   
                 }
             }
             _logger.LogInformation("Clients Done.");
 
             // IdentityResource
             _logger.LogInformation("IdentityResources...");
-            if (!_identityContex.IdentityResources.Any())
+            if (!_identityContex.IsIdentityResourceCollectionEmpty())
             {
                 foreach (var resource in _identityServerConfig.GetIdentityResources())
                 {
@@ -103,15 +105,14 @@ namespace CarHealth.Seed.SeedServices
                     identityResourceEntity.IdentityResource = resource;
                     identityResourceEntity.AddDataToEntity();
 
-                    await _identityContex.IdentityResources.AddAsync(identityResourceEntity);
-                    await _identityContex.SaveChangesAsync();
+                    await _identityContex.AddIdentityResourceAsync(identityResourceEntity);
                 }
             }
             _logger.LogInformation("IdentityResources Done.");
 
             // ApiResource
             _logger.LogInformation("ApiResources...");
-            if (!_identityContex.ApiResources.Any())
+            if (!_identityContex.IsApiResourceCollectionEmpty())
             {
                 foreach (var api in _identityServerConfig.GetApiResources())
                 {
@@ -120,8 +121,8 @@ namespace CarHealth.Seed.SeedServices
                     apiResourceEntity.ApiResource = api;
                     apiResourceEntity.AddDataToEntity();
 
-                    await _identityContex.AddAsync(apiResourceEntity);
-                    await _identityContex.SaveChangesAsync();
+                    await _identityContex.AddApiResourceAsync(apiResourceEntity);
+
                 }
             }
             _logger.LogInformation("ApiResources Done.");
@@ -131,21 +132,17 @@ namespace CarHealth.Seed.SeedServices
 
             foreach (var role in _identityServerConfig.GetInitialIdentityRoles())
             {
-                var existing = _roleManager.FindByNameAsync(role.Name).GetAwaiter().GetResult();
-                if (existing == null)
-                {
-                    _logger.LogInformation($"Role '{role.Name}': creating.");
-                    var result = _roleManager.CreateAsync(role);
-                    if (!result.Result.Succeeded)
-                    {
-                        var errorList = result.Result.Errors.ToList();
-                        throw new Exception(string.Join("; ", errorList));
-                    }
-                }
-                else
+                if (_identityContex.IsRoleExist(role.Name))
                 {
                     _logger.LogInformation($"Role '{role.Name}': exists.");
                 }
+                else
+                {
+                    _logger.LogInformation($"Role '{role.Name}': creating.");
+
+                    _identityContex.AddRole(role).Wait();
+                }
+
             }
 
             _logger.LogInformation("Roles Done.");
@@ -156,29 +153,15 @@ namespace CarHealth.Seed.SeedServices
 
             foreach (var user in _identityServerConfig.GetInitialdentityUsers())
             {
-                if (await _userManager.FindByNameAsync(user.Email) == null)
+                if ( _identityContex.IsUserExist(user.Email))
                 {
-                    _logger.LogInformation($"User '{user.Email}': creating.");
-                    var result = await _userManager.CreateAsync(user, _identityServerConfig.DefaultUserPassword);
-
-                    if (result.Succeeded && user.Email == "admin1@gmail.com")
-                    {
-                        await _userManager.AddToRoleAsync(user, "Admin");
-                    }
-                    else
-                    {
-                        await _userManager.AddToRoleAsync(user, "User");
-                    }
-
-                    if (!result.Succeeded)
-                    {
-                        var errorList = result.Errors.ToList();
-                        throw new Exception(string.Join("; ", errorList));
-                    }
+                    _logger.LogInformation($"User '{user.Email}': exists.");
                 }
                 else
                 {
-                    _logger.LogInformation($"User '{user.Email}': exists.");
+                    _identityContex.AddUser(user, _identityServerConfig.DefaultUserPassword).Wait();
+
+                    _logger.LogInformation($"User '{user.Email}': creating.");
                 }
             }
             _logger.LogInformation("Users Done.");
@@ -188,7 +171,7 @@ namespace CarHealth.Seed.SeedServices
         private async Task SeedMainDb()
         {
 
-            if(!_carRepository.IsEmptyDb())
+            if(!_seedRepository.IsEmptyDb())
             {
                 _logger.LogInformation("\n\n");
                 _logger.LogInformation("Main DB is already exists...");
@@ -235,12 +218,12 @@ namespace CarHealth.Seed.SeedServices
                             };
                         }
 
-                        await _carRepository.AddUserNewCarAsync(carEntity);
+                        await _seedRepository.AddUserNewCarAsync(carEntity);
 
                         foreach (var details in car.CarItems)
                         {
 
-                            await _carRepository.AddNewCarItemAsync(new CarItem
+                            await _seedRepository.AddNewCarItemAsync(new CarItem
                             {
                                 CarEntityId = carEntity.Id,
                                 CarItemId = ObjectId.GenerateNewId().ToString(),

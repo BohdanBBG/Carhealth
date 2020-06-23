@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace CarHealth.Seed.Repositories
 {
-    public class MongoRepository : ICarRepository
+    public class MongoRepository : ISeedRepository
     {
         private IMongoDatabase _database { get; set; }
         private IMongoClient _client { get; set; }

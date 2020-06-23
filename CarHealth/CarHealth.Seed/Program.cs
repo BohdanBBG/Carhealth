@@ -7,6 +7,7 @@ using CarHealth.Seed.Contexts;
 using CarHealth.Seed.Models;
 using CarHealth.Seed.Models.IdentityModels;
 using CarHealth.Seed.Repositories;
+using CarHealth.Seed.Repositories.EFCoreDb;
 using CarHealth.Seed.SeedServices;
 using CarHealth.Seed.SeedServices.IdentityServer;
 using Microsoft.AspNetCore.Identity;
@@ -123,7 +124,9 @@ namespace CarHealth.Seed
         private static void ConfigureEFCoreDb(IServiceCollection services, ApplicationSettings config)
         {
 
-            services.AddTransient<ICarRepository, EFMainDbSeed>(); // EF Core data repository
+            services.AddTransient<ISeedRepository, EFMainDbSeedRepository>(); // EF Core data repository
+
+            services.AddTransient<IIdentitySeedRepository, EFCoreIdentitySeedRepository>();// // EF Core identity data repository
 
             services.AddDbContext<CarContext>(options =>
            options.UseSqlServer(config.EFCoreDb.CarsDb)); // for EF Core data repository

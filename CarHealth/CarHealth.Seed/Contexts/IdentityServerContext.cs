@@ -22,12 +22,12 @@ namespace CarHealth.Seed.Contexts
         public DbSet<IdentityResourceEntity> IdentityResources { get; set; }
 
 
-        protected override void OnModelCreating(ModelBuilder builder)
-        {
-            builder.Entity<ClientEntity>().HasKey(m => m.ClientId);
-            builder.Entity<ApiResourceEntity>().HasKey(m => m.ApiResourceName);
-            builder.Entity<IdentityResourceEntity>().HasKey(m => m.IdentityResourceName);
-            base.OnModelCreating(builder);
-        }
+        //protected override void OnModelCreating(ModelBuilder builder)
+        //{
+        //    builder.Entity<ClientEntity>().HasKey(m => m.ClientId);
+        //    builder.Entity<ApiResourceEntity>().HasKey(m => m.ApiResourceName);
+        //    builder.Entity<IdentityResourceEntity>().HasKey(m => m.IdentityResourceName);
+        //    base.OnModelCreating(builder);
+        //}
     }
 }

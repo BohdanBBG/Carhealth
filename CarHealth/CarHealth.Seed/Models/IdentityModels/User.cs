@@ -5,10 +5,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CarHealth.Seed.Models
+namespace CarHealth.Seed.Models.IdentityModels
 {
-   // public class User : MongoUser
-    public class User : IdentityUser
+    public class User : MongoUser
+    //public class User : IdentityUser
     {
 
     }

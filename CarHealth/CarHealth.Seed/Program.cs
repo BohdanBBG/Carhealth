@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using AspNetCore.Identity.Mongo;
 using Carhealth.Seed;
 using CarHealth.Seed.Contexts;
 using CarHealth.Seed.Models;
 using CarHealth.Seed.Models.IdentityModels;
 using CarHealth.Seed.Repositories;
 using CarHealth.Seed.Repositories.EFCoreDb;
+using CarHealth.Seed.Repositories.MongoDb;
 using CarHealth.Seed.SeedServices;
 using CarHealth.Seed.SeedServices.IdentityServer;
 using Microsoft.AspNetCore.Identity;
@@ -15,7 +17,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Serilog;
+using MongoDB.Driver;
 
 namespace CarHealth.Seed
 {
@@ -107,8 +109,8 @@ namespace CarHealth.Seed
                 return new DbFileReader(config.Import.FilePath);
             });
 
-            // TODO //ConfigureMongoDb(services, config);
-            ConfigureEFCoreDb(services, config);
+            ConfigureMongoDb(services, config);
+            //ConfigureEFCoreDb(services, config);
 
 
             if (Environment == "DevelopmentLocalhost")
@@ -124,62 +126,73 @@ namespace CarHealth.Seed
         private static void ConfigureEFCoreDb(IServiceCollection services, ApplicationSettings config)
         {
 
-            services.AddTransient<ISeedRepository, EFMainDbSeedRepository>(); // EF Core data repository
+           // services.AddTransient<ISeedRepository, EFMainDbSeedRepository>(); // EF Core data repository
 
-            services.AddTransient<IIdentitySeedRepository, EFCoreIdentitySeedRepository>();// // EF Core identity data repository
+           // services.AddTransient<IIdentitySeedRepository, EFCoreIdentitySeedRepository>();// // EF Core identity data repository
 
-            services.AddDbContext<CarContext>(options =>
-           options.UseSqlServer(config.EFCoreDb.CarsDb)); // for EF Core data repository
+           // services.AddDbContext<CarContext>(options =>
+           //options.UseSqlServer(config.EFCoreDb.CarsDb)); // for EF Core data repository
 
-            services.AddDbContext<IdentityServerContext>(options =>
-           options.UseSqlServer(config.EFCoreDb.ClientsIdentityDb)); // repository for IdentityServer (clients, scopes, etc)
+           // services.AddDbContext<IdentityServerContext>(options =>
+           //options.UseSqlServer(config.EFCoreDb.ClientsIdentityDb)); // repository for IdentityServer (clients, scopes, etc)
 
-            services.AddDbContext<UserContext>(options =>
-           options.UseSqlServer(config.EFCoreDb.UsersIdentityDb));
+           // services.AddDbContext<UserContext>(options =>
+           //options.UseSqlServer(config.EFCoreDb.UsersIdentityDb));
 
-            services.AddIdentity<User, Role>(options => //валидация пароля 
-            {
-                options.Password.RequiredLength = 4;   // минимальная длина
-                options.Password.RequireNonAlphanumeric = false;   // требуются ли не алфавитно-цифровые символы
-                options.Password.RequireLowercase = false; // требуются ли символы в нижнем регистре
-                options.Password.RequireUppercase = false; // требуются ли символы в верхнем регистре
-                options.Password.RequireDigit = false; // требуются ли цифры
-                options.User.RequireUniqueEmail = true; // уникальный email
-            })
-            .AddEntityFrameworkStores<UserContext>();// устанавливает тип хранилища, которое будет применяться в Identity для хранения 
-                                                     // данных.В качестве типа хранилища здесь указывается класс контекста данных.
+           // services.AddIdentity<User, Role>(options => //валидация пароля 
+           // {
+           //     options.Password.RequiredLength = 4;   // минимальная длина
+           //     options.Password.RequireNonAlphanumeric = false;   // требуются ли не алфавитно-цифровые символы
+           //     options.Password.RequireLowercase = false; // требуются ли символы в нижнем регистре
+           //     options.Password.RequireUppercase = false; // требуются ли символы в верхнем регистре
+           //     options.Password.RequireDigit = false; // требуются ли цифры
+           //     options.User.RequireUniqueEmail = true; // уникальный email
+           // })
+           // .AddEntityFrameworkStores<UserContext>();// устанавливает тип хранилища, которое будет применяться в Identity для хранения 
+           //                                          // данных.В качестве типа хранилища здесь указывается класс контекста данных.
 
         }
 
         private static void ConfigureMongoDb(IServiceCollection services, ApplicationSettings config)
         {
 
-            //services.AddTransient<MongoClient>(sp =>
-            //{
-            //    return new MongoClient(config.MongoDb.ConnectionString);
-            //});
+            services.AddTransient<MongoClient>(sp =>
+            {
+                return new MongoClient(config.MongoDb.ConnectionString);
+            });
+
+            services.AddTransient<IIdentitySeedRepository, MongoIdentitySeedRepository>(sp =>
+            {
+                var mongoClient = sp.GetService<MongoClient>();
+                var userManager = sp.GetService<UserManager<User>>();
+                var roleManager = sp.GetService<RoleManager<Role>>();
+
+                return new MongoIdentitySeedRepository(mongoClient, config.MongoDb.MongoDbIdentity, userManager, roleManager);
+            });// Mongo identity data repository
 
 
-            //services.AddTransient<ICarRepository, MongoCarsRepository>(sp =>
-            //{
-            //    var mongoClient = sp.GetService<MongoClient>();
 
-            //    return new MongoCarsRepository(mongoClient, config.MongoDb.MainDb);
-            //}); // MongoDb data repository
+            services.AddTransient<ISeedRepository, MongoMainDbSeedRepository>(sp =>
+            {
+                var mongoClient = sp.GetService<MongoClient>();
+
+                return new MongoMainDbSeedRepository(mongoClient, config.MongoDb.MainDb);
+            }); // MongoDb data repository
 
 
-            //services.AddIdentityMongoDbProvider<User, Role>(identityOptions =>
-            //{
-            //    identityOptions.Password.RequiredLength = 4;   // минимальная длина
-            //    identityOptions.Password.RequireNonAlphanumeric = false;   // требуются ли не алфавитно-цифровые символы
-            //    identityOptions.Password.RequireLowercase = false; // требуются ли символы в нижнем регистре
-            //    identityOptions.Password.RequireUppercase = false; // требуются ли символы в верхнем регистре
-            //    identityOptions.Password.RequireDigit = false; // требуются ли цифры
-            //    identityOptions.User.RequireUniqueEmail = true; // уникальный email
-            //}, mongoIdentityOptions =>
-            //{
-            //    mongoIdentityOptions.ConnectionString = config.MongoDb.MongoDbIdentity;
-            // });
+
+            services.AddIdentityMongoDbProvider<User, Role>(op =>
+           {
+               op.Password.RequiredLength = 4;   // минимальная длина
+               op.Password.RequireNonAlphanumeric = false;   // требуются ли не алфавитно-цифровые символы
+               op.Password.RequireLowercase = false; // требуются ли символы в нижнем регистре
+               op.Password.RequireUppercase = false; // требуются ли символы в верхнем регистре
+               op.Password.RequireDigit = false; // требуются ли цифры
+               op.User.RequireUniqueEmail = true; // уникальный email
+           }, mongoIdentityOptions =>
+           {
+               mongoIdentityOptions.ConnectionString = config.MongoDb.ConnectionString + "/" + config.MongoDb.MongoDbIdentity;
+           });
         }
 
     }

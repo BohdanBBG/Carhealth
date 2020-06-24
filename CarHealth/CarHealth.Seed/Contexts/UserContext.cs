@@ -9,13 +9,13 @@ using System.Threading.Tasks;
 
 namespace CarHealth.Seed.Contexts
 {
-    public class UserContext : IdentityDbContext<User, Role, string>
-    {
-        public UserContext(DbContextOptions<UserContext> options)
-            : base(options)
-        {
-            Database.EnsureCreated();
-        }
+    //public class UserContext : IdentityDbContext<User, Role, string>
+    //{
+    //    public UserContext(DbContextOptions<UserContext> options)
+    //        : base(options)
+    //    {
+    //        Database.EnsureCreated();
+    //    }
 
-    }
+    //}
 }

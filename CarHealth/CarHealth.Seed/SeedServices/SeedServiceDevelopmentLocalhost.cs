@@ -79,7 +79,7 @@ namespace CarHealth.Seed.SeedServices
 
             // Client
             _logger.LogInformation("Clients...");
-            if (!_identityContex.IsClientCollectionEmpty())
+            if (_identityContex.IsClientCollectionEmpty())
             {
                 foreach (var client in _identityServerConfig.GetClients(_config))
                 {
@@ -96,7 +96,7 @@ namespace CarHealth.Seed.SeedServices
 
             // IdentityResource
             _logger.LogInformation("IdentityResources...");
-            if (!_identityContex.IsIdentityResourceCollectionEmpty())
+            if (_identityContex.IsIdentityResourceCollectionEmpty())
             {
                 foreach (var resource in _identityServerConfig.GetIdentityResources())
                 {
@@ -112,7 +112,7 @@ namespace CarHealth.Seed.SeedServices
 
             // ApiResource
             _logger.LogInformation("ApiResources...");
-            if (!_identityContex.IsApiResourceCollectionEmpty())
+            if (_identityContex.IsApiResourceCollectionEmpty())
             {
                 foreach (var api in _identityServerConfig.GetApiResources())
                 {

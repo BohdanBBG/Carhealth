@@ -96,13 +96,13 @@ namespace CarHealth.Seed.SeedServices.IdentityServer
             {
                new User
                 {
-                    Id = ObjectId.GenerateNewId().ToString(),
+                   // Id = ObjectId.GenerateNewId().ToString(),
                     Email = "admin1@gmail.com",
                     UserName = "admin1@gmail.com"
                 },
                 new User
                 {
-                     Id = ObjectId.GenerateNewId().ToString(),
+                   //  Id = ObjectId.GenerateNewId().ToString(),
                      Email = "user1@gmail.com",
                      UserName ="user1@gmail.com"
                 }
@@ -115,12 +115,12 @@ namespace CarHealth.Seed.SeedServices.IdentityServer
             {
                 new Role
                 {
-                    Id = ObjectId.GenerateNewId().ToString(),
+                    //Id = ObjectId.GenerateNewId().ToString(),
                     Name = "Admin"
                 },
                  new Role
                 {
-                    Id = ObjectId.GenerateNewId().ToString(),
+                   // Id = ObjectId.GenerateNewId().ToString(),
                     Name = "User"
                 }
             };

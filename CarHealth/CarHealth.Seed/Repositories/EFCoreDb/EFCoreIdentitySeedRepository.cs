@@ -27,17 +27,17 @@ namespace CarHealth.Seed.Repositories.EFCoreDb
 
         public bool IsClientCollectionEmpty()
         {
-           return _identityContex.Clients.Any();
+           return !_identityContex.Clients.Any();
         }
 
         public bool IsIdentityResourceCollectionEmpty()
         {
-            return _identityContex.IdentityResources.Any();
+            return !_identityContex.IdentityResources.Any();
         }
 
         public bool IsApiResourceCollectionEmpty()
         {
-            return _identityContex.ApiResources.Any();
+            return !_identityContex.ApiResources.Any();
         }
 
         public bool IsUserExist(string email)

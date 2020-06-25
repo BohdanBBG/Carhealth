@@ -131,7 +131,9 @@ namespace IdentityServer4.Quickstart
                 if (result.Succeeded)
                 {
                     var user = await _userManager.FindByNameAsync(model.Username);
-                    await _events.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.Id, user.UserName));
+
+
+                    await _events.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.Id.ToString(), user.UserName)); 
 
                     if (context != null)
                     {
@@ -238,7 +240,7 @@ namespace IdentityServer4.Quickstart
             {
                 User user = new User
                 { 
-                    Id = ObjectId.GenerateNewId().ToString(),
+                 // Id = ObjectId.GenerateNewId().ToString(),
                     Email = model.Email, 
                     UserName = model.Email 
                 };

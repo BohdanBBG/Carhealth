@@ -37,7 +37,7 @@ namespace Carhealth.IdentityServer4.Controllers
             {
                 User user = new User
                 {
-                    Id = ObjectId.GenerateNewId().ToString(),
+                 // Id = ObjectId.GenerateNewId().ToString(),
                     Email = model.Email,
                     UserName = model.Email
                 };

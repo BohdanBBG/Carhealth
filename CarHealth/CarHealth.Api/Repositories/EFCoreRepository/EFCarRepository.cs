@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using CarHealth.Api.Contexts;
 
-namespace CarHealth.Api.Repositories
+namespace CarHealth.Api.Repositories.EFCoreRepository
 {
     public class EFCarRepository: ICarRepository
     {

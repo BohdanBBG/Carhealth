@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 namespace CarHealth.IdentityServer4.Models.IdentityModels
 {
     //Add any custom field for a role
-   // public class Role : MongoRole // MongoDb data repository
-   public class Role : IdentityRole // EF Core data repository
+    public class Role : MongoRole // MongoDb data repository
+   //public class Role : IdentityRole // EF Core data repository
     {
       
     }

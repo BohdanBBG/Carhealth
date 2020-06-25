@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CarHealth.Api.Models;
-using CarHealth.Api.Models.IdentityModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -19,14 +18,12 @@ namespace CarHealth.Api.Controllers
 
         private readonly IConfiguration _configuration;
         private IWebHostEnvironment _hostingEnvironment;
-        private UserManager<User> _userManager;
 
 
-        public IdentityController(IConfiguration configuration, IWebHostEnvironment hostingEnvironment, UserManager<User> userManager)
+        public IdentityController(IConfiguration configuration, IWebHostEnvironment hostingEnvironment)
         {
             _configuration = configuration;
             _hostingEnvironment = hostingEnvironment;
-            _userManager = userManager;
         }
 
 

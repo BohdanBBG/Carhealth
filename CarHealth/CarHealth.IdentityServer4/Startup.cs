@@ -25,6 +25,8 @@ using CarHealth.IdentityServer4.Stores.EFCoreStores;
 using CarHealth.IdentityServer4.Extensions;
 using Microsoft.Extensions.Options;
 using CarHealth.IdentityServer4.Contexts;
+using MongoDB.Driver;
+using AspNetCore.Identity.Mongo;
 
 namespace CarHealth.IdentityServer4
 {
@@ -54,28 +56,9 @@ namespace CarHealth.IdentityServer4
             //  services.AddLogging();
 
 
+            ConfigureMongoDb(services, config);
+            //ConfigureEFCoreDb(services, config);
 
-            services.AddDbContext<UserContext>(options =>
-                options.UseSqlServer(config.EFCoreDb.UsersIdentityDb)
-            );
-
-            services.AddIdentity<User, Role>(options => //валидация пароля 
-            {
-                options.Password.RequiredLength = 4;   // минимальная длина
-                options.Password.RequireNonAlphanumeric = false;   // требуются ли не алфавитно-цифровые символы
-                options.Password.RequireLowercase = false; // требуются ли символы в нижнем регистре
-                options.Password.RequireUppercase = false; // требуются ли символы в верхнем регистре
-                options.Password.RequireDigit = false; // требуются ли цифры
-                options.User.RequireUniqueEmail = true; // уникальный email
-            })
-            .AddEntityFrameworkStores<UserContext>()
-            .AddDefaultTokenProviders();// устанавливает тип хранилища, которое будет применяться в Identity для хранения 
-                                        // данных.В качестве типа хранилища здесь указывается класс контекста данных.
-
-            services.AddDbContext<IdentityServerContext>(options =>
-              options.UseSqlServer(config.EFCoreDb.ClientsIdentityDb)); // repository for IdentityServer (clients, scopes, etc)
-
-           
 
               services.AddTransient<IClientStore, EFCoreClientStore>();
               services.AddTransient<IResourceStore, EFCoreResourceStore>();
@@ -151,6 +134,51 @@ namespace CarHealth.IdentityServer4
 
             app.UseMvcWithDefaultRoute();
 
+        }
+
+        private void ConfigureMongoDb(IServiceCollection services, ApplicationSettings config)
+        {
+            services.AddTransient<MongoClient>(sp =>
+            {
+                return new MongoClient(config.MongoDb.ConnectionString);
+            });
+
+
+            services.AddIdentityMongoDbProvider<User, Role>(identityOptions =>
+            {
+                identityOptions.Password.RequiredLength = 4;   // минимальная длина
+                identityOptions.Password.RequireNonAlphanumeric = false;   // требуются ли не алфавитно-цифровые символы
+                identityOptions.Password.RequireLowercase = false; // требуются ли символы в нижнем регистре
+                identityOptions.Password.RequireUppercase = false; // требуются ли символы в верхнем регистре
+                identityOptions.Password.RequireDigit = false; // требуются ли цифры
+                identityOptions.User.RequireUniqueEmail = true; // уникальный email
+            }, mongoIdentityOptions =>
+            {
+                mongoIdentityOptions.ConnectionString = config.MongoDb.MongoDbIdentity;
+            });
+        }
+
+        private void ConfigureEFCoreDb(IServiceCollection services, ApplicationSettings config)
+        {
+            // services.AddDbContext<UserContext>(options =>
+            //    options.UseSqlServer(config.EFCoreDb.UsersIdentityDb)
+            //);
+
+            services.AddDbContext<IdentityServerContext>(options =>
+             options.UseSqlServer(config.EFCoreDb.ClientsIdentityDb)); // repository for IdentityServer (clients, scopes, etc)
+
+            //services.AddIdentity<User, Role>(options => //валидация пароля 
+            //{
+            //    options.Password.RequiredLength = 4;   // минимальная длина
+            //    options.Password.RequireNonAlphanumeric = false;   // требуются ли не алфавитно-цифровые символы
+            //    options.Password.RequireLowercase = false; // требуются ли символы в нижнем регистре
+            //    options.Password.RequireUppercase = false; // требуются ли символы в верхнем регистре
+            //    options.Password.RequireDigit = false; // требуются ли цифры
+            //    options.User.RequireUniqueEmail = true; // уникальный email
+            //})
+            //.AddEntityFrameworkStores<UserContext>()
+            //.AddDefaultTokenProviders();// устанавливает тип хранилища, которое будет применяться в Identity для хранения 
+            //                            // данных.В качестве типа хранилища здесь указывается класс контекста данных.
         }
 
         //public static IEnumerable<IdentityResource> GetIdentityResources()//Настройки информации для клиентских приложений

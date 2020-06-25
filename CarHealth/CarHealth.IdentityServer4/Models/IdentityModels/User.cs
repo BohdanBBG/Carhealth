@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace CarHealth.IdentityServer4.Models.IdentityModels
 {
-    //public class User : MongoUser
-    public class User : IdentityUser
+    public class User : MongoUser
+    //public class User : IdentityUser
     {
 
     }

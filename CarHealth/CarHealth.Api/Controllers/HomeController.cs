@@ -11,7 +11,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using CarHealth.Api.Models.HttpModels;
 using MongoDB.Bson;
-using CarHealth.Api.Models.IdentityModels;
+using System.Security.Claims;
+using IdentityModel;
 
 namespace CarHealth.Api.Controllers
 {
@@ -22,17 +23,32 @@ namespace CarHealth.Api.Controllers
         private readonly IConfiguration _configuration;
         private IWebHostEnvironment _hostingEnvironment;
         private readonly ICarRepository _repository;
-        private UserManager<User> _userManager;
 
 
-        public HomeController(IConfiguration configuration, IWebHostEnvironment hostingEnvironment, UserManager<User> userManager, ICarRepository repository)
+        public HomeController(IConfiguration configuration, IWebHostEnvironment hostingEnvironment, ICarRepository repository)
         {
             _repository = repository;
             _configuration = configuration;
             _hostingEnvironment = hostingEnvironment;
-            _userManager = userManager;
         }
 
+        [Authorize]
+        protected string getUserId()
+        {
+            string currentUserId = null;
+
+            if (User.HasClaim(x => x.Type == ClaimTypes.NameIdentifier))
+            {
+                currentUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            }
+            else if(User.HasClaim(x => x.Type == JwtClaimTypes.Subject))
+            {
+                currentUserId = User.FindFirst(JwtClaimTypes.Subject).Value;
+            }
+            
+
+            return currentUserId;
+        }
 
        // [Authorize]
         public IActionResult Index()
@@ -66,9 +82,8 @@ namespace CarHealth.Api.Controllers
         [HttpGet("allUsersCars")]
         public async Task<ActionResult<List<CarEntitySendModel>>> GetUsersCarsAsync()
         {
-            string userId = _userManager.GetUserId(User);
 
-            var cars = await _repository.GetAllUsersCarsAsync(userId);
+            var cars = await _repository.GetAllUsersCarsAsync(getUserId());
             
 
             if (cars != null)
@@ -89,11 +104,9 @@ namespace CarHealth.Api.Controllers
         [HttpPost("setUserCurCar")]
         public async Task<IActionResult> SetUserCurCar([FromBody] ChangeUserCurrentCarModel changeModel)
         {
-            string userId = _userManager.GetUserId(User);
-
             if (ModelState.IsValid)
             {
-                if( await _repository.SetUserCurCarAsync(changeModel.CarEntityId, userId) )
+                if( await _repository.SetUserCurCarAsync(changeModel.CarEntityId, getUserId()) )
                 {
                     return Ok();
                 }
@@ -106,9 +119,7 @@ namespace CarHealth.Api.Controllers
         [HttpGet("car")]
         public async Task<ActionResult<CarEntity>> GetAsync()
         {
-            string userId = _userManager.GetUserId(User);
-
-            var car = await _repository.GetCurrentCarAsync(userId);
+            var car = await _repository.GetCurrentCarAsync(getUserId());
 
             if( car != null)
             {
@@ -122,8 +133,6 @@ namespace CarHealth.Api.Controllers
         [HttpPost("add/car")]
         public async Task<IActionResult> AddUserNewCar([FromBody] NewCarModel carEntity)
         {
-            string userId = _userManager.GetUserId(User);
-
             if (ModelState.IsValid)
             {
                 await _repository.AddUserNewCarAsync(new CarEntity
@@ -131,7 +140,7 @@ namespace CarHealth.Api.Controllers
                     CarEntityName = carEntity.CarEntityName,
                     CarsTotalRide = int.Parse(carEntity.CarsTotalRide),
                     IsCurrent = carEntity.IsCurrent,
-                    UserId = userId,
+                    UserId = getUserId(),
                     Id = ObjectId.GenerateNewId().ToString()
                 });
 
@@ -144,11 +153,9 @@ namespace CarHealth.Api.Controllers
         [HttpPut("put/car")]
         public async Task<IActionResult> UpdateUserCar([FromBody] EditCarModel carEntity)
         {
-            string userId = _userManager.GetUserId(User);
-
             if (ModelState.IsValid)
             {
-                if (await _repository.UpdateUserCarAsync(carEntity, userId))
+                if (await _repository.UpdateUserCarAsync(carEntity, getUserId()))
                 {
                     return Ok();
                 }
@@ -161,9 +168,7 @@ namespace CarHealth.Api.Controllers
         [HttpDelete("delete/car")]
         public async Task<IActionResult> DeleteUserCar([FromQuery] string carEntityId)
         {
-            string userId = _userManager.GetUserId(User);
-
-            if (await _repository.DeleteUserCarAsync(carEntityId, userId))
+            if (await _repository.DeleteUserCarAsync(carEntityId, getUserId()))
             {
                 return Ok();
             }
@@ -176,8 +181,7 @@ namespace CarHealth.Api.Controllers
         {
             if (ModelState.IsValid)
             {
-                string userId = _userManager.GetUserId(User);
-                var carItems = await _repository.FindCarItem(name, userId);
+                var carItems = await _repository.FindCarItem(name, getUserId());
                 if (carItems != null)
                 {
                     return Ok(carItems);
@@ -190,9 +194,7 @@ namespace CarHealth.Api.Controllers
         [HttpGet("cardetails")]
         public async Task<ActionResult<CarItemsSendModel>> GetCarItemsAsync([FromQuery] int offset, [FromQuery] int limit)
         {
-            string userId = _userManager.GetUserId(User);
-
-            var carItems = await _repository.GetCarItemsAsync(offset, limit, userId);
+            var carItems = await _repository.GetCarItemsAsync(offset, limit, getUserId());
 
             if(carItems != null)
             {
@@ -207,9 +209,7 @@ namespace CarHealth.Api.Controllers
         [HttpGet("totalride")]
         public async Task<IActionResult> GetTotalRideAsync()
         {
-            string userId = _userManager.GetUserId(User);
-
-            var result = await _repository.GetTotalRideAsync(userId);
+            var result = await _repository.GetTotalRideAsync(getUserId());
 
             if (result != null)
             {
@@ -223,11 +223,9 @@ namespace CarHealth.Api.Controllers
         [HttpPost("totalride/set")]
         public async Task<IActionResult> SetTotalRideAsync([FromBody]  UpdateTotalRideModel value)
         {
-            string userId = _userManager.GetUserId(User);
-
             if(ModelState.IsValid)
             {
-                if (await _repository.SetTotalRideAsync(value, userId))
+                if (await _repository.SetTotalRideAsync(value, getUserId()))
                 {
                     return Ok();
                 }
@@ -240,7 +238,6 @@ namespace CarHealth.Api.Controllers
         [HttpPost("add/caritem")]
         public async Task<IActionResult> AddNewCarItemAsync([FromBody] NewCarItemModel data)
         {
-            string userId = _userManager.GetUserId(User);
             if (ModelState.IsValid)
             {
                 if (await _repository.AddNewCarItemAsync(new CarItem
@@ -254,7 +251,7 @@ namespace CarHealth.Api.Controllers
                     RecomendedReplace = int.Parse(data.RecomendedReplace),
                     DateOfReplace = DateTime.Parse(data.DateOfReplace)
 
-                }, userId))
+                }, getUserId()))
                 {
                     return Ok();
                 }
@@ -267,11 +264,9 @@ namespace CarHealth.Api.Controllers
         [HttpPut("put/caritem")]
         public async Task<IActionResult> UpdateCarItemAsync([FromBody] UpdateCarItemModel value)
         {
-            string userId = _userManager.GetUserId(User);
-
             if (ModelState.IsValid)
             {
-                if (await _repository.UpdateCarItemAsync(value, userId))
+                if (await _repository.UpdateCarItemAsync(value, getUserId()))
                 {
                     return Ok();
                 }
@@ -284,9 +279,8 @@ namespace CarHealth.Api.Controllers
         [HttpDelete("delete/caritem/")]
         public async Task<IActionResult> DeleteAsync([FromQuery] string detailId)
         {
-            string userId = _userManager.GetUserId(User);
 
-            if(await _repository.DeleteCarItemAsync(detailId, userId))
+            if(await _repository.DeleteCarItemAsync(detailId, getUserId()))
             {
                 return Ok();
             }

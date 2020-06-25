@@ -34,7 +34,7 @@ namespace Carhealth.IdentityServer4.Controllers
         {
             if (!string.IsNullOrEmpty(name))
             {
-                IdentityResult result = await _roleManager.CreateAsync(new Role { Id = ObjectId.GenerateNewId().ToString(), Name = name});
+                IdentityResult result = await _roleManager.CreateAsync(new Role {Name = name});
 
                 if (result.Succeeded)
                 {

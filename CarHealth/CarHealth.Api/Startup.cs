@@ -1,22 +1,16 @@
-﻿using CarHealth.Api.Models;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using CarHealth.Api.Repositories;
-using System.Collections.Generic;
-using Microsoft.Extensions.Hosting;
-using AspNetCore.Identity.Mongo;
 using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
-using CarHealth.Api.Models.IdentityModels;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
 using CarHealth.Api.Helpers;
 using Microsoft.Extensions.Logging;
-using System;
 using CarHealth.Api.Contexts;
+using CarHealth.Api.Repositories.EFCoreRepository;
 
 namespace CarHealth.Api
 {
@@ -39,8 +33,8 @@ namespace CarHealth.Api
 
             services.Configure<ApplicationSettings>(Configuration);
 
-            //ConfigureMongoDb(services, config);
-            ConfigureEFCoreDb(services, config);
+            ConfigureMongoDb(services, config);
+            //ConfigureEFCoreDb(services, config);
 
 
             services.AddControllers();
@@ -142,19 +136,6 @@ namespace CarHealth.Api
             }); // MongoDb data repository
 
 
-            //services.AddIdentityMongoDbProvider<User, Role>(identityOptions =>
-            //{
-            //    identityOptions.
-            //    identityOptions.Password.RequiredLength = 4;   // минимальная длина
-            //    identityOptions.Password.RequireNonAlphanumeric = false;   // требуются ли не алфавитно-цифровые символы
-            //    identityOptions.Password.RequireLowercase = false; // требуются ли символы в нижнем регистре
-            //    identityOptions.Password.RequireUppercase = false; // требуются ли символы в верхнем регистре
-            //    identityOptions.Password.RequireDigit = false; // требуются ли цифры
-            //    identityOptions.User.RequireUniqueEmail = true; // уникальный email
-            //}, mongoIdentityOptions =>
-            //{
-            //    mongoIdentityOptions.ConnectionString = config.MongoDb.MongoDbIdentity;
-            //});
         }
 
         private void ConfigureEFCoreDb(IServiceCollection services, ApplicationSettings config)
@@ -164,22 +145,7 @@ namespace CarHealth.Api
 
             services.AddDbContext<CarContext>(options =>
            options.UseSqlServer(config.EFCoreDb.CarsDb)); // for EF Core data repository
-
-            services.AddDbContext<UserContext>(options =>
-           options.UseSqlServer(config.EFCoreDb.UsersIdentityDb));
-
-            services.AddIdentity<User, Role>(options => //валидация пароля 
-            {
-                options.Password.RequiredLength = 4;   // минимальная длина
-                 options.Password.RequireNonAlphanumeric = false;   // требуются ли не алфавитно-цифровые символы
-                 options.Password.RequireLowercase = false; // требуются ли символы в нижнем регистре
-                 options.Password.RequireUppercase = false; // требуются ли символы в верхнем регистре
-                 options.Password.RequireDigit = false; // требуются ли цифры
-                 options.User.RequireUniqueEmail = true; // уникальный email
-             })
-            .AddEntityFrameworkStores<UserContext>();// устанавливает тип хранилища, которое будет применяться в Identity для хранения 
-                                                     // данных.В качестве типа хранилища здесь указывается класс контекста данных.
-
+         
         }
 
     }

@@ -109,8 +109,8 @@ namespace CarHealth.Seed
                 return new DbFileReader(config.Import.FilePath);
             });
 
-            ConfigureMongoDb(services, config);
-            //ConfigureEFCoreDb(services, config);
+            //ConfigureMongoDb(services, config);
+            ConfigureEFCoreDb(services, config);
 
 
             if (Environment == "DevelopmentLocalhost")
@@ -192,7 +192,7 @@ namespace CarHealth.Seed
            }, mongoIdentityOptions =>
            {
                mongoIdentityOptions.ConnectionString = config.MongoDb.ConnectionString + "/" + config.MongoDb.MongoDbIdentity;
-           });
+           }).AddDefaultTokenProviders();
         }
 
     }

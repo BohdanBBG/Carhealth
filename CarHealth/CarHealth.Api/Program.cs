@@ -4,7 +4,6 @@ using System.IO;
 using System.Threading.Tasks;
 using CarHealth.Api.Helpers;
 using CarHealth.Api.Models;
-using CarHealth.Api.Models.IdentityModels;
 using CarHealth.Api.Repositories;
 using DotNetEnv;
 using Microsoft.AspNetCore;

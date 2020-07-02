@@ -93,7 +93,6 @@ namespace CarHealth.Seed
 
             services.AddOptions();
             services.Configure<ApplicationSettings>(configuration);
-            //services.Configure<Lexiconner.IdentityServer4.ApplicationSettings>(configuration); // map current config to identity  config
 
             //register directly to access using DI
             services.AddTransient(sp => configuration);
@@ -109,8 +108,8 @@ namespace CarHealth.Seed
                 return new DbFileReader(config.Import.FilePath);
             });
 
-            //ConfigureMongoDb(services, config);
-            ConfigureEFCoreDb(services, config);
+            ConfigureMongoDb(services, config);
+            //ConfigureEFCoreDb(services, config);
 
 
             if (Environment == "DevelopmentLocalhost")
@@ -171,7 +170,6 @@ namespace CarHealth.Seed
             });// Mongo identity data repository
 
 
-
             services.AddTransient<ISeedRepository, MongoMainDbSeedRepository>(sp =>
             {
                 var mongoClient = sp.GetService<MongoClient>();
@@ -179,20 +177,10 @@ namespace CarHealth.Seed
                 return new MongoMainDbSeedRepository(mongoClient, config.MongoDb.MainDb);
             }); // MongoDb data repository
 
+            services.AddIdentity<User, Role>()
+            .AddMongoDbStores<User, Role, string>(config.MongoDb.ConnectionString, config.MongoDb.MongoDbIdentity)
+              .AddDefaultTokenProviders();
 
-
-            services.AddIdentityMongoDbProvider<User, Role>(op =>
-           {
-               op.Password.RequiredLength = 4;   // минимальная длина
-               op.Password.RequireNonAlphanumeric = false;   // требуются ли не алфавитно-цифровые символы
-               op.Password.RequireLowercase = false; // требуются ли символы в нижнем регистре
-               op.Password.RequireUppercase = false; // требуются ли символы в верхнем регистре
-               op.Password.RequireDigit = false; // требуются ли цифры
-               op.User.RequireUniqueEmail = true; // уникальный email
-           }, mongoIdentityOptions =>
-           {
-               mongoIdentityOptions.ConnectionString = config.MongoDb.ConnectionString + "/" + config.MongoDb.MongoDbIdentity;
-           }).AddDefaultTokenProviders();
         }
 
     }

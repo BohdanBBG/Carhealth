@@ -1,4 +1,5 @@
 ﻿using AspNetCore.Identity.Mongo.Model;
+using AspNetCore.Identity.MongoDbCore.Models;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CarHealth.Seed.Models.IdentityModels
 {
-    public class User : MongoUser
+    public class User : MongoIdentityUser<string>
     //public class User : IdentityUser
     {
 

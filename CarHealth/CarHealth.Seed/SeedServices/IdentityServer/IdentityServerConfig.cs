@@ -15,7 +15,7 @@ namespace CarHealth.Seed.SeedServices.IdentityServer
     public class IdentityServerConfig : IIdentityServerConfig
     {
 
-        public string DefaultUserPassword { get { return "1234"; } }
+        public string DefaultUserPassword { get { return "Password_1"; } }
 
         public IEnumerable<ApiResource> GetApiResources()
         {

@@ -22,9 +22,9 @@ namespace CarHealth.IdentityServer4.Models
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<ClientEntity>().HasKey(m => m.ClientId);
-            builder.Entity<ApiResourceEntity>().HasKey(m => m.ApiResourceName);
-            builder.Entity<IdentityResourceEntity>().HasKey(m => m.IdentityResourceName);
+            builder.Entity<ClientEntity>().HasKey(m => m.Id);
+            builder.Entity<ApiResourceEntity>().HasKey(m => m.Id);
+            builder.Entity<IdentityResourceEntity>().HasKey(m => m.Id);
             base.OnModelCreating(builder);
         }
     }

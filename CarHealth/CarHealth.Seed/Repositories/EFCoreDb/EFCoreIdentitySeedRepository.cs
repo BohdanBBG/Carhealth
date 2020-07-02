@@ -112,7 +112,7 @@ namespace CarHealth.Seed.Repositories.EFCoreDb
 
         }
 
-        public async Task<bool> AddRole(Role role)
+        public  Task<bool> AddRole(Role role)
         {
             var existing = _roleManager.FindByNameAsync(role.Name).GetAwaiter().GetResult();
 
@@ -126,10 +126,10 @@ namespace CarHealth.Seed.Repositories.EFCoreDb
                     throw new Exception(string.Join("; ", errorList));
                 }
 
-                return true;
+                return Task.FromResult(true);
             }
 
-            return false;
+            return Task.FromResult(false);
         }
     }
 }

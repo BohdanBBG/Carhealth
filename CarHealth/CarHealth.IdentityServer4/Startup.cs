@@ -53,15 +53,10 @@ namespace CarHealth.IdentityServer4
                 options.EnableEndpointRouting = false;
             });
 
-            //  services.AddLogging();
 
-
-            ConfigureMongoDb(services, config);
+             ConfigureMongoDb(services, config);
             //ConfigureEFCoreDb(services, config);
 
-
-              services.AddTransient<IClientStore, EFCoreClientStore>();
-              services.AddTransient<IResourceStore, EFCoreResourceStore>();
 
             var identityServerBuilder = services.AddIdentityServer(options =>
             {
@@ -75,8 +70,12 @@ namespace CarHealth.IdentityServer4
             // В продакшне нужно заменить эти ключи, сделать это можно, например сгенерировав самоподписной сертификат:
             //https://brockallen.com/2015/06/01/makecert-and-creating-ssl-or-signing-certificates/
             .AddDeveloperSigningCredential()
-            .AddClients()
-            .AddIdentityApiResources()
+
+            .AddMongoClients(config)
+            .AddMongoIdentityApiResources(config)
+            .AddMongoDbForAspIdentity<User, Role>(config)
+            //.AddEFCoreClients()
+            //.AddEFCoreIdentityApiResources()
             .AddAspNetIdentity<User>();
 
             //.AddInMemoryPersistedGrants()
@@ -144,28 +143,28 @@ namespace CarHealth.IdentityServer4
             });
 
 
-            services.AddIdentityMongoDbProvider<User, Role>(identityOptions =>
-            {
-                identityOptions.Password.RequiredLength = 4;   // минимальная длина
-                identityOptions.Password.RequireNonAlphanumeric = false;   // требуются ли не алфавитно-цифровые символы
-                identityOptions.Password.RequireLowercase = false; // требуются ли символы в нижнем регистре
-                identityOptions.Password.RequireUppercase = false; // требуются ли символы в верхнем регистре
-                identityOptions.Password.RequireDigit = false; // требуются ли цифры
-                identityOptions.User.RequireUniqueEmail = true; // уникальный email
-            }, mongoIdentityOptions =>
-            {
-                mongoIdentityOptions.ConnectionString = config.MongoDb.MongoDbIdentity;
-            });
+            //services.AddIdentityMongoDbProvider<User, Role>(identityOptions =>
+            //{
+            //    identityOptions.Password.RequiredLength = 4;   // минимальная длина
+            //    identityOptions.Password.RequireNonAlphanumeric = false;   // требуются ли не алфавитно-цифровые символы
+            //    identityOptions.Password.RequireLowercase = false; // требуются ли символы в нижнем регистре
+            //    identityOptions.Password.RequireUppercase = false; // требуются ли символы в верхнем регистре
+            //    identityOptions.Password.RequireDigit = false; // требуются ли цифры
+            //    identityOptions.User.RequireUniqueEmail = true; // уникальный email
+            //}, mongoIdentityOptions =>
+            //{
+            //    mongoIdentityOptions.ConnectionString = config.MongoDb.MongoDbIdentity;
+            //});
         }
 
         private void ConfigureEFCoreDb(IServiceCollection services, ApplicationSettings config)
         {
-            // services.AddDbContext<UserContext>(options =>
-            //    options.UseSqlServer(config.EFCoreDb.UsersIdentityDb)
-            //);
+        //    services.AddDbContext<UserContext>(options =>
+        //       options.UseSqlServer(config.EFCoreDb.UsersIdentityDb)
+        //   );
 
-            services.AddDbContext<IdentityServerContext>(options =>
-             options.UseSqlServer(config.EFCoreDb.ClientsIdentityDb)); // repository for IdentityServer (clients, scopes, etc)
+        //    services.AddDbContext<IdentityServerContext>(options =>
+        //     options.UseSqlServer(config.EFCoreDb.ClientsIdentityDb)); // repository for IdentityServer (clients, scopes, etc)
 
             //services.AddIdentity<User, Role>(options => //валидация пароля 
             //{

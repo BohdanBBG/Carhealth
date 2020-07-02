@@ -21,8 +21,8 @@ namespace CarHealth.IdentityServer4.Stores.EFCoreStores
 
         public Task<ApiResource> FindApiResourceAsync(string name)
         {
-            var apiResource = _identityDb.ApiResources.First(t => t.ApiResourceName == name);
-            apiResource.MapDataFromEntity();
+            var apiResource = _identityDb.ApiResources.First(t => t.ApiResource.Name == name);
+
             return Task.FromResult(apiResource.ApiResource);
         }
 
@@ -33,12 +33,11 @@ namespace CarHealth.IdentityServer4.Stores.EFCoreStores
 
             var apiResources = new List<ApiResource>();
             var apiResourcesEntities = from i in _identityDb.ApiResources
-                                       where scopeNames.Contains(i.ApiResourceName)
+                                       where scopeNames.Contains(i.ApiResource.Name)
                                        select i;
 
             foreach (var apiResourceEntity in apiResourcesEntities)
             {
-                apiResourceEntity.MapDataFromEntity();
 
                 apiResources.Add(apiResourceEntity.ApiResource);
             }
@@ -52,12 +51,11 @@ namespace CarHealth.IdentityServer4.Stores.EFCoreStores
 
             var identityResources = new List<IdentityResource>();
             var identityResourcesEntities = from i in _identityDb.IdentityResources
-                                            where scopeNames.Contains(i.IdentityResourceName)
+                                            where scopeNames.Contains(i.IdentityResource.Name)
                                             select i;
 
             foreach (var identityResourceEntity in identityResourcesEntities)
             {
-                identityResourceEntity.MapDataFromEntity();
 
                 identityResources.Add(identityResourceEntity.IdentityResource);
             }
@@ -75,15 +73,11 @@ namespace CarHealth.IdentityServer4.Stores.EFCoreStores
 
             foreach (var apiResourceEntity in apiResourcesEntities)
             {
-                apiResourceEntity.MapDataFromEntity();
-
                 apiResources.Add(apiResourceEntity.ApiResource);
             }
 
             foreach (var identityResourceEntity in identityResourcesEntities)
             {
-                identityResourceEntity.MapDataFromEntity();
-
                 identityResources.Add(identityResourceEntity.IdentityResource);
             }
 

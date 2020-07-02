@@ -20,11 +20,11 @@ namespace CarHealth.IdentityServer4.Stores.EFCoreStores
         }
 
 
-        public async Task<Client> FindClientByIdAsync(string clientId)
+        public  Task<Client> FindClientByIdAsync(string clientId)
         {
-            var client = _identityDb.Clients.First(t => t.ClientId == clientId);
-            client.MapDataFromEntity();
-            return client.Client;
+            var client = _identityDb.Clients.First(t => t.Client.ClientId == clientId);
+
+            return Task.FromResult(client.Client);
 
         }
 

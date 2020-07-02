@@ -84,11 +84,7 @@ namespace CarHealth.Seed.SeedServices
                 foreach (var client in _identityServerConfig.GetClients(_config))
                 {
 
-                    ClientEntity clientEntity = new ClientEntity();
-                    clientEntity.Client = client;
-                    clientEntity.AddDataToEntity();
-
-                    await _identityContex.AddClientAsync(clientEntity);
+                    await _identityContex.AddClientAsync(new ClientEntity(client));
                    
                 }
             }
@@ -100,12 +96,7 @@ namespace CarHealth.Seed.SeedServices
             {
                 foreach (var resource in _identityServerConfig.GetIdentityResources())
                 {
-
-                    IdentityResourceEntity identityResourceEntity = new IdentityResourceEntity();
-                    identityResourceEntity.IdentityResource = resource;
-                    identityResourceEntity.AddDataToEntity();
-
-                    await _identityContex.AddIdentityResourceAsync(identityResourceEntity);
+                    await _identityContex.AddIdentityResourceAsync(new IdentityResourceEntity(resource));
                 }
             }
             _logger.LogInformation("IdentityResources Done.");
@@ -116,12 +107,7 @@ namespace CarHealth.Seed.SeedServices
             {
                 foreach (var api in _identityServerConfig.GetApiResources())
                 {
-
-                    ApiResourceEntity apiResourceEntity = new ApiResourceEntity();
-                    apiResourceEntity.ApiResource = api;
-                    apiResourceEntity.AddDataToEntity();
-
-                    await _identityContex.AddApiResourceAsync(apiResourceEntity);
+                    await _identityContex.AddApiResourceAsync(new ApiResourceEntity(api));
 
                 }
             }

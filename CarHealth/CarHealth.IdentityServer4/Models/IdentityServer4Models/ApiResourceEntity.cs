@@ -14,24 +14,21 @@ namespace CarHealth.IdentityServer4.Models.IdentityServer4Models
     public class ApiResourceEntity
     {
 
-        public string ApiResourceData { get; set; }
+        public ApiResourceEntity()
+        {
+            Id = Guid.NewGuid().ToString();
+        }
 
-        [Key]
-        public string ApiResourceName { get; set; }
+        public ApiResourceEntity(ApiResource resource)
+        {
+            Id = Guid.NewGuid().ToString();
+            ApiResource = resource;
+        }
+
+        public string Id { get; set; }
 
         [NotMapped]
         public ApiResource ApiResource { get; set; }
 
-        public void AddDataToEntity()
-        {
-            ApiResourceData = JsonConvert.SerializeObject(ApiResource);
-            ApiResourceName = ApiResource.Name;
-        }
-
-        public void MapDataFromEntity()
-        {
-            ApiResource = JsonConvert.DeserializeObject<ApiResource>(ApiResourceData);
-            ApiResourceName = ApiResource.Name;
-        }
     }
 }

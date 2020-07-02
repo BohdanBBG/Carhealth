@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CarHealth.IdentityServer4.Contexts
 {
-    //public class UserContext : IdentityDbContext<User,Role,string>
+    //public class UserContext : IdentityDbContext<User, Role, string>
     //{
     //    public UserContext(DbContextOptions<UserContext> options)
     //        : base(options)

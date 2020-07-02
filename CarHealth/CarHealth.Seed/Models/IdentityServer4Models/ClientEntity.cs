@@ -13,24 +13,23 @@ namespace CarHealth.Seed.Models.IdentityServer4Models
 {
     public class ClientEntity
     {
-        public string ClientData { get; set; }
 
-        [Key]
-        public string ClientId { get; set; }
+        public ClientEntity()
+        {
+            Id = Guid.NewGuid().ToString();
+        }
+
+        public ClientEntity(Client client)
+        {
+            Id = Guid.NewGuid().ToString();
+            this.Client = client;
+        }
+
+        public string Id { get; set; }
 
         [NotMapped]
         public Client Client { get; set; }
 
-        public void AddDataToEntity()
-        {
-            ClientData = JsonConvert.SerializeObject(Client);
-            ClientId = Client.ClientId;
-        }
-
-        public void MapDataFromEntity()
-        {
-            Client = JsonConvert.DeserializeObject<Client>(ClientData);
-            ClientId = Client.ClientId;
-        }
+       
     }
 }

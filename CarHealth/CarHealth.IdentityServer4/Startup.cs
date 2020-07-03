@@ -48,14 +48,14 @@ namespace CarHealth.IdentityServer4
 
             services.Configure<ApplicationSettings>(Configuration);
 
+           
+
             services.AddMvc(options =>
             {
                 options.EnableEndpointRouting = false;
             });
 
 
-             ConfigureMongoDb(services, config);
-            //ConfigureEFCoreDb(services, config);
 
 
             var identityServerBuilder = services.AddIdentityServer(options =>
@@ -69,14 +69,13 @@ namespace CarHealth.IdentityServer4
             // добавляет тестовые ключи для подписи JWT-токенов, а именно id_token, access_token
             // В продакшне нужно заменить эти ключи, сделать это можно, например сгенерировав самоподписной сертификат:
             //https://brockallen.com/2015/06/01/makecert-and-creating-ssl-or-signing-certificates/
-            .AddDeveloperSigningCredential()
+            .AddDeveloperSigningCredential();
 
-            .AddMongoClients(config)
-            .AddMongoIdentityApiResources(config)
-            .AddMongoDbForAspIdentity<User, Role>(config)
-            //.AddEFCoreClients()
-            //.AddEFCoreIdentityApiResources()
-            .AddAspNetIdentity<User>();
+             ConfigureMongoDb(services,identityServerBuilder, config);
+            //ConfigureEFCoreDb((services,identityServerBuilder, config));
+
+            identityServerBuilder.AddAspNetIdentity<User>();
+
 
             //.AddInMemoryPersistedGrants()
 
@@ -135,123 +134,42 @@ namespace CarHealth.IdentityServer4
 
         }
 
-        private void ConfigureMongoDb(IServiceCollection services, ApplicationSettings config)
+        private void ConfigureMongoDb(IServiceCollection services, IIdentityServerBuilder identityServerBuilder, ApplicationSettings config)
         {
             services.AddTransient<MongoClient>(sp =>
             {
                 return new MongoClient(config.MongoDb.ConnectionString);
             });
 
-
-            //services.AddIdentityMongoDbProvider<User, Role>(identityOptions =>
-            //{
-            //    identityOptions.Password.RequiredLength = 4;   // минимальная длина
-            //    identityOptions.Password.RequireNonAlphanumeric = false;   // требуются ли не алфавитно-цифровые символы
-            //    identityOptions.Password.RequireLowercase = false; // требуются ли символы в нижнем регистре
-            //    identityOptions.Password.RequireUppercase = false; // требуются ли символы в верхнем регистре
-            //    identityOptions.Password.RequireDigit = false; // требуются ли цифры
-            //    identityOptions.User.RequireUniqueEmail = true; // уникальный email
-            //}, mongoIdentityOptions =>
-            //{
-            //    mongoIdentityOptions.ConnectionString = config.MongoDb.MongoDbIdentity;
-            //});
+            identityServerBuilder.AddMongoClients(config)
+                                 .AddMongoIdentityApiResources(config)
+                                 .AddMongoDbForAspIdentity<User, Role>(config);
         }
 
-        private void ConfigureEFCoreDb(IServiceCollection services, ApplicationSettings config)
+        private void ConfigureEFCoreDb(IServiceCollection services, IIdentityServerBuilder identityServerBuilder, ApplicationSettings config)
         {
-        //    services.AddDbContext<UserContext>(options =>
-        //       options.UseSqlServer(config.EFCoreDb.UsersIdentityDb)
-        //   );
+           // services.adddbcontext<usercontext>(options =>
+           //    options.usesqlserver(config.efcoredb.usersidentitydb)
+           //);
 
-        //    services.AddDbContext<IdentityServerContext>(options =>
-        //     options.UseSqlServer(config.EFCoreDb.ClientsIdentityDb)); // repository for IdentityServer (clients, scopes, etc)
+           // services.adddbcontext<identityservercontext>(options =>
+           //  options.usesqlserver(config.efcoredb.clientsidentitydb)); // repository for identityserver (clients, scopes, etc)
 
-            //services.AddIdentity<User, Role>(options => //валидация пароля 
-            //{
-            //    options.Password.RequiredLength = 4;   // минимальная длина
-            //    options.Password.RequireNonAlphanumeric = false;   // требуются ли не алфавитно-цифровые символы
-            //    options.Password.RequireLowercase = false; // требуются ли символы в нижнем регистре
-            //    options.Password.RequireUppercase = false; // требуются ли символы в верхнем регистре
-            //    options.Password.RequireDigit = false; // требуются ли цифры
-            //    options.User.RequireUniqueEmail = true; // уникальный email
-            //})
-            //.AddEntityFrameworkStores<UserContext>()
-            //.AddDefaultTokenProviders();// устанавливает тип хранилища, которое будет применяться в Identity для хранения 
-            //                            // данных.В качестве типа хранилища здесь указывается класс контекста данных.
+           // identityServerBuilder.AddEFCoreClients()
+           //                     .AddEFCoreIdentityApiResources();
+
+           // services.addidentity<user, role>(options => //валидация пароля 
+           // {
+           //     options.password.requiredlength = 4;   // минимальная длина
+           //     options.password.requirenonalphanumeric = false;   // требуются ли не алфавитно-цифровые символы
+           //     options.password.requirelowercase = false; // требуются ли символы в нижнем регистре
+           //     options.password.requireuppercase = false; // требуются ли символы в верхнем регистре
+           //     options.password.requiredigit = false; // требуются ли цифры
+           //     options.user.requireuniqueemail = true; // уникальный email
+           // })
+           // .addentityframeworkstores<usercontext>()
+           // .adddefaulttokenproviders();// устанавливает тип хранилища, которое будет применяться в identity для хранения 
+           //                             // данных.в качестве типа хранилища здесь указывается класс контекста данных.
         }
-
-        //public static IEnumerable<IdentityResource> GetIdentityResources()//Настройки информации для клиентских приложений
-        //{
-        //    // определяет, какие scopes будут доступны IdentityServer
-        //    return new List<IdentityResource>
-        //    {
-        //        // "sub" claim
-        //        new IdentityResources.OpenId(),
-        //       new IdentityResources.Email(), // profile Claims: email and email_verified
-        //         // стандартные claims в соответствии с profile scope
-        //         // http://openid.net/specs/openid-connect-core-1_0.html#ScopeClaims
-        //       new IdentityResources.Profile(),//  profile Claims: name, family_name, given_name, middle_name, nickname etc
-        //    };
-
-        //}
-
-        //public static IEnumerable<ApiResource> GetApiResources()// информация предназначается для API.
-        //                                                        //Чтобы разрешить клиентам запрашивать токены доступа для API, необходимо определить ресурсы API
-        //{
-        //    // claims этих scopes будут включены в access_token
-        //    return new List<ApiResource>
-        //    {
-        //        // определяем scope "CarHealth.Api" для IdentityServer
-        //        new ApiResource("CarHealth.Api","Carhealth Api",
-        //        // эти claims войдут в scope CarHealth.Api
-        //        new[] { "UserName", "email"})
-
-        //    };
-        //}
-
-        //public static IEnumerable<Client> GetClients()//Сами клиентские приложения, нужно чтобы сервер знал о них
-        //{
-        //    return new List<Client>
-        //    {
-        //        new Client
-        //        { 
-        //            // обязательный параметр, при помощи client_id сервер различает клиентские приложения 
-        //            ClientId = "CarHealth.Web",
-        //            ClientName = "Web",
-        //            AllowedGrantTypes = GrantTypes.Implicit,
-        //            AllowAccessTokensViaBrowser = true,
-        //             // от этой настройки зависит размер токена, 
-        //             // при false можно получить недостающую информацию через UserInfo endpoint
-        //            AlwaysIncludeUserClaimsInIdToken = true,
-        //            // белый список адресов на который клиентское приложение может попросить
-        //            // перенаправить User Agent, важно для безопасности
-        //            RedirectUris =
-        //            {
-        //                // адрес перенаправления после логина
-        //                "https://localhost:5004/callback.html",
-        //                // адрес перенаправления при автоматическом обновлении access_token через iframe
-        //                 "https://localhost:5004/callback-silent.html"
-        //            },
-        //            PostLogoutRedirectUris= { "https://localhost:5004/index.html" },
-        //            // адрес клиентского приложения, просим сервер возвращать нужные CORS-заголовки
-        //            AllowedCorsOrigins = { "https://localhost:5004" },
-        //             // список scopes, разрешённых именно для данного клиентского приложения
-        //            AllowedScopes =
-        //            {
-        //                IdentityServerConstants.StandardScopes.OpenId,
-        //                IdentityServerConstants.StandardScopes.Profile,
-        //                 IdentityServerConstants.StandardScopes.Email,
-        //                "CarHealth.Api"
-        //            },
-        //            AccessTokenLifetime = 3600,// секунд, это значение по умолчанию
-        //            IdentityTokenLifetime = 300, // секунд, это значение по умолчанию
-
-        //             // разрешено ли получение refresh-токенов через указание scope offline_access
-        //             AllowOfflineAccess = false,
-        //             RequireConsent = false
-        //        }
-        //    };
-        //}
-
     }
 }

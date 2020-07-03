@@ -1,4 +1,14 @@
 ﻿@using IdentityServer4.Extensions
+@using CarHealth.IdentityServer4
+
+@*@using Microsoft.Extensions.Configuration
+    @inject IConfiguration config*@
+
+@*@inject Microsoft.Extensions.Options.IOptions<ApplicationSettings> metaOptions
+@{
+    var options = metaOptions.Value;
+}*@
+
 @{
     string name = null;
     if (!true.Equals(ViewData["signed-out"]))
@@ -36,23 +46,23 @@
                 </a>
             </div>
 
-            
+
             @if (!string.IsNullOrWhiteSpace(name))
             {
-                <ul class="nav navbar-nav">
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">@name <b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                            <li><a asp-action="Logout" asp-controller="Account">Logout</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a asp-controller="Home" asp-action="Index" asp-host="localhost:5004" asp-protocol="https">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a asp-controller="Home" asp-action="Index" asp-host="localhost:5001" asp-protocol="https">API</a>
-                    </li>
-                </ul>
+            <ul class="nav navbar-nav">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">@name <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a asp-action="Logout" asp-controller="Account">Logout</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a asp-controller="Route" asp-action="GoToWebSpaIndex">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a asp-controller="Route" asp-action="GoToApiIndex">API</a>
+                </li>
+            </ul>
             }
         </div>
     </div>

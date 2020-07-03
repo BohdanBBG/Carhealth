@@ -3,6 +3,7 @@ using CarHealth.Seed.Models;
 using CarHealth.Seed.Models.IdentityModels;
 using IdentityServer4.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +17,7 @@ namespace CarHealth.Seed.SeedServices.IdentityServer
 
         IEnumerable<IdentityResource> GetIdentityResources();
         IEnumerable<ApiResource> GetApiResources();
-        IEnumerable<Client> GetClients(ApplicationSettings config);
+        IEnumerable<Client> GetClients(IConfiguration config);
 
 
         List<Role> GetInitialIdentityRoles();

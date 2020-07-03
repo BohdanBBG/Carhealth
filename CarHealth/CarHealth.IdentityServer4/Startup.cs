@@ -94,14 +94,17 @@ namespace CarHealth.IdentityServer4
 
             services.AddCors(options =>
             {
-                options.AddPolicy("default", builder =>
+                if (config.Cors != null && config.Cors.AllowedOrigins != null)
                 {
-                    builder
-                        .WithOrigins(config.Cors.AllowedOrigins.ToArray())
-                        .AllowAnyMethod()
-                        .AllowAnyHeader()
-                        .AllowCredentials();
-                });
+                    options.AddPolicy("default", builder =>
+                    {
+                        builder
+                            .WithOrigins(config.Cors.AllowedOrigins.ToArray())
+                            .AllowAnyMethod()
+                            .AllowAnyHeader()
+                            .AllowCredentials();
+                    });
+                }
             });
         }
 

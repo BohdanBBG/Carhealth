@@ -16,13 +16,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CarHealth.Seed.Models.IdentityModels;
+using Microsoft.Extensions.Configuration;
 
 namespace CarHealth.Seed.SeedServices
 {
     public class SeedServiceDevelopmentLocalhost: ISeedService
     {
 
-        private readonly ApplicationSettings _config;
+        private readonly IConfiguration  _config;
         private readonly ILogger<ISeedService> _logger;
         private readonly IDbFileReader<List<CarEntity>> _carTxtImporter;
         private readonly ISeedRepository _seedRepository;
@@ -33,7 +34,7 @@ namespace CarHealth.Seed.SeedServices
         private readonly RoleManager<Role> _roleManager;
 
         public SeedServiceDevelopmentLocalhost(
-              IOptions<ApplicationSettings> config,
+              IConfiguration config,
               ILogger<ISeedService> logger,
               IDbFileReader<List<CarEntity>> carTxtImporter,
               ISeedRepository carRepository,
@@ -44,7 +45,7 @@ namespace CarHealth.Seed.SeedServices
               RoleManager<Role> roleManager
           )
         {
-            _config = config.Value;
+            _config = config;
             _logger = logger;
             _carTxtImporter = carTxtImporter;
             _seedRepository = carRepository;

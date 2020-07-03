@@ -67,16 +67,12 @@ namespace CarHealth.Api.Controllers
             return Unauthorized("");
         }
 
-      //  [Authorize]
+        //[Authorize]
         [HttpGet("config")]
         public ActionResult<string> Config()
         {
             return _configuration.Get<ApplicationSettings>().Urls.ToJson();
-            // return "{ \"urls\" :{ \"api\" :\" https://localhost:5001\"} }";
-
         }
-
-       
 
         [Authorize]
         [HttpGet("allUsersCars")]

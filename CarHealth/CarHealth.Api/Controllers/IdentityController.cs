@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CarHealth.Api.Helpers;
 using CarHealth.Api.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
@@ -40,21 +41,10 @@ namespace CarHealth.Api.Controllers
             return new JsonResult("Powers!");
         }
 
-        [Authorize]
-        [HttpGet]
-        [Route("GetUser")]
-        public IActionResult GetUser()
+        [HttpGet("env")]
+        public IActionResult Environment()
         {
-            return new JsonResult(User);
+            return new  JsonResult(HostingEnvironmentHelper.Environment);
         }
-
-
-        [HttpGet("identity")]
-        public IActionResult Get()
-        {
-            return new JsonResult(from c in User.Claims select new { c.Type, c.Value });
-        }
-
-
     }
 }

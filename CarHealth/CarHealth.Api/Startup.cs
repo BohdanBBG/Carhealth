@@ -67,13 +67,16 @@ namespace CarHealth.Api
 
             services.AddCors(options =>
             {
-                // задаём политику CORS, чтобы наше клиентское приложение могло отправить запрос на сервер API
-                options.AddPolicy("default", policy =>
+                if (config.Cors != null && config.Cors.AllowedOrigins != null)
                 {
-                     policy.WithOrigins(config.Cors.AllowedOrigins.ToArray())
-                        .AllowAnyHeader()
-                        .AllowAnyMethod();
-                });
+                    // задаём политику CORS, чтобы наше клиентское приложение могло отправить запрос на сервер API
+                    options.AddPolicy("default", policy =>
+                    {
+                        policy.WithOrigins(config.Cors.AllowedOrigins.ToArray())
+                       .AllowAnyHeader()
+                       .AllowAnyMethod();
+                    });
+                }
             });
 
             services.AddSwaggerGen(c =>

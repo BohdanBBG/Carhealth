@@ -34,6 +34,8 @@ namespace CarHealth.IdentityServer4.Stores.MongoDbStores
 
             var client = await _clientCollection.Find(x => x.Client.ClientId == clientId).FirstOrDefaultAsync();
 
+            if (client == null) throw new ArgumentNullException(nameof(client));
+
             return client.Client;
 
         }

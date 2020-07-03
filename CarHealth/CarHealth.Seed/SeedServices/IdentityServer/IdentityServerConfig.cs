@@ -4,6 +4,7 @@ using CarHealth.Seed.Models.IdentityModels;
 using IdentityServer4;
 using IdentityServer4.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using MongoDB.Bson;
 using System;
 using System.Collections.Generic;
@@ -30,7 +31,7 @@ namespace CarHealth.Seed.SeedServices.IdentityServer
             };
         }
 
-        public IEnumerable<Client> GetClients(ApplicationSettings config)
+        public IEnumerable<Client> GetClients(IConfiguration config)
         {
             return new List<Client>
             {
@@ -49,14 +50,14 @@ namespace CarHealth.Seed.SeedServices.IdentityServer
                     RedirectUris =
                     {
                          // адрес перенаправления после логина
-                         $"{config.Urls.WebSpa}/callback.html",
+                         $"{config.Get<ApplicationSettings>().Urls.WebSpa}/callback.html",
                         // адрес перенаправления при автоматическом обновлении access_token через iframe
-                          $"{config.Urls.WebSpa}/callback-silent.html"
+                          $"{config.Get<ApplicationSettings>().Urls.WebSpa}/callback-silent.html"
 
                     },
-                    PostLogoutRedirectUris= {  $"{config.Urls.WebSpa}/index.html" },
+                    PostLogoutRedirectUris= {  $"{config.Get<ApplicationSettings>().Urls.WebSpa}/index.html" },
                     // адрес клиентского приложения, просим сервер возвращать нужные CORS-заголовки
-                    AllowedCorsOrigins = {  $"{config.Urls.WebSpa}" },
+                    AllowedCorsOrigins = {  $"{config.Get<ApplicationSettings>().Urls.WebSpa}" },
 
                      // список scopes, разрешённых именно для данного клиентского приложения
                     AllowedScopes =

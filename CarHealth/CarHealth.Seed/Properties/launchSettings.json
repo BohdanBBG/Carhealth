@@ -1,5 +1,23 @@
 ﻿{
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:50820",
+      "sslPort": 44375
+    }
+  },
+
   "profiles": {
+
+    "IIS Express": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+
     "CarHealth.Seed_DevelopmentLocalhost": {
       "commandName": "Project",
       "environmentVariables": {
@@ -7,10 +25,20 @@
         "Environment": "DevelopmentLocalhost",
         "ASPNETCORE_ENVIRONMENT": "DevelopmentLocalhost"
       }
+    },
+
+    "CarHealth.Seed_DevelopmentAzure": {
+      "commandName": "Project",
+      "environmentVariables": {
+        // change this to seed different DB
+        "Environment": "DevelopmentAzure",
+        "ASPNETCORE_ENVIRONMENT": "DevelopmentAzure"
+      }
     }
   }
-
-
-  
-
 }
+
+ 
+
+
+

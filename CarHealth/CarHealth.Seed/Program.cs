@@ -23,31 +23,6 @@ namespace CarHealth.Seed
 {
     public class Program
     {
-        public static string Environment
-        {
-            get
-            {
-                // for web projects
-                string env = System.Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-
-                // for console projects
-                if (String.IsNullOrEmpty(env))
-                {
-                    env = System.Environment.GetEnvironmentVariable("Environment");
-                }
-
-                if (String.IsNullOrEmpty(env))
-                {
-                    // if we get here then Environment is possibly set in hostsettings.json and can't be accessed
-                    // only using 'hostingContext.HostingEnvironment.EnvironmentName', so it is not in
-                    // 'Environment' env variable
-                    throw new Exception("Neither ASPNETCORE_ENVIRONMENT not Environment is set! Recheck startup configuration.");
-                }
-
-                return env;
-            }
-        }
-
         public static async Task Main(string[] args)
         {
             Console.Title = "CarHealth.Seed";
@@ -56,10 +31,6 @@ namespace CarHealth.Seed
             var serviceProvider = RegisterServices(configuration);
             var logger = serviceProvider.GetService<ILogger<Program>>();
 
-            logger.LogInformation(" \n");
-            logger.LogInformation("Parameters:");
-            logger.LogInformation("Environment: {Environment}", System.Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"));
-            logger.LogInformation("\n");
 
             var seedService = serviceProvider.GetService<ISeedService>();
 
@@ -78,9 +49,12 @@ namespace CarHealth.Seed
                 DotNetEnv.Env.Load(envFilePath);
             }
 
+            Console.WriteLine("ASPNETCORE_ENVIRONMENT: " + System.Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"));
+
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{System.Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", optional: true, reloadOnChange: true)
                 .AddEnvironmentVariables();
 
             return builder.Build();
@@ -102,7 +76,7 @@ namespace CarHealth.Seed
 
             services.AddTransient<IIdentityServerConfig, IdentityServerConfig>();
 
-            
+
             services.AddTransient<IDbFileReader<List<CarEntity>>, DbFileReader>(xp =>
             {
                 return new DbFileReader(config.Import.FilePath);
@@ -112,10 +86,7 @@ namespace CarHealth.Seed
             //ConfigureEFCoreDb(services, config);
 
 
-            if (Environment == "DevelopmentLocalhost")
-            {
-                services.AddTransient<ISeedService, SeedServiceDevelopmentLocalhost>();
-            }
+            services.AddTransient<ISeedService, SeedServiceDevelopmentLocalhost>();
 
 
             return services.BuildServiceProvider();

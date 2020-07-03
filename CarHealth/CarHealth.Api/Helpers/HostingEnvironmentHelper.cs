@@ -17,7 +17,9 @@ namespace CarHealth.Api.Helpers
 
             // custom names
             public const string DevelopmentLocalhost = "DevelopmentLocalhost";
-           
+            public const string DevelopmentAzure = "DevelopmentAzure";
+
+
         }
 
         public static string Environment
@@ -49,8 +51,17 @@ namespace CarHealth.Api.Helpers
         {
             return environment == HostingEnvironmentDefaults.DevelopmentLocalhost;
         }
+        public static bool IsDevelopmentAzure(string environment)
+        {
+            return environment == HostingEnvironmentDefaults.DevelopmentAzure;
+        }
 
         public static bool IsDevelopmentLocalhost()
+        {
+            return Environment == HostingEnvironmentDefaults.DevelopmentAzure;
+        }
+
+        public static bool IsDevelopmentAzure()
         {
             return Environment == HostingEnvironmentDefaults.DevelopmentLocalhost;
         }

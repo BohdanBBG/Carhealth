@@ -48,15 +48,12 @@ namespace CarHealth.Web
                     configBuilder.AddEnvironmentVariables();
                 });
 
-            if (System.Environment.GetEnvironmentVariable(" ASPNETCORE_ENVIRONMENT") == "DevelopmentLocalhost")
+            if (System.Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "DevelopmentLocalhost")
             {
                 builder.UseUrls($"https://localhost:5004");
             }
 
-            if (Environment.GetEnvironmentVariable("RUNTIME_ENV") == "heroku")
-            {
-                builder.UseUrls($"http://+:{Environment.GetEnvironmentVariable("PORT")}");
-            }
+          
 
             builder.UseStartup<Startup>();
 

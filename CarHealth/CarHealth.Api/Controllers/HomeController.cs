@@ -19,15 +19,7 @@ namespace CarHealth.Api.Controllers
     public class HomeController : ControllerBase
     {
 
-
         private readonly ICarRepository _repository;
-
-
-        public HomeController(ICarRepository repository)
-        {
-            _repository = repository;
-        }
-
         protected string UserId
         {
             get
@@ -46,10 +38,40 @@ namespace CarHealth.Api.Controllers
 
                 return currentUserId;
             }
+            set { _repository.UserId = value; }
+        }
+
+
+        public HomeController(ICarRepository repository)
+        {
+            _repository = repository;
 
         }
 
-       // [Authorize]
+        //protected string UserId
+        //{
+        //    get
+        //    {
+        //        string currentUserId = null;
+
+        //        if (User.HasClaim(x => x.Type == ClaimTypes.NameIdentifier))
+        //        {
+        //            currentUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+        //        }
+        //        else if (User.HasClaim(x => x.Type == JwtClaimTypes.Subject))
+        //        {
+        //            currentUserId = User.FindFirst(JwtClaimTypes.Subject).Value;
+        //        }
+
+
+        //        return currentUserId;
+        //    }
+
+        //}
+
+
+
+        // [Authorize]
         public IActionResult Index()
         {
             return new RedirectResult("~/swagger");
@@ -59,7 +81,9 @@ namespace CarHealth.Api.Controllers
         [HttpGet("allUsersCars")]
         public async Task<IActionResult> GetUsersCarsAsync()
         {
-            var cars = await _repository.GetAllUsersCarsAsync(UserId);
+            _repository.UserId = UserId;
+
+            var cars = await _repository.GetAllUsersCarsAsync();
 
             if (cars != null)
             {
@@ -81,7 +105,9 @@ namespace CarHealth.Api.Controllers
         {
             if (ModelState.IsValid)
             {
-                if( await _repository.SetUserCurCarAsync(changeModel.CarEntityId, UserId) )
+                 _repository.UserId = UserId;
+
+                if ( await _repository.SetUserCurCarAsync(changeModel.CarEntityId) )
                 {
                     return Ok();
                 }
@@ -94,7 +120,9 @@ namespace CarHealth.Api.Controllers
         [HttpGet("car")]
         public async Task<IActionResult> GetAsync()
         {
-            var car = await _repository.GetCurrentCarAsync(UserId);
+             _repository.UserId = UserId;
+
+            var car = await _repository.GetCurrentCarAsync();
 
             if( car != null)
             {
@@ -110,6 +138,8 @@ namespace CarHealth.Api.Controllers
         {
             if (ModelState.IsValid)
             {
+                 _repository.UserId = UserId;
+
                 await _repository.AddUserNewCarAsync(new CarEntity
                 {
                     CarEntityName = carEntity.CarEntityName,
@@ -130,7 +160,9 @@ namespace CarHealth.Api.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (await _repository.UpdateUserCarAsync(carEntity, UserId))
+                 _repository.UserId = UserId;
+
+                if (await _repository.UpdateUserCarAsync(carEntity))
                 {
                     return Ok();
                 }
@@ -143,7 +175,9 @@ namespace CarHealth.Api.Controllers
         [HttpDelete("delete/car")]
         public async Task<IActionResult> DeleteUserCar([FromQuery] string carEntityId)
         {
-            if (await _repository.DeleteUserCarAsync(carEntityId, UserId))
+             _repository.UserId = UserId;
+
+            if (await _repository.DeleteUserCarAsync(carEntityId))
             {
                 return Ok();
             }
@@ -156,7 +190,9 @@ namespace CarHealth.Api.Controllers
         {
             if (ModelState.IsValid)
             {
-                var carItems = await _repository.FindCarItem(name, UserId);
+                 _repository.UserId = UserId;
+
+                var carItems = await _repository.FindCarItem(name);
                 if (carItems != null)
                 {
                     return Ok(carItems);
@@ -169,7 +205,9 @@ namespace CarHealth.Api.Controllers
         [HttpGet("cardetails")]
         public async Task<IActionResult> GetCarItemsAsync([FromQuery] int offset, [FromQuery] int limit)
         {
-            var carItems = await _repository.GetCarItemsAsync(offset, limit, UserId);
+             _repository.UserId = UserId;
+
+            var carItems = await _repository.GetCarItemsAsync(offset, limit);
 
             if(carItems != null)
             {
@@ -184,7 +222,9 @@ namespace CarHealth.Api.Controllers
         [HttpGet("totalride")]
         public async Task<IActionResult> GetTotalRideAsync()
         {
-            var result = await _repository.GetTotalRideAsync(UserId);
+             _repository.UserId = UserId;
+
+            var result = await _repository.GetTotalRideAsync();
 
             if (result != null)
             {
@@ -200,7 +240,9 @@ namespace CarHealth.Api.Controllers
         {
             if(ModelState.IsValid)
             {
-                if (await _repository.SetTotalRideAsync(value, UserId))
+                 _repository.UserId = UserId;
+
+                if (await _repository.SetTotalRideAsync(value))
                 {
                     return Ok();
                 }
@@ -215,6 +257,8 @@ namespace CarHealth.Api.Controllers
         {
             if (ModelState.IsValid)
             {
+                 _repository.UserId = UserId;
+
                 if (await _repository.AddNewCarItemAsync(new CarItem
                 {
                     CarItemId = ObjectId.GenerateNewId().ToString(),
@@ -226,7 +270,7 @@ namespace CarHealth.Api.Controllers
                     RecomendedReplace = int.Parse(data.RecomendedReplace),
                     DateOfReplace = DateTime.Parse(data.DateOfReplace)
 
-                }, UserId))
+                }))
                 {
                     return Ok();
                 }
@@ -241,7 +285,9 @@ namespace CarHealth.Api.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (await _repository.UpdateCarItemAsync(value, UserId))
+                 _repository.UserId = UserId;
+
+                if (await _repository.UpdateCarItemAsync(value))
                 {
                     return Ok();
                 }
@@ -254,8 +300,9 @@ namespace CarHealth.Api.Controllers
         [HttpDelete("delete/caritem/")]
         public async Task<IActionResult> DeleteAsync([FromQuery] string detailId)
         {
+             _repository.UserId = UserId;
 
-            if(await _repository.DeleteCarItemAsync(detailId, UserId))
+            if (await _repository.DeleteCarItemAsync(detailId))
             {
                 return Ok();
             }

@@ -13,37 +13,38 @@ using CarHealth.Api.Contexts;
 
 namespace CarHealth.Api.Repositories.EFCoreRepository
 {
-    public class EFCarRepository: ICarRepository
+    public class EFCarRepository : ICarRepository
     {
         private CarContext _db { get; set; }
+        public string UserId { get; set; }
 
-        public EFCarRepository( CarContext db)
+        public EFCarRepository(CarContext db)
         {
             _db = db;
         }
 
         public bool IsEmptyDb()
         {
-            return  !_db.CarEntities.Any();
+            return !_db.CarEntities.Any();
         }
 
-        public async Task<List<CarEntity>> GetAllUsersCarsAsync(string userId)
+        public async Task<List<CarEntity>> GetAllUsersCarsAsync()
         {
-            List<CarEntity> result = await _db.CarEntities.Where(x => x.UserId == userId).ToListAsync();
+            List<CarEntity> result = await _db.CarEntities.Where(x => x.UserId == UserId).ToListAsync();
 
             if (result != null)
             {
                 return result;
             }
-          
+
             return null;
         }
-        public async Task<bool> SetUserCurCarAsync(string carEntityId, string userId)
+        public async Task<bool> SetUserCurCarAsync(string carEntityId )
         {
 
-            if (await _db.CarEntities.AnyAsync(x => x.Id == carEntityId && x.UserId == userId))
+            if (await _db.CarEntities.AnyAsync(x => x.Id == carEntityId && x.UserId == UserId))
             {
-                await _db.CarEntities.Where(x => x.UserId == userId).ForEachAsync(x => x.IsCurrent = false);
+                await _db.CarEntities.Where(x => x.UserId == UserId).ForEachAsync(x => x.IsCurrent = false);
 
                 _db.CarEntities.FirstOrDefault(x => x.Id == carEntityId).IsCurrent = true;
 
@@ -54,11 +55,11 @@ namespace CarHealth.Api.Repositories.EFCoreRepository
 
             return false;
         }
-        public async Task<CarEntity> GetCurrentCarAsync(string userId)
+        public async Task<CarEntity> GetCurrentCarAsync()
         {
-            if (await _db.CarEntities.AnyAsync(x => x.UserId == userId))
+            if (await _db.CarEntities.AnyAsync(x => x.UserId == UserId))
             {
-                var car = await _db.CarEntities.Include(x => x.CarItems).FirstOrDefaultAsync(x => x.IsCurrent == true && x.UserId == userId);
+                var car = await _db.CarEntities.Include(x => x.CarItems).FirstOrDefaultAsync(x => x.IsCurrent == true && x.UserId == UserId);
 
                 return car;
 
@@ -82,17 +83,17 @@ namespace CarHealth.Api.Repositories.EFCoreRepository
             await _db.SaveChangesAsync();
 
         }
-        public async Task<bool> UpdateUserCarAsync(EditCarModel carEntity, string userId)
+        public async Task<bool> UpdateUserCarAsync(EditCarModel carEntity)
         {
 
-            var car = await _db.CarEntities.FirstOrDefaultAsync(x => x.UserId == userId && x.Id == carEntity.Id);
+            var car = await _db.CarEntities.FirstOrDefaultAsync(x => x.UserId == UserId && x.Id == carEntity.Id);
 
             if (car != null)
             {
-                if(carEntity.IsCurrent)
+                if (carEntity.IsCurrent)
                 {
                     car.CarEntityName = carEntity.CarEntityName;
-                    await this.SetUserCurCarAsync(carEntity.Id, userId);
+                    await this.SetUserCurCarAsync(carEntity.Id);
                 }
                 else
                 {
@@ -107,17 +108,17 @@ namespace CarHealth.Api.Repositories.EFCoreRepository
 
             return false;
         }
-        public async Task<bool> DeleteUserCarAsync(string carEntityId, string userId)
+        public async Task<bool> DeleteUserCarAsync(string carEntityId)
         {
-            var carToDelete = _db.CarEntities.FirstOrDefault(x => x.UserId == userId && x.Id == carEntityId);
+            var carToDelete = _db.CarEntities.FirstOrDefault(x => x.UserId == UserId && x.Id == carEntityId);
 
             if (carToDelete != null)
             {
                 if (carToDelete.IsCurrent)
                 {
-                    var car = _db.CarEntities.FirstOrDefault(x => x.UserId == userId && x.Id != carToDelete.Id);
+                    var car = _db.CarEntities.FirstOrDefault(x => x.UserId == UserId && x.Id != carToDelete.Id);
 
-                    if(car != null)
+                    if (car != null)
                     {
                         car.IsCurrent = true;
                     }
@@ -135,9 +136,9 @@ namespace CarHealth.Api.Repositories.EFCoreRepository
             return false;
         }
 
-        public async Task<IList<CarItem>> FindCarItem(string name, string userId)
+        public async Task<IList<CarItem>> FindCarItem(string name)
         {
-            var car = await _db.CarEntities.FirstOrDefaultAsync(x => x.UserId == userId && x.IsCurrent == true);
+            var car = await _db.CarEntities.FirstOrDefaultAsync(x => x.UserId == UserId && x.IsCurrent == true);
 
             if (car != null)
             {
@@ -148,9 +149,9 @@ namespace CarHealth.Api.Repositories.EFCoreRepository
             return null;
         }
 
-        public async Task<CarItemsSendModel> GetCarItemsAsync(int offset, int limit, string userId)
+        public async Task<CarItemsSendModel> GetCarItemsAsync(int offset, int limit)
         {
-            var car = await _db.CarEntities.FirstOrDefaultAsync(x => x.IsCurrent == true && x.UserId == userId);
+            var car = await _db.CarEntities.FirstOrDefaultAsync(x => x.IsCurrent == true && x.UserId == UserId);
 
             if (offset >= 0 &&
             limit > 0 &&
@@ -178,9 +179,9 @@ namespace CarHealth.Api.Repositories.EFCoreRepository
             }
             return null;
         }
-        public async Task<CarTotalRideModel> GetTotalRideAsync(string userId)
+        public async Task<CarTotalRideModel> GetTotalRideAsync()
         {
-            var car = await _db.CarEntities.FirstOrDefaultAsync(x => x.IsCurrent == true && x.UserId == userId);
+            var car = await _db.CarEntities.FirstOrDefaultAsync(x => x.IsCurrent == true && x.UserId == UserId);
 
             if (car != null)
             {
@@ -192,10 +193,10 @@ namespace CarHealth.Api.Repositories.EFCoreRepository
 
             return null;
         }
-        public async Task<bool> SetTotalRideAsync(UpdateTotalRideModel value, string userId)
+        public async Task<bool> SetTotalRideAsync(UpdateTotalRideModel value)
         {
-            
-            var carEntity = await _db.CarEntities.FirstOrDefaultAsync(x => x.Id == value.Id && x.UserId == userId);
+
+            var carEntity = await _db.CarEntities.FirstOrDefaultAsync(x => x.Id == value.Id && x.UserId == UserId);
 
             if (carEntity != null)
             {
@@ -225,9 +226,9 @@ namespace CarHealth.Api.Repositories.EFCoreRepository
             }
             return false;
         }
-        public async Task<bool> AddNewCarItemAsync(CarItem data, string userId)
+        public async Task<bool> AddNewCarItemAsync(CarItem data)
         {
-            if (await _db.CarEntities.AnyAsync(x => x.UserId == userId && x.Id == data.CarEntityId))
+            if (await _db.CarEntities.AnyAsync(x => x.UserId == UserId && x.Id == data.CarEntityId))
             {
                 await _db.CarItems.AddAsync(data);
 
@@ -237,9 +238,9 @@ namespace CarHealth.Api.Repositories.EFCoreRepository
             }
             return false;
         }
-        public async Task<bool> UpdateCarItemAsync(UpdateCarItemModel value, string userId)
+        public async Task<bool> UpdateCarItemAsync(UpdateCarItemModel value)
         {
-            var carEntity = await _db.CarEntities.FirstOrDefaultAsync(x => x.IsCurrent == true && x.UserId == userId);
+            var carEntity = await _db.CarEntities.FirstOrDefaultAsync(x => x.IsCurrent == true && x.UserId == UserId);
 
             if (carEntity != null)
             {
@@ -261,9 +262,9 @@ namespace CarHealth.Api.Repositories.EFCoreRepository
             }
             return false;
         }
-        public async Task<bool> DeleteCarItemAsync(string detailId, string userId)
+        public async Task<bool> DeleteCarItemAsync(string detailId )
         {
-            var carEntity = await _db.CarEntities.FirstOrDefaultAsync(x => x.IsCurrent == true && x.UserId == userId);
+            var carEntity = await _db.CarEntities.FirstOrDefaultAsync(x => x.IsCurrent == true && x.UserId == UserId);
 
             if (carEntity != null)
             {

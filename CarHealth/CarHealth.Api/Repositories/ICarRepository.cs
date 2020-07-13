@@ -10,20 +10,22 @@ namespace CarHealth.Api.Repositories
 {
     public interface ICarRepository
     {
+        public string UserId { get; set; }
+
         public bool IsEmptyDb();
 
-        public Task<List<CarEntity>> GetAllUsersCarsAsync(string userId);
-        public Task<bool> SetUserCurCarAsync(string carEntityId, string userId);
-        public Task<CarEntity> GetCurrentCarAsync(string userId);
+        public Task<List<CarEntity>> GetAllUsersCarsAsync();
+        public Task<bool> SetUserCurCarAsync(string carEntityId);
+        public Task<CarEntity> GetCurrentCarAsync();
         public Task AddUserNewCarAsync(CarEntity carEntity);
-        public Task<bool> UpdateUserCarAsync(EditCarModel carEntity, string userId);
-        public Task<bool> DeleteUserCarAsync(string carEntityId, string userId);
-        public Task<IList<CarItem>> FindCarItem(string name, string userId);
-        public Task<CarItemsSendModel> GetCarItemsAsync (int offset, int limit, string userId);
-        public Task<CarTotalRideModel> GetTotalRideAsync(string userId);
-        public Task<bool> SetTotalRideAsync(UpdateTotalRideModel value, string userId);
-        public Task<bool> AddNewCarItemAsync(CarItem data, string userId);
-        public Task<bool> UpdateCarItemAsync(UpdateCarItemModel value, string userId);
-        public Task<bool> DeleteCarItemAsync(string detailId, string userId);
+        public Task<bool> UpdateUserCarAsync(EditCarModel carEntity);
+        public Task<bool> DeleteUserCarAsync(string carEntityId);
+        public Task<IList<CarItem>> FindCarItem(string name);
+        public Task<CarItemsSendModel> GetCarItemsAsync(int offset, int limit);
+        public Task<CarTotalRideModel> GetTotalRideAsync();
+        public Task<bool> SetTotalRideAsync(UpdateTotalRideModel value);
+        public Task<bool> AddNewCarItemAsync(CarItem data);
+        public Task<bool> UpdateCarItemAsync(UpdateCarItemModel value);
+        public Task<bool> DeleteCarItemAsync(string detailId);
     }
 }

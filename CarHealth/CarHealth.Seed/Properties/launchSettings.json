@@ -27,6 +27,15 @@
       }
     },
 
+    "CarHealth.Seed_Testing": {
+      "commandName": "Project",
+      "environmentVariables": {
+        // change this to seed different DB
+        "Environment": "Testing",
+        "ASPNETCORE_ENVIRONMENT": "Testing"
+      }
+    },
+
     "CarHealth.Seed_DevelopmentAzure": {
       "commandName": "Project",
       "environmentVariables": {

@@ -12,21 +12,24 @@ using Microsoft.Extensions.Configuration;
 
 namespace CarHealth.Api.Controllers
 {
-    [Route("identity")]
+    [Route("test")]
     [ApiController]
-    public class IdentityController : Controller
+    public class TestController : Controller
     {
-
-        private readonly IConfiguration _configuration;
-        private IWebHostEnvironment _hostingEnvironment;
-
-
-        public IdentityController(IConfiguration configuration, IWebHostEnvironment hostingEnvironment)
+        public TestController()
         {
-            _configuration = configuration;
-            _hostingEnvironment = hostingEnvironment;
+
         }
 
+        [HttpGet("ping")]
+        public IActionResult Ping()
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                return Ok("Pong");
+            }
+            return Unauthorized("");
+        }
 
         [Authorize(Policy = "AdminsOnly")]
         [HttpGet("superpowers")]
@@ -41,7 +44,7 @@ namespace CarHealth.Api.Controllers
             return new JsonResult("Powers!");
         }
 
-        [HttpGet("env")]
+        [HttpGet("environment")]
         public IActionResult Environment()
         {
             return new  JsonResult(HostingEnvironmentHelper.Environment);

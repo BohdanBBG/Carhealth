@@ -8,14 +8,10 @@ using System.Threading.Tasks;
 
 namespace CarHealth.Seed.Models
 {
-    public class CarItem
+    public class CarItem: BaseEntity
     {
 
-        //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [BsonId]
-        [Required]
-        public string CarItemId { get; set; }
-
+      
         [Required]
         [StringLength(100, MinimumLength = 2)]
         public string Name { get; set; }

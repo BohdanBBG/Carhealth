@@ -1,0 +1,7 @@
+{
+  "profiles": {
+    "CarHealth.ApiTest": {
+      "commandName": "Project"
+    }
+  }
+}

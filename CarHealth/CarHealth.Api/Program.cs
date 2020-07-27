@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using CarHealth.Api.Helpers;
 using CarHealth.Api.Models;
 using CarHealth.Api.Repositories;
 using DotNetEnv;
@@ -21,13 +20,11 @@ namespace CarHealth.Api
         {
 
             // check environment is set
-            if (String.IsNullOrEmpty(HostingEnvironmentHelper.Environment))
+            if (String.IsNullOrEmpty(System.Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")))
             {
                 Console.WriteLine("ASPNETCORE_ENVIRONMENT env variable must be set!");
                 return 1;
             }
-
-
 
             Console.Title = "CarHealth.Api";
 
@@ -44,7 +41,7 @@ namespace CarHealth.Api
               .UseConfiguration(GetConfiguration());
             //builder.UseUrls(new[] { "http://localhost:5000", "https://localhost:5001" });
 
-            if (HostingEnvironmentHelper.IsDevelopmentLocalhost())
+            if (System.Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "DevelopmentLocalhost") 
             {
                 builder.UseUrls($"https://localhost:5001");
             }
@@ -68,7 +65,7 @@ namespace CarHealth.Api
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{HostingEnvironmentHelper.Environment}.json", optional: true, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{System.Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", optional: true, reloadOnChange: true)
                 .AddEnvironmentVariables();
 
             var config = builder.Build();

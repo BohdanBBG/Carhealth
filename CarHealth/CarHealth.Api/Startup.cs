@@ -11,6 +11,7 @@ using CarHealth.Api.Helpers;
 using Microsoft.Extensions.Logging;
 using CarHealth.Api.Contexts;
 using CarHealth.Api.Repositories.EFCoreRepository;
+using Microsoft.IdentityModel.Logging;
 
 namespace CarHealth.Api
 {
@@ -30,6 +31,7 @@ namespace CarHealth.Api
         public void ConfigureServices(IServiceCollection services)
         {
             var config = Configuration.Get<ApplicationSettings>();
+            services.AddHttpClient();
 
             services.Configure<ApplicationSettings>(Configuration);
 
@@ -52,32 +54,41 @@ namespace CarHealth.Api
                    policyUser.RequireClaim("role", "admin");
                })
            );
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme =
-                                           JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme =
-                                           JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(o =>
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            //services.AddAuthentication(options =>
+            //{
+            //    options.DefaultAuthenticateScheme =
+            //                               JwtBearerDefaults.AuthenticationScheme;
+            //    options.DefaultChallengeScheme =
+            //                               JwtBearerDefaults.AuthenticationScheme;
+            //})
+            .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, o =>
             {
                 o.Authority = config.JwtBearerAuth.Authority;
                 o.Audience = config.JwtBearerAuth.Audience;
                 o.RequireHttpsMetadata = false;
             });
 
-            services.AddCors(options =>
+            if (System.Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Testing")
             {
-                if (config.Cors != null && config.Cors.AllowedOrigins != null)
+                IdentityModelEventSource.ShowPII = true; // show detail of error and see the problem
+            }
+
+            if (System.Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") != "Testing")
+            {
+                services.AddCors(options =>
                 {
-                    // задаём политику CORS, чтобы наше клиентское приложение могло отправить запрос на сервер API
-                    options.AddPolicy("default", policy =>
+                    if (config.Cors != null && config.Cors.AllowedOrigins != null)
                     {
-                        policy.WithOrigins(config.Cors.AllowedOrigins.ToArray())
-                       .AllowAnyHeader()
-                       .AllowAnyMethod();
-                    });
-                }
-            });
+                        options.AddPolicy("default", policy =>
+                        {
+                            policy.WithOrigins(config.Cors.AllowedOrigins.ToArray())
+                           .AllowAnyHeader()
+                           .AllowAnyMethod();
+                        });
+                    }
+                });
+            }
 
             services.AddSwaggerGen(c =>
             {
@@ -100,7 +111,10 @@ namespace CarHealth.Api
 
             app.UseHttpsRedirection();
 
-            app.UseCors("default");
+            if (System.Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") != "Testing")
+            {
+                app.UseCors("default");
+            }
 
             app.UseRouting();
 

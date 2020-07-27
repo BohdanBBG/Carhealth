@@ -47,7 +47,7 @@ namespace CarHealth.Api.Controllers
         [HttpGet("environment")]
         public IActionResult Environment()
         {
-            return new  JsonResult(HostingEnvironmentHelper.Environment);
+            return new  JsonResult(System.Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"));
         }
     }
 }

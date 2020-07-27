@@ -213,7 +213,7 @@ namespace CarHealth.Seed.SeedServices
                             await _seedRepository.AddNewCarItemAsync(new CarItem
                             {
                                 CarEntityId = carEntity.Id,
-                                CarItemId = ObjectId.GenerateNewId().ToString(),
+                                Id = ObjectId.GenerateNewId().ToString(),
                                 Name = details.Name,
                                 TotalRide = details.TotalRide,
                                 ChangeRide = details.ChangeRide,

@@ -9,12 +9,9 @@ using System.Threading.Tasks;
 
 namespace CarHealth.Seed.Models
 {
-    public class CarEntity
+    public class CarEntity: BaseEntity
     {
-        [BsonId]
-        [Required]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public string Id { get; set; }
+      
 
         [Required]
         [StringLength(100, MinimumLength = 2)]

@@ -165,7 +165,7 @@ namespace CarHealth.Api.Repositories.EFCoreRepository
                     CarEntityId = car.Id,
                     CarItems = _db.CarItems.Where(x => x.CarEntityId == car.Id).Skip(offset).Take(limit).Select(x => new CarItemSendModel
                     {
-                        CarItemId = x.CarItemId,
+                        Id = x.Id,
                         Name = x.Name,
                         TotalRide = x.TotalRide,
                         ChangeRide = x.ChangeRide,
@@ -244,7 +244,7 @@ namespace CarHealth.Api.Repositories.EFCoreRepository
 
             if (carEntity != null)
             {
-                var carItem = await _db.CarItems.FirstOrDefaultAsync(x => x.CarEntityId == carEntity.Id && x.CarItemId == value.CarItemId);
+                var carItem = await _db.CarItems.FirstOrDefaultAsync(x => x.CarEntityId == carEntity.Id && x.Id == value.Id);
 
                 if (carItem != null)
                 {
@@ -268,7 +268,7 @@ namespace CarHealth.Api.Repositories.EFCoreRepository
 
             if (carEntity != null)
             {
-                var carItemToDelete = await _db.CarItems.FirstOrDefaultAsync(x => x.CarEntityId == carEntity.Id && x.CarItemId == detailId);
+                var carItemToDelete = await _db.CarItems.FirstOrDefaultAsync(x => x.CarEntityId == carEntity.Id && x.Id == detailId);
 
                 if (carItemToDelete != null)
                 {

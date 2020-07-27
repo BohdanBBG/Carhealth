@@ -20,7 +20,8 @@ namespace CarHealth.Api.Controllers
     {
 
         private readonly ICarRepository _repository;
-        protected string UserId
+
+        public string UserId
         {
             get
             {
@@ -35,10 +36,13 @@ namespace CarHealth.Api.Controllers
                     currentUserId = User.FindFirst(JwtClaimTypes.Subject).Value;
                 }
 
-
-                return currentUserId;
+                return null;
+                //return currentUserId ?? throw new NullReferenceException("UserId is null"); ;
             }
-            set { _repository.UserId = value; }
+             set
+            {
+                _repository.UserId = value ?? throw new NullReferenceException("User Id is null");
+            }
         }
 
 
@@ -47,29 +51,6 @@ namespace CarHealth.Api.Controllers
             _repository = repository;
 
         }
-
-        //protected string UserId
-        //{
-        //    get
-        //    {
-        //        string currentUserId = null;
-
-        //        if (User.HasClaim(x => x.Type == ClaimTypes.NameIdentifier))
-        //        {
-        //            currentUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-        //        }
-        //        else if (User.HasClaim(x => x.Type == JwtClaimTypes.Subject))
-        //        {
-        //            currentUserId = User.FindFirst(JwtClaimTypes.Subject).Value;
-        //        }
-
-
-        //        return currentUserId;
-        //    }
-
-        //}
-
-
 
         // [Authorize]
         public IActionResult Index()
@@ -81,7 +62,12 @@ namespace CarHealth.Api.Controllers
         [HttpGet("allUsersCars")]
         public async Task<IActionResult> GetUsersCarsAsync()
         {
-            _repository.UserId = UserId;
+            //try
+            //{
+            //    _repository.UserId = UserId; // TODO change getUserIds
+            //}
+
+            //catch (NullReferenceException) { return Unauthorized(); }
 
             var cars = await _repository.GetAllUsersCarsAsync();
 
@@ -105,7 +91,12 @@ namespace CarHealth.Api.Controllers
         {
             if (ModelState.IsValid)
             {
-                 _repository.UserId = UserId;
+                try
+                {
+                    _repository.UserId = UserId;
+                }
+
+                catch (NullReferenceException) { return Unauthorized(); }
 
                 if ( await _repository.SetUserCurCarAsync(changeModel.CarEntityId) )
                 {
@@ -120,7 +111,12 @@ namespace CarHealth.Api.Controllers
         [HttpGet("car")]
         public async Task<IActionResult> GetAsync()
         {
-             _repository.UserId = UserId;
+            try
+            {
+                _repository.UserId = UserId;
+            }
+
+            catch (NullReferenceException) { return Unauthorized(); }
 
             var car = await _repository.GetCurrentCarAsync();
 
@@ -138,7 +134,12 @@ namespace CarHealth.Api.Controllers
         {
             if (ModelState.IsValid)
             {
-                 _repository.UserId = UserId;
+                try
+                {
+                    _repository.UserId = UserId;
+                }
+
+                catch (NullReferenceException) { return Unauthorized(); }
 
                 await _repository.AddUserNewCarAsync(new CarEntity
                 {
@@ -160,7 +161,12 @@ namespace CarHealth.Api.Controllers
         {
             if (ModelState.IsValid)
             {
-                 _repository.UserId = UserId;
+                try
+                {
+                    _repository.UserId = UserId;
+                }
+
+                catch (NullReferenceException) { return Unauthorized(); }
 
                 if (await _repository.UpdateUserCarAsync(carEntity))
                 {
@@ -175,7 +181,12 @@ namespace CarHealth.Api.Controllers
         [HttpDelete("delete/car")]
         public async Task<IActionResult> DeleteUserCar([FromQuery] string carEntityId)
         {
-             _repository.UserId = UserId;
+            try
+            {
+                _repository.UserId = UserId;
+            }
+
+            catch (NullReferenceException) { return Unauthorized(); }
 
             if (await _repository.DeleteUserCarAsync(carEntityId))
             {
@@ -190,7 +201,12 @@ namespace CarHealth.Api.Controllers
         {
             if (ModelState.IsValid)
             {
-                 _repository.UserId = UserId;
+                try
+                {
+                    _repository.UserId = UserId;
+                }
+
+                catch (NullReferenceException) { return Unauthorized(); }
 
                 var carItems = await _repository.FindCarItem(name);
                 if (carItems != null)
@@ -205,7 +221,12 @@ namespace CarHealth.Api.Controllers
         [HttpGet("cardetails")]
         public async Task<IActionResult> GetCarItemsAsync([FromQuery] int offset, [FromQuery] int limit)
         {
-             _repository.UserId = UserId;
+            try
+            {
+                _repository.UserId = UserId;
+            }
+
+            catch (NullReferenceException) { return Unauthorized(); }
 
             var carItems = await _repository.GetCarItemsAsync(offset, limit);
 
@@ -222,7 +243,12 @@ namespace CarHealth.Api.Controllers
         [HttpGet("totalride")]
         public async Task<IActionResult> GetTotalRideAsync()
         {
-             _repository.UserId = UserId;
+            try
+            {
+                _repository.UserId = UserId;
+            }
+
+            catch (NullReferenceException) { return Unauthorized(); }
 
             var result = await _repository.GetTotalRideAsync();
 
@@ -240,7 +266,12 @@ namespace CarHealth.Api.Controllers
         {
             if(ModelState.IsValid)
             {
-                 _repository.UserId = UserId;
+                try
+                {
+                    _repository.UserId = UserId;
+                }
+
+                catch (NullReferenceException) { return Unauthorized(); }
 
                 if (await _repository.SetTotalRideAsync(value))
                 {
@@ -257,11 +288,16 @@ namespace CarHealth.Api.Controllers
         {
             if (ModelState.IsValid)
             {
-                 _repository.UserId = UserId;
+                try
+                {
+                    _repository.UserId = UserId;
+                }
+
+                catch (NullReferenceException) { return Unauthorized(); }
 
                 if (await _repository.AddNewCarItemAsync(new CarItem
                 {
-                    CarItemId = ObjectId.GenerateNewId().ToString(),
+                    Id = ObjectId.GenerateNewId().ToString(),
                     CarEntityId = data.CarEntityId,
                     Name = data.Name,
                     TotalRide = 0,
@@ -285,7 +321,12 @@ namespace CarHealth.Api.Controllers
         {
             if (ModelState.IsValid)
             {
-                 _repository.UserId = UserId;
+                try
+                {
+                    _repository.UserId = UserId;
+                }
+
+                catch (NullReferenceException) { return Unauthorized(); }
 
                 if (await _repository.UpdateCarItemAsync(value))
                 {
@@ -300,7 +341,12 @@ namespace CarHealth.Api.Controllers
         [HttpDelete("delete/caritem/")]
         public async Task<IActionResult> DeleteAsync([FromQuery] string detailId)
         {
-             _repository.UserId = UserId;
+            try
+            {
+                _repository.UserId = UserId;
+            }
+
+            catch (NullReferenceException) { return Unauthorized(); }
 
             if (await _repository.DeleteCarItemAsync(detailId))
             {

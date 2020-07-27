@@ -15,7 +15,21 @@ namespace CarHealth.Api.Repositories
         private IMongoDatabase _database { get; set; }
         private IMongoClient _client { get; set; }
 
-        public string UserId { get; set; }
+        private string _userId;
+
+        public string  UserId 
+        {
+            get
+            {
+                return _userId ?? throw new NullReferenceException("UserId is null");
+            }
+            set
+            {
+                _userId = value ?? throw new NullReferenceException("UserId is null");
+            }
+        }
+
+
 
         public MongoRepository(IMongoClient client, string database )
         {
@@ -46,18 +60,18 @@ namespace CarHealth.Api.Repositories
 
         public async Task<List<CarEntity>> GetAllUsersCarsAsync()
         {
-            // return await CarEntities.Find(x => x.UserId == UserId).ToListAsync();
-            return await CarEntities.Find(new BsonDocument("UserId", UserId)).ToListAsync();
+            // return await CarEntities.Find(x => x. _userId ==  _userId).ToListAsync();
+            return await CarEntities.Find(new BsonDocument(" _userId",  _userId)).ToListAsync();
         }
 
         public async Task<bool> SetUserCurCarAsync(string carEntityId)
         {
-            if (carEntityId != null && UserId != null)
+            if (carEntityId != null &&  _userId != null)
             {
                 var builder = Builders<CarEntity>.Filter;
-                var filter = builder.Eq("UserId", UserId) & builder.Eq("Id", carEntityId);
+                var filter = builder.Eq(" _userId",  _userId) & builder.Eq("Id", carEntityId);
 
-                await CarEntities.UpdateManyAsync(builder.Eq("UserId", UserId), new BsonDocument("$set", new BsonDocument("IsCurrent", false)));
+                await CarEntities.UpdateManyAsync(builder.Eq(" _userId",  _userId), new BsonDocument("$set", new BsonDocument("IsCurrent", false)));
 
                 var result = await CarEntities.UpdateOneAsync(
                        filter,
@@ -74,7 +88,7 @@ namespace CarHealth.Api.Repositories
         public async Task<CarEntity> GetCurrentCarAsync()
         {
             var builder = Builders<CarEntity>.Filter;
-            var filter = builder.Eq("UserId", UserId) & builder.Eq("IsCurrent", true);
+            var filter = builder.Eq(" _userId",  _userId) & builder.Eq("IsCurrent", true);
 
             var res = await CarEntities.Find(filter).FirstOrDefaultAsync();
 
@@ -92,7 +106,7 @@ namespace CarHealth.Api.Repositories
             {
                 var builder = Builders<CarEntity>.Filter;
 
-                await CarEntities.UpdateManyAsync(builder.Eq("UserId", carEntity.UserId), new BsonDocument("$set", new BsonDocument("IsCurrent", false)));
+                await CarEntities.UpdateManyAsync(builder.Eq(" _userId", carEntity.UserId), new BsonDocument("$set", new BsonDocument("IsCurrent", false)));
             }
 
             if ( !await CarEntities.Find(x => x.UserId == carEntity.UserId).AnyAsync())
@@ -114,7 +128,7 @@ namespace CarHealth.Api.Repositories
             var builderFilter = Builders<CarEntity>.Filter;
             var builderUpdate = Builders<CarEntity>.Update;
 
-            var filterUser = builderFilter.Eq("UserId", UserId);
+            var filterUser = builderFilter.Eq(" _userId",  _userId);
             var filterCarEntity = builderFilter.Eq("Id", carEntity.Id);
             var update = builderUpdate.Set("CarEntityName", carEntity.CarEntityName);
 
@@ -148,17 +162,17 @@ namespace CarHealth.Api.Repositories
 
         public async Task<bool> DeleteUserCarAsync(string carEntityId)
         {
-            var car = await CarEntities.Find(x => x.Id == carEntityId && x.UserId == UserId).FirstOrDefaultAsync();
+            var car = await CarEntities.Find(x => x.Id == carEntityId && x.UserId ==  _userId).FirstOrDefaultAsync();
 
             if (car != null)
             {
 
                 if (car.IsCurrent)
                 {
-                    await SetUserCurCarAsync(CarEntities.Find(x => x.Id != carEntityId && x.UserId == UserId).FirstOrDefault().Id);
+                    await SetUserCurCarAsync(CarEntities.Find(x => x.Id != carEntityId && x.UserId ==  _userId).FirstOrDefault().Id);
                 }
 
-                var result = await CarEntities.DeleteOneAsync(x => x.Id == carEntityId && x.UserId == UserId);
+                var result = await CarEntities.DeleteOneAsync(x => x.Id == carEntityId && x.UserId ==  _userId);
 
                 await CarItems.DeleteManyAsync(x => x.CarEntityId == carEntityId);
 
@@ -170,7 +184,7 @@ namespace CarHealth.Api.Repositories
 
         public async Task<IList<CarItem>> FindCarItem(string name)
         {
-            var car = await CarEntities.Find(x => x.UserId == UserId && x.IsCurrent == true).FirstOrDefaultAsync();
+            var car = await CarEntities.Find(x => x.UserId ==  _userId && x.IsCurrent == true).FirstOrDefaultAsync();
 
             if (car != null)
             {
@@ -190,7 +204,7 @@ namespace CarHealth.Api.Repositories
 
         public async Task<CarItemsSendModel> GetCarItemsAsync(int offset, int limit)
         {
-            var car = await CarEntities.Find(x => x.UserId == UserId && x.IsCurrent == true).FirstOrDefaultAsync();
+            var car = await CarEntities.Find(x => x.UserId ==  _userId && x.IsCurrent == true).FirstOrDefaultAsync();
 
             if (car != null)
             {
@@ -208,7 +222,7 @@ namespace CarHealth.Api.Repositories
                         CarItems = carItemsCount == 0 || carItemsCount <= offset ? null :
                         carItems.Skip(offset).Take(limit).Select(x => new CarItemSendModel
                         {
-                            CarItemId = x.CarItemId,
+                            Id = x.Id,
                             Name = x.Name,
                             TotalRide = x.TotalRide,
                             ChangeRide = x.ChangeRide,
@@ -226,7 +240,7 @@ namespace CarHealth.Api.Repositories
 
         public async Task<CarTotalRideModel> GetTotalRideAsync()
         {
-            var car = await CarEntities.Find(x => x.UserId == UserId && x.IsCurrent == true).FirstOrDefaultAsync();
+            var car = await CarEntities.Find(x => x.UserId ==  _userId && x.IsCurrent == true).FirstOrDefaultAsync();
 
             if (car != null)
             {
@@ -240,7 +254,7 @@ namespace CarHealth.Api.Repositories
 
         public async Task<bool> SetTotalRideAsync(UpdateTotalRideModel value)
         {
-            var carEntity = await CarEntities.Find(x => x.UserId == UserId && x.Id == value.Id).FirstOrDefaultAsync();
+            var carEntity = await CarEntities.Find(x => x.UserId ==  _userId && x.Id == value.Id).FirstOrDefaultAsync();
 
             if (carEntity != null)
             {
@@ -275,7 +289,7 @@ namespace CarHealth.Api.Repositories
 
         public async Task<bool> AddNewCarItemAsync(CarItem data)
         {
-            var car = await CarEntities.Find(x => x.UserId == UserId && x.Id == data.CarEntityId).FirstOrDefaultAsync();
+            var car = await CarEntities.Find(x => x.UserId ==  _userId && x.Id == data.CarEntityId).FirstOrDefaultAsync();
 
             if (car != null)
             {
@@ -283,7 +297,7 @@ namespace CarHealth.Api.Repositories
                 //{
                 //    Id = data.CarEntityId,
                 //    TotalRide = car.CarsTotalRide
-                //}, UserId);
+                //},  _userId);
 
                 await CarItems.InsertOneAsync(data);
 
@@ -295,7 +309,7 @@ namespace CarHealth.Api.Repositories
 
         public async Task<bool> UpdateCarItemAsync(UpdateCarItemModel value)
         {
-            var carEntity = await CarEntities.Find(x => x.UserId == UserId && x.IsCurrent == true).FirstOrDefaultAsync();
+            var carEntity = await CarEntities.Find(x => x.UserId ==  _userId && x.IsCurrent == true).FirstOrDefaultAsync();
 
             if (carEntity != null)
             {
@@ -303,15 +317,15 @@ namespace CarHealth.Api.Repositories
                 //{
                 //    Id = carEntity.Id,
                 //    TotalRide = carEntity.CarsTotalRide
-                //}, UserId);
+                //},  _userId);
 
-                var carItem = CarItems.Find(x => x.CarItemId == value.CarItemId).FirstOrDefault();
+                var carItem = CarItems.Find(x => x.Id == value.Id).FirstOrDefault();
 
-                var filterCarItem = Builders<CarItem>.Filter.Eq("CarItemId", value.CarItemId);
+                var filterCarItem = Builders<CarItem>.Filter.Eq("Id", value.Id);
 
                 await CarItems.ReplaceOneAsync(filterCarItem, new CarItem
                 {
-                    CarItemId = carItem.CarItemId,
+                    Id = carItem.Id,
                     Name = value.Name,
                     TotalRide = value.IsTotalRideChanged ? 0 : carItem.TotalRide,
                     ChangeRide = int.Parse(value.ChangeRide),
@@ -328,11 +342,11 @@ namespace CarHealth.Api.Repositories
 
         public async Task<bool> DeleteCarItemAsync(string detailId)
         {
-            var carEntity = await CarEntities.Find(x => x.IsCurrent == true && x.UserId == UserId).FirstOrDefaultAsync();
+            var carEntity = await CarEntities.Find(x => x.IsCurrent == true && x.UserId ==  _userId).FirstOrDefaultAsync();
 
             if (carEntity != null)
             {
-                var result = await CarItems.DeleteOneAsync(x => x.CarItemId == detailId && x.CarEntityId == carEntity.Id);
+                var result = await CarItems.DeleteOneAsync(x => x.Id == detailId && x.CarEntityId == carEntity.Id);
 
                 if (result.DeletedCount > 0)
                 {

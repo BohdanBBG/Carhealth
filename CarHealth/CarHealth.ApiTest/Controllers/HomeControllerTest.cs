@@ -1,7 +1,9 @@
-﻿using CarHealth.Api.Controllers;
+﻿using CarHealth.Api;
+using CarHealth.Api.Controllers;
 using CarHealth.Api.Models;
 using CarHealth.Api.Models.HttpModels;
 using CarHealth.Api.Repositories;
+using CarHealth.ApiTest.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using System;
@@ -12,34 +14,51 @@ using Xunit;
 
 namespace CarHealth.ApiTest.Controllers
 {
-    public class HomeControllerTest
+    public class HomeControllerTest: TestBase
     {
-       
 
-            [Fact(DisplayName = "Should return all user`s cars")]
-        public async Task GetUsersCarsTestAsync()
+        public HomeControllerTest(CustomWebApplicationBuilder<Startup> factory) : base(factory)
         {
-            // Arrange
-            var mock = new Mock<ICarRepository>();
-           // mock.Setup(repo =>  repo.GetAllUsersCarsAsync(It.IsAny<string>())).Returns(GetCarEntities());
-
-            //var userIdMock = new Mock<HomeController>();
-            //userIdMock.Setup(repo => repo.GetUserId()).Returns("id");
-
-            var controller = new HomeController(mock.Object);
-
-            // Act
-            var result = await controller.GetUsersCarsAsync();
-
-            // Assert
-
-            var objectResult = Assert.IsType<OkObjectResult>(result);
-            Assert.NotNull(objectResult.Value);
 
         }
 
+        [Fact]
+        public async Task GetAll_returnItemsList_list()
+        {
+            // Arrange
+            await PrepareTestUser();
+
+            int count = 2;
+            var carEntities = _dataUtil.CreateCarEntityInTestRepo(_user.Id, count);
+
+            // Act
+            var response = await _apiUtil.GetUsersCarsAsync(_accessToken);
+
+            // Assert
+            Assert.NotEmpty(response);
+
+        }
+        //public async Task GetUsersCarsTest_IsUserFound_false()
+        //{
+        //    // Arrange
+        //    var mock = new Mock<ICarRepository>();
+        //    mock.Setup(repo =>  repo.GetAllUsersCarsAsync()).Returns(GetCarEntities());
+
+
+        //    var controller = new HomeController(mock.Object);
+
+        //    // Act
+        //    var result = await controller.GetUsersCarsAsync();
+
+        //    // Assert
+
+        //    // var objectResult = Assert.IsType<OkObjectResult>(result);
+        //    // Assert.NotNull(objectResult.Value);
+        //    Assert.Throws<NullReferenceException>(() => controller.UserId);
+        //}
+
         //[Fact(DisplayName = "Should return null ")]
-        //public void GetNullUsersCarsTest()
+        //public void GetNullUsersCarsTest_ReturnNoItems_null()
         //{
         //    // Arrange
         //    var mock = new Mock<ICarRepository>();
@@ -176,17 +195,7 @@ namespace CarHealth.ApiTest.Controllers
         //    // Assert
         //}
 
-        private TController SetupController<TController, U>(Mock<U> mock) where TController : class, new()
-                                                                           where U : class
-        {
-            var x = new TController();
-            return null;
-        }
-
-        private string GetUserId() 
-        {  
-            return "id"; 
-        }
+        
 
         private Task<List<CarEntity>> GetCarEntities()
         {
@@ -198,7 +207,7 @@ namespace CarHealth.ApiTest.Controllers
                   CarEntityName = "Test current car",
                   CarsTotalRide = 1000,
                   IsCurrent  = true,
-                  UserId = GetUserId(),
+                  UserId = _user.Id,
                 },
                  new CarEntity()
                 {
@@ -206,7 +215,7 @@ namespace CarHealth.ApiTest.Controllers
                   CarEntityName = "Test car 2",
                   CarsTotalRide = 2000,
                   IsCurrent  = false,
-                  UserId = GetUserId(),
+                  UserId = _user.Id,
                 },
             });
         }

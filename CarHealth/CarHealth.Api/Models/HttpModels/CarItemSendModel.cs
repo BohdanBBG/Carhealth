@@ -10,7 +10,7 @@ namespace CarHealth.Api.Models.HttpModels
     {
         [Required]
         [StringLength(100, MinimumLength = 2)]
-        public string CarItemId { get; set; }
+        public string Id { get; set; }
 
         [Required]
         [StringLength(100, MinimumLength = 2)]

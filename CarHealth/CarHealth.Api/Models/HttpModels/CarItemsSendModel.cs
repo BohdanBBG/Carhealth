@@ -16,7 +16,7 @@ namespace CarHealth.Api.Models.HttpModels
         public string CarEntityId { get; set; }
 
         [Required]
-        public IEnumerable<CarItemSendModel> CarItems { get; set; }
+        public List<CarItemSendModel> CarItems { get; set; }
 
       
     }

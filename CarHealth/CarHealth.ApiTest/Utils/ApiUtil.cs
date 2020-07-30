@@ -1,4 +1,6 @@
-﻿using CarHealth.Api.Models.HttpModels;
+﻿using CarHealth.Api.Models;
+using CarHealth.Api.Models.HttpModels;
+using MongoDB.Bson;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -19,270 +21,81 @@ namespace CarHealth.ApiTest.Utils
             _httpUtil = new HttpUtil(_client);
         }
 
-     
-        public async Task<List<CarEntitySendModel>> GetUsersCarsAsync(string accessToken)
-        {
-            var httpResponse = await _httpUtil.GetAsync("/allUsersCars", accessToken);
+        #region GET methods
 
-            //if(accessToken != null)
-            //{
-            //    throw new Exception(accessToken);
-            //}
+        public async Task<T> GetAsync<T>(string url, string accessToken)
+        {
+            var httpResponse = await _httpUtil.GetAsync(url, accessToken);
 
             _httpUtil.EnsureSuccessStatusCode(httpResponse);
 
             string stringResponse = await httpResponse.Content.ReadAsStringAsync(); // if you want to read status code than you need drop this
-            var responeModel = JsonConvert.DeserializeObject<List<CarEntitySendModel>>(stringResponse);
+            var responeModel = JsonConvert.DeserializeObject<T>(stringResponse);
 
             return responeModel;
         }
 
-        //public async Task<IActionResult> SetUserCurCar([FromBody] ChangeUserCurrentCarModel changeModel)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //            _repository.UserId = UserId;
-        //        }
+        public async Task<List<CarItem>> FindCarItem(string url, string accessToken)
+        {
+            var httpRespone = await _httpUtil.GetAsync(url , accessToken);
 
-        //        catch (NullReferenceException) { return Unauthorized(); }
+            _httpUtil.EnsureSuccessStatusCode(httpRespone);
 
-        //        if (await _repository.SetUserCurCarAsync(changeModel.CarEntityId))
-        //        {
-        //            return Ok();
-        //        }
-        //        return NotFound();
-        //    }
-        //    return BadRequest();
-        //}
+            string stringResponse = await httpRespone.Content.ReadAsStringAsync();
+            var responseModel = JsonConvert.DeserializeObject<List<CarItem>>(stringResponse);
 
-        //public async Task<IActionResult> GetAsync()
-        //{
-        //    try
-        //    {
-        //        _repository.UserId = UserId;
-        //    }
+            return responseModel;
+        }
 
-        //    catch (NullReferenceException) { return Unauthorized(); }
+        #endregion
 
-        //    var car = await _repository.GetCurrentCarAsync();
+        #region Post methods
 
-        //    if (car != null)
-        //    {
-        //        return Ok(car);
-        //    }
+        public async Task<T> CreateAsync<T>(string url, T data, string accessToken)
+        {
+            var httpResponse = await _httpUtil.PostJsonAsync(url, data, accessToken);
 
-        //    return NotFound();
-        //}
+            _httpUtil.EnsureSuccessStatusCode(httpResponse);
 
-       
-        //public async Task<IActionResult> AddUserNewCar([FromBody] NewCarModel carEntity)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //            _repository.UserId = UserId;
-        //        }
+            string stringResponse = await httpResponse.Content.ReadAsStringAsync(); // if you want to read status code than you need drop this
+            var responeModel = JsonConvert.DeserializeObject<T>(stringResponse);
 
-        //        catch (NullReferenceException) { return Unauthorized(); }
+            return responeModel;
+        }
 
-        //        await _repository.AddUserNewCarAsync(new CarEntity
-        //        {
-        //            CarEntityName = carEntity.CarEntityName,
-        //            CarsTotalRide = int.Parse(carEntity.CarsTotalRide),
-        //            IsCurrent = carEntity.IsCurrent,
-        //            UserId = UserId,
-        //            Id = ObjectId.GenerateNewId().ToString()
-        //        });
+        #endregion
 
-        //        return Ok();
-        //    }
-        //    return BadRequest();
-        //}
-    
-        //public async Task<IActionResult> UpdateUserCar([FromBody] EditCarModel carEntity)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //            _repository.UserId = UserId;
-        //        }
+        #region PUT methods
 
-        //        catch (NullReferenceException) { return Unauthorized(); }
+        public async Task<T> PutAsync<T>(string url, T data, string accessToken)
+        {
+            var httpResponse = await _httpUtil.PutJsonAsync(url, data, accessToken);
 
-        //        if (await _repository.UpdateUserCarAsync(carEntity))
-        //        {
-        //            return Ok();
-        //        }
-        //        return NotFound();
-        //    }
-        //    return BadRequest();
-        //}
+            _httpUtil.EnsureSuccessStatusCode(httpResponse);
 
-        //public async Task<IActionResult> DeleteUserCar([FromQuery] string carEntityId)
-        //{
-        //    try
-        //    {
-        //        _repository.UserId = UserId;
-        //    }
+            string stringResponse = await httpResponse.Content.ReadAsStringAsync(); // if you want to read status code than you need drop this
+            var responeModel = JsonConvert.DeserializeObject<T>(stringResponse);
 
-        //    catch (NullReferenceException) { return Unauthorized(); }
+            return responeModel;
+        }
 
-        //    if (await _repository.DeleteUserCarAsync(carEntityId))
-        //    {
-        //        return Ok();
-        //    }
-        //    return NotFound();
-        //}
+        #endregion
 
-        //public async Task<IActionResult> FindCarItem([FromQuery] string name)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //            _repository.UserId = UserId;
-        //        }
+        #region DELETE methods
 
-        //        catch (NullReferenceException) { return Unauthorized(); }
+        public async Task<T> DeleteAsync<T>(string url, string accessToken)
+        {
+            var httpResponse = await _httpUtil.DeleteAsync(url, accessToken);
 
-        //        var carItems = await _repository.FindCarItem(name);
-        //        if (carItems != null)
-        //        {
-        //            return Ok(carItems);
-        //        }
-        //    }
-        //    return NotFound();
-        //}
+            _httpUtil.EnsureSuccessStatusCode(httpResponse);
 
-        //public async Task<IActionResult> GetCarItemsAsync([FromQuery] int offset, [FromQuery] int limit)
-        //{
-        //    try
-        //    {
-        //        _repository.UserId = UserId;
-        //    }
+            string stringResponse = await httpResponse.Content.ReadAsStringAsync(); // if you want to read status code than you need drop this
+            var responeModel = JsonConvert.DeserializeObject<T>(stringResponse);
 
-        //    catch (NullReferenceException) { return Unauthorized(); }
+            return responeModel;
+        }
 
-        //    var carItems = await _repository.GetCarItemsAsync(offset, limit);
-
-        //    if (carItems != null)
-        //    {
-        //        return Ok(carItems);
-        //    }
-
-        //    return NotFound();
-
-        //}
-
-        //public async Task<IActionResult> GetTotalRideAsync()
-        //{
-        //    try
-        //    {
-        //        _repository.UserId = UserId;
-        //    }
-
-        //    catch (NullReferenceException) { return Unauthorized(); }
-
-        //    var result = await _repository.GetTotalRideAsync();
-
-        //    if (result != null)
-        //    {
-        //        return Ok(result);
-        //    }
-
-        //    return NotFound();
-        //}
-
-        //public async Task<IActionResult> SetTotalRideAsync([FromBody] UpdateTotalRideModel value)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //            _repository.UserId = UserId;
-        //        }
-
-        //        catch (NullReferenceException) { return Unauthorized(); }
-
-        //        if (await _repository.SetTotalRideAsync(value))
-        //        {
-        //            return Ok();
-        //        }
-        //        return NotFound();
-        //    }
-        //    return BadRequest();
-        //}
-
-        //public async Task<IActionResult> AddNewCarItemAsync([FromBody] NewCarItemModel data)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //            _repository.UserId = UserId;
-        //        }
-
-        //        catch (NullReferenceException) { return Unauthorized(); }
-
-        //        if (await _repository.AddNewCarItemAsync(new CarItem
-        //        {
-        //            Id = ObjectId.GenerateNewId().ToString(),
-        //            CarEntityId = data.CarEntityId,
-        //            Name = data.Name,
-        //            TotalRide = 0,
-        //            ChangeRide = int.Parse(data.ChangeRide),
-        //            PriceOfDetail = int.Parse(data.PriceOfDetail),
-        //            RecomendedReplace = int.Parse(data.RecomendedReplace),
-        //            DateOfReplace = DateTime.Parse(data.DateOfReplace)
-
-        //        }))
-        //        {
-        //            return Ok();
-        //        }
-        //        return NotFound();
-        //    }
-        //    return BadRequest();
-        //}
-
-        //public async Task<IActionResult> UpdateCarItemAsync([FromBody] UpdateCarItemModel value)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //            _repository.UserId = UserId;
-        //        }
-
-        //        catch (NullReferenceException) { return Unauthorized(); }
-
-        //        if (await _repository.UpdateCarItemAsync(value))
-        //        {
-        //            return Ok();
-        //        }
-        //        return NotFound();
-        //    }
-        //    return BadRequest();
-        //}
-
-        //public async Task<IActionResult> DeleteAsync([FromQuery] string detailId)
-        //{
-        //    try
-        //    {
-        //        _repository.UserId = UserId;
-        //    }
-
-        //    catch (NullReferenceException) { return Unauthorized(); }
-
-        //    if (await _repository.DeleteCarItemAsync(detailId))
-        //    {
-        //        return Ok();
-        //    }
-        //    return NotFound();
-        //}
+        #endregion
 
     }
 }

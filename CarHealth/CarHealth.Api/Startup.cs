@@ -132,7 +132,7 @@ namespace CarHealth.Api
             {
                 routes.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}");
+                    pattern: "/swagger/v1/swagger.json");
             });
         }
 
@@ -150,6 +150,7 @@ namespace CarHealth.Api
                 var mongoClient = sp.GetService<MongoClient>();
 
                 return new MongoRepository(mongoClient, config.MongoDb.MainDb);
+
             }); // MongoDb data repository
 
 

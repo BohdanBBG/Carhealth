@@ -50,15 +50,16 @@ class HttpUtil {
         xhr.onload = function () {
             if (xhr.status === 200) {
 
-                callback();
+              
 
             } else if (xhr.status === 500) {
                 console.error('Request failed.  Returned status of ' + xhr.status);
                 alert('Request failed.  Returned status of ' + xhr.status);
             } else if (xhr.status === 401 || xhr.status === 403) {
                 console.error('Request failed.  Returned status of ' + xhr.status);
-             //   document.location.href = identityUrl + "/Account/Login";
+                alert('Request failed.  Returned status of ' + xhr.status +', unauthorized user');
             }
+            callback(xhr.status);
         };
 
         if (authToken !== null) {

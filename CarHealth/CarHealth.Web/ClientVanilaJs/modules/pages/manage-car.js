@@ -153,13 +153,13 @@ class CarManager {
 
 
                 if (makeRequestBody(data)) {
-                    var postUrl = `${config.urls.api}/add/car`;// used for add car
+                    var postUrl = `${config.urls.api}/api/cars/add/car`;// used for add car
 
 
                     // console.log('-----', data);
-                    SendData(postUrl, data);
 
-                    alert("Car has been added");
+                    httpRequest(postUrl, "POST", data);
+
                     GetUserCars(function (e) { });
 
                     carManagmendCloseFormAddButtonEl.onclick();
@@ -206,13 +206,11 @@ class CarManager {
                 sendData.CarsTotalRide) {
 
                 //totalRideDataSend.Id = sendData.Id;
-                 console.log('------',sendData);
+                console.log('------', sendData);
 
-                var putUrl = `${config.urls.api}/put/car`;// used for update car
+                var putUrl = `${config.urls.api}/api/cars/put/car`;// used for update car
 
-                UpdateData(putUrl, sendData);
-
-                alert("Car has been updated");
+                httpRequest(putUrl, "PUT", sendData)
 
                 GetUserCars(function (data) {
                     modalWindowEl.querySelector('.car-managmend-form-reset-button').onclick();
@@ -226,39 +224,28 @@ class CarManager {
 
         domUtil.addBubleEventListener('.js-car-managmend-delete-button', '.js-car-managmend-delete-button', 'click', globalScopes.getEventListenerState().carManagerDeletebutton, function (e, actualEl, desiredEl) {
 
-            var deleteUrl = `${config.urls.api}/delete/car?carEntityId=${carManagmendFormDeleteButtonEl.getAttribute('car-id')}`;// used for delete car
-            DeleteData(deleteUrl)
+            var deleteUrl = `${config.urls.api}/api/cars/delete/car?carEntityId=${carManagmendFormDeleteButtonEl.getAttribute('car-id')}`;// used for delete car
+
+            httpRequest(deleteUrl, "DELETE")
+
             GetUserCars(function (data) {
 
                 carManagmendFormContainerEl.classList.add('hidden');
-                alert("Car has been deleted");
 
                 InitModalWindowMenu(data)
             });
         });
 
-        function DeleteData(deleteUrl) {
-            helper.httpRequest(deleteUrl, null, "DELETE", function (response) {
+        function httpRequest(url, method, data = null) {
+            helper.httpRequest(url, data, method, function (statusCode) {
+
+                if (statusCode === 200) {
+                    alert("Done!");
+                }
 
             }, user.access_token);
         }
 
-        function UpdateData(putUrl, data) {
-            helper.httpRequest(putUrl, data, "PUT", function (response) {
-
-            }, user.access_token);
-        }
-
-        function SendData(postUrl, data) {
-            helper.httpRequest(postUrl, data, "POST", function (response) {
-
-            }, user.access_token);
-        }
-
-        function SendTotalRide(url, value) {
-            helper.httpRequest(url, value, "POST", function (request) {
-            }, user.access_token);
-        }
 
         function makeRequestBody(sendData) {
 
@@ -305,7 +292,7 @@ class CarManager {
         };// removes all input fields with red border when click on "reset"
 
         function GetUserCars(callback) {
-            helper.httpGet(config.urls.api + '/allUsersCars', function (data) {
+            helper.httpGet(config.urls.api + '/api/cars/allUsersCars', function (data) {
                 pageData = data;
                 console.log("Cars: ", data);
                 callback(data);

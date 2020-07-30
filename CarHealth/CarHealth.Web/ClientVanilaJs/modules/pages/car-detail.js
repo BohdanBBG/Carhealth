@@ -26,7 +26,7 @@ class CarDetails {
         var listItemTemplateEl = itemListContainerEl.querySelector('.js-list-item-template');
 
         function getData(offset = 0, limit = 2, callBack = null) {
-            helper.httpGet(config.urls.api + '/cardetails?offset=' + offset + '&limit=' + limit, function (data) {
+            helper.httpGet(config.urls.api + '/api/cars/cardetails?offset=' + offset + '&limit=' + limit, function (data) {
                 console.log(2, data);
                 if (callBack !== null) {
                     callBack(data);
@@ -161,7 +161,7 @@ class CarDetails {
 
             if (confirm(`Do you want to delete ${result.name}`)) {
 
-                var idItemUrl = `${config.urls.api}/delete/caritem?detailId=${itemId}`;
+                var idItemUrl = `${config.urls.api}/api/cars/delete/caritem?detailId=${itemId}`;
                 deleteData(idItemUrl);
 
                 showPage(page, limit);
@@ -202,14 +202,14 @@ class CarDetails {
 
             domUtil.addBubleEventListener(formPutButtonEl, '.js-put-button', 'click', globalScopes.getEventListenerState().formPutButton, function (e) {
 
-                idItemPutUrl = `${config.urls.api}/put/caritem`;
+                idItemPutUrl = `${config.urls.api}/api/cars/put/caritem`;
 
                 var totalRideObj = {};
 
                 if (makeRequestBody(formDataSend, totalRideObj)) {
 
                     if (/^\d+$/.test(totalRideObj.TotalRide)) {
-                        var url = config.urls.api + "/totalride/set";
+                        var url = config.urls.api + "/api/cars/totalride/set";
                         totalRideObj.Id = carId;
                         console.log(totalRideObj);
                         SendTotalRide(url,totalRideObj);
@@ -234,7 +234,7 @@ class CarDetails {
                     showPage(0, limit);
                 }
                 else {
-                    helper.httpGet(config.urls.api + '/find/caritem?name=' + this.value, function (searchResult) {
+                    helper.httpGet(config.urls.api + '/api/cars/find/caritem?name=' + this.value, function (searchResult) {
                         showPageData(searchResult);
                     }, user.access_token);
                 }
@@ -271,10 +271,10 @@ class CarDetails {
                 var totalRideObj = {};
 
                 if (makeRequestBody(formDataSend, totalRideObj)) {
-                    var postUrl = `${config.urls.api}/add/caritem`;// used for add item
+                    var postUrl = `${config.urls.api}/api/cars/add/caritem`;// used for add item
 
                     if (/^\d+$/.test(totalRideObj.TotalRide)) {
-                        var url = config.urls.api + "/totalride/set";
+                        var url = config.urls.api + "/api/cars/totalride/set";
                         totalRideObj.Id = carId;
                         console.log(totalRideObj);
                         SendTotalRide(url,totalRideObj);

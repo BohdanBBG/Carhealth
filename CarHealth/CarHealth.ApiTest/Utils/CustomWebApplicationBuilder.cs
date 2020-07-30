@@ -52,7 +52,7 @@ namespace CarHealth.ApiTest.Utils
                 ApplicationSettings config = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>().Value;
                 IWebHostEnvironment hostingEnvironment = serviceProvider.GetService<IWebHostEnvironment>();
 
-                ConfigureMongoDb(services, config);
+                ConfigureMongoDb(services);
 
                // use mocked auth
                JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
@@ -74,7 +74,7 @@ namespace CarHealth.ApiTest.Utils
 
             });
         }
-        public void ConfigureMongoDb(IServiceCollection services, ApplicationSettings config)
+        public void ConfigureMongoDb(IServiceCollection services)
         {
 
             services.AddSingleton<MongoDbRunner>(sp =>
@@ -86,12 +86,13 @@ namespace CarHealth.ApiTest.Utils
              {
                  var mongoDbRunner = sp.GetRequiredService<MongoDbRunner>();
 
-                 return new MongoClient(mongoDbRunner.ConnectionString);
+                return new MongoClient(mongoDbRunner.ConnectionString);
              });
 
             services.AddTransient<ICarRepository, MongoRepository>(sp =>
             {
                 var mongoClient = sp.GetRequiredService<MongoClient>();
+                ApplicationSettings config = sp.GetRequiredService<IOptions<ApplicationSettings>>().Value;
 
                 return new MongoRepository(mongoClient, config.MongoDb.MainDb);
             });
@@ -99,7 +100,7 @@ namespace CarHealth.ApiTest.Utils
             services.AddTransient<IIdentityMongoRepository<User>, IdentityMongoRepository<User>>(sp =>
              {
                  var mongoClient = sp.GetRequiredService<MongoClient>();
-
+                 ApplicationSettings config = sp.GetRequiredService<IOptions<ApplicationSettings>>().Value;
                  return new IdentityMongoRepository<User>(mongoClient, config.MongoDb.MongoDbIdentity);
              });
 

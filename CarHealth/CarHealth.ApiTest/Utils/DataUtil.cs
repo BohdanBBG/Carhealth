@@ -5,6 +5,7 @@ using CarHealth.Api.Repositories;
 using CarHealth.ApiTest.TestRepositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,6 +31,7 @@ namespace CarHealth.ApiTest.Utils
         {
             var userEntity = new User
             {
+                // Id = _faker.UniqueIndex.ToString(),
                 UserName = _faker.Internet.UserName(),
                 Email = _faker.Internet.Email(),
                 EmailConfirmed = true,
@@ -46,36 +48,39 @@ namespace CarHealth.ApiTest.Utils
 
         // mainDb
 
-        public CarEntity TakeCarEntity(bool current = false)
+        #region CarEntity
+
+        public  CarEntity CreateTestCarEntity(string userId, bool isCurrent = false)
         {
             return new CarEntity
             {
-                // UserId = ?
+                UserId = userId,
                 CarEntityName = _faker.Lorem.Word(),
                 CarsTotalRide = new Random().Next(),
-                IsCurrent = current
+                IsCurrent = isCurrent,
             };
         }
 
         public async Task<CarEntity> GetCurrentCarEntity(string userId)
         {
-            _dataRepository.UserId = userId;
 
-            return await _dataRepository.GetCurrentCarAsync();
+            return await _dataRepository.GetCurrentCarAsync(userId);
         }
 
         public async Task<List<CarEntity>> GetAllUsersCarsAsync(string userId)
         {
-            _dataRepository.UserId = userId;
-
-            return await _dataRepository.GetAllUsersCarsAsync();
+            return await _dataRepository.GetAllUsersCarsAsync(userId);
         }
-        
-        public List<CarEntity> CreateCarEntityInTestRepo(string userId, int count = 1)
-        {
-            _dataRepository.UserId = userId;
 
-            int countAddedCarEntities = -1;
+        /// <summary>
+        /// Creates and returns a list of carEntities in a test repository. The first car always has IsCurrent = true.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="count"></param>
+        /// <returns></returns>
+        public async Task<List<CarEntity>> CreateCarEntityInTestRepo(string userId, int count = 1) 
+        { 
+            int countAddedCarEntities = 0;
 
             var carEntities = Enumerable.Range(0, count).Select(x =>
             {
@@ -86,32 +91,84 @@ namespace CarHealth.ApiTest.Utils
                     UserId = userId,
                     CarEntityName = _faker.Lorem.Word(),
                     CarsTotalRide = new Random().Next(),
-                    IsCurrent = countAddedCarEntities == 0 ? true : false,
+                    IsCurrent = countAddedCarEntities == 1 ? true : false,
                 };
 
             }).ToList();
 
-            foreach(var c in carEntities)
-            {
-                _dataRepository.AddUserNewCarAsync(c);
-            }
 
-          //  carEntities.ForEach(x => _dataRepository.AddUserNewCarAsync(x));
+            foreach (var c in carEntities)
+            {
+                await _dataRepository.AddUserNewCarAsync(c);
+            }
 
             return carEntities;
         }
 
-        public CarEntity PrepareStudyItemUpdateDto(CarEntity entity)
+
+        #endregion
+
+        #region CarItem
+
+        public  List<CarItem> CreateTestCarItem(string userId, int count = 1)
         {
-            return new CarEntity
+
+            var carItems = Enumerable.Range(0, count).Select(x =>
             {
-                CarEntityName = _faker.Lorem.Word(),
-                CarsTotalRide = new Random().Next(),
-                IsCurrent = entity.IsCurrent == false ? false : true
-            };
+                return new CarItem
+                {
+                    Name = _faker.Lorem.Word(),
+                    TotalRide = new Random().Next(),
+                    ChangeRide = new Random().Next(),
+                    PriceOfDetail = new Random().Next(),
+                    DateOfReplace = System.DateTime.Now,
+                    RecomendedReplace = new Random().Next(),
+                    CarEntityId = "",
+                };
+            }).ToList();
+
+          
+            return carItems;
         }
 
-        // TODO add data managment for caritems
+        /// <summary>
+        /// Creates and returns a list of carItems in a test repository.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="count"></param>
+        /// <returns></returns>
+        public async Task<List<CarItem>> CreateCarItemInTestRepo(string userId, int count = 1, List<string> names = null)
+        {
+            var carEntity = await this.CreateCarEntityInTestRepo(userId, 2);
+
+            int counter = -1;
+
+            var carItems = Enumerable.Range(0,count).Select(x=>
+            {
+                counter++;
+
+                return new CarItem
+                {
+                    Name = names != null && counter < names.Count() ?
+                                            names[counter] : _faker.Lorem.Word(),
+                    TotalRide = new Random().Next(),
+                    ChangeRide = new Random().Next(),
+                    PriceOfDetail = new Random().Next(),
+                    DateOfReplace = System.DateTime.Now,
+                    RecomendedReplace = new Random().Next(),
+                    CarEntityId = carEntity.FirstOrDefault().Id,
+                };
+            }).ToList();
+
+            foreach (var item in carItems)
+            {
+                await _dataRepository.AddNewCarItemAsync(item, userId);
+            }
+
+            return carItems;
+        }
+
+        #endregion
 
     }
 }

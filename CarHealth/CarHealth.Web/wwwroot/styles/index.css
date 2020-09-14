@@ -1,0 +1,876 @@
+body, html {
+    width: 100%;
+    height: 100%;
+    margin-bottom: 0%;
+    margin-left: 0%;
+    margin-right: 0%;
+    margin-top: 0%;
+}
+
+body {
+    /* Set base font */
+    font-size: 14px;
+}
+
+@media screen and (max-width: 720px) {
+    body {
+        font-size: 2.2vh;
+    }
+}
+
+:root{
+     --background-color: rgb(68, 67, 67);
+    --text-color: #fff;
+    --menu-background-color:rgb(32, 30, 30);
+    --car-managmend-container-color:rgb(83, 80, 80);
+    --card-background-color: rgb(31, 30, 30);
+    --card-list-item-background-color:  rgb(34, 32, 32);
+    --car-managmend-form-container-background-color: rgb(223, 219, 219);
+    --card-lighter-color: rgb(39, 39, 39);
+    --card-lighter-color-edit-control-button: #494f7c;
+    --card-darker-color: #20233e;
+    --bottom-color: #4f9da6;
+    --example-background-color: #35849c;
+    --menu-item-font-color: #fff;
+    --menu-item-active-color: orangered;
+    --car-managmend-form-button:rgb(104, 12, 12);
+    --car-managmend-form-button-hover:rgb(83, 3, 3);
+    --button-red-color:rgb(83, 3, 3);
+    --button-red-color-hover: rgb(180, 61, 61);
+    --input-field-color:#bec9ff;
+    --input-field-border-color:#bec9ff;
+    --block-bottom-width: 13%;
+    --block-bottom-height: 10%;
+    --car-details-ride-section:rgb(13, 8, 68);
+    --car-details-price-date-section: rgb(13, 8, 68);
+    --car-details-recomended-replace-section: rgb(13, 8, 68);
+}
+
+/* #region General classes */
+
+.hidden {
+    display: none;
+}
+
+/* #endregion */
+
+.app-container{
+    width:100%;
+    height:100%;
+}
+
+.main-block{
+    background-color: var(--background-color);
+    width: 100%;
+    min-height: 90%;
+    height: auto;
+}
+
+/* begin dashboard */
+.dashboard-container {
+    color: var(--text-color);
+}
+
+.dashboard-container .main-title {
+    text-align: center;
+    font-size: 2em;
+    margin: 0 0 1em 0;
+}
+
+.info-container .info-row {
+    margin: 0 0 0.5em;
+    font-size: 1.75em;
+    text-align: center;
+}
+.info-container .info-row:last-child {
+    margin-bottom: 0;
+}
+
+.info-container .info-image {
+    width: auto;
+    height: auto;
+    max-height: 17em;
+}
+.info-container .info-image--top {
+    max-height: 17em;
+}
+
+.brend-name{
+    font-size: 3em;
+    color: rgb(180, 164, 17);
+    font-style: oblique;
+    font-variant: petite-caps;
+}
+
+@media screen and (max-width: 720px){
+
+    .brend-name
+    {
+        font-size: 2.4em;
+    }
+    .info-container .info-image--top {
+        width: 12.2em;
+    }
+
+    .info-container .info-row {
+        font-size: 1.7em;
+        margin: 1em;
+    }
+}
+
+
+/* begin dashboard */
+
+/* error page  begin*/
+
+.error-image{
+    max-height: 20em;
+    display: block;
+    margin: 0 auto;
+    
+}
+@media screen and (max-width: 720px){
+    .error-image{
+         max-width: 10em;
+    }
+}
+
+.error-message-row{
+    font-size: 1.75em;
+    text-align: center;
+    font-size: 2em;
+    color: #fff;
+}
+
+.hidden{
+    display: none;
+}
+
+.active{
+    display: block;
+}
+/* error page  end*/
+
+
+.border-wrong{
+    border: 1px solid #fb0000;
+}
+
+.border-correct{
+    border: 2px solid #4ce406;
+}
+
+
+/* menu */
+
+.js-for-admins-only.hidden{
+    display: none;
+}
+
+.main-block-menu{
+    background-color: var(--background-color-menu);
+    width: 100%;
+    height: 10%;
+    overflow-y: hidden;
+}
+
+
+.menu{
+  width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    overflow-y: auto;
+    background-color: var(--menu-background-color);
+}
+.menu-item{
+    height: 100%;
+    margin: 0;
+    padding: 0.8em 1em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: auto;
+    background-color: var(--menu-background-color);
+    opacity: 1;
+    color: var(--menu-item-font-color);
+    box-sizing: border-box;
+    text-align: center;
+    text-overflow: ellipsis;
+    font-size: 1em;
+}
+
+.menu-item.active {
+    color: var(--menu-item-active-color);
+}
+
+.menu-page-container {
+    display: none;
+    width: 100%;
+    height: auto;
+    padding: 1em 0 1em 0;
+    box-sizing: border-box;
+}
+
+.menu-page-container.active {
+    display: block;
+}
+
+@media screen and (max-width: 720px){
+    .menu-item{
+        flex-grow: 1;
+    }
+}
+/* all data items review*/
+
+.list-item-title{
+    width: 99%;
+    flex-grow: 1;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+    text-align: center;
+    overflow-x: hidden;
+    overflow-y: auto;
+    text-overflow: ellipsis;
+    font-size: 1.5em;
+    padding: 0.3em 0 0.5em 0;
+    margin-bottom: 0.5em;
+}
+
+.list-item-ride-container{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-grow: 1;
+    width: 99%;
+    min-height: 1em;
+    font-size: 1em;
+    overflow-x: hidden;
+    overflow-y: auto;
+    margin-bottom: 0.5em;
+    background: var(--car-details-ride-section);
+}
+
+.list-item-ride-total{
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.list-item-change-ride{
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.list-item-price-date-container{
+    flex-grow: 1;
+    width: 99%;
+    display: flex;
+    flex-direction: row;
+    min-height: 1em;
+    align-items: center;
+    font-size: 1em;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+    overflow-x: hidden;
+    overflow-y: auto;
+    margin-bottom: 0.5em;
+    background: var(--car-details-price-date-section);
+}
+
+.list-item-price{
+    width: 50%;
+}
+
+.list-item-date{
+    width: 50%;
+}
+
+.list-item-recomended-replace{
+    flex-grow: 1;
+    width: 99%;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+    background: var(--car-details-recomended-replace-section);
+}
+
+.item-list-container {
+    margin: 0 1% 0 1%;
+}
+
+.item-list {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+}
+
+
+.list-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 19.6%;
+    height: 226px;
+    margin: 0.5% 0.5% 0 0;
+    background-color: var(--card-list-item-background-color);
+    color: var( --text-color);
+    text-align: center;
+    overflow: auto;
+    font-size: 1.3em;
+    padding: 0.5em;
+    box-sizing: border-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+.list-item-container {
+    height:220px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-grow: 1;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    
+}
+
+.list-item-text-span{
+    flex-grow: 1;
+    font-size: 1.2em;
+}
+
+.container-edit-icon{
+    height: 1em;
+    align-self: baseline;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 8.2em;
+    background: var(--card-list-item-control-button-background-color);
+}
+
+.edit-picture{
+    opacity: 0.7;
+    width: auto;
+    height: 1.5em;
+}
+
+.border{
+    border: 1px solid  var(--car-details-ride-section) ;
+}
+
+.border-change{
+    border: 0.14em solid rgb(182, 6, 6);
+}
+
+.edit-picture:hover {
+    opacity: 1;
+}
+
+.list-item:hover {
+    background-color: var(--card-lighter-color);
+}
+
+.list-item--hidden {
+    display: none;
+}
+@media screen and (min-width: 721px) {
+    .list-item:nth-child(-n + 5) {
+        margin-top: 0;
+    }
+    .list-item:nth-child(5n) {
+        margin-right: 0;
+    }
+}
+@media screen and (max-width: 720px) {
+
+    .list-item {
+        width: 49.5%;
+        height: 10em;
+        margin: 1% 1% 0 0;
+    }
+
+    .list-item:nth-child(-n + 2) {
+        margin-top: 0;
+    }
+
+    .list-item:nth-child(2n) {
+        margin-right: 0;
+    }
+
+    .list-item-container
+    {
+        font-size: 0.63em;
+        height: 15em;
+    }
+
+    .list-item-title
+    {
+        height: 0.8em;
+    }
+
+    .list-item-recomended-replace
+    {
+        height: 0.1em;
+    }
+
+    .item-list
+    {
+        padding: 0.4em;
+    }
+}
+
+/* BEGIN Car Managment */
+
+.car-managmend-form-container
+{
+    height: 28em;
+    width: 24em;
+}
+
+.car-managmend-form-dialog
+{
+    padding: 0em;
+}
+
+.car-managmend-dialog-conten{
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+}
+.car-managmend-menu-container
+{
+    display: flex;
+    flex-direction: column;
+    background-color: var(--car-managmend-container-color);
+    padding: 0.6% 0% 0% 0%;
+}
+
+.car-managmend-menu-container.hidden
+{
+    display: none;
+}
+
+.car-managmend-menu
+{
+    height: 90%;
+}
+
+.car-managmend-menu-item-template{
+    margin: 0;
+    padding: 0.8em 1em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: auto;
+    opacity: 1;
+    color: var(--menu-item-font-color);
+    box-sizing: border-box;
+    text-align: center;
+    text-overflow: ellipsis;
+    font-size: 1.3em;
+}
+
+.car-managmend-menu-item-template.active {
+    color: var(--menu-item-active-color);
+}
+
+.car-managmend-menu-item-template.hidden
+{
+    display: none;
+}
+
+@media screen and (max-width: 720px){
+    .car-managmend-menu-item-template{
+        flex-grow: 1;
+    }
+}
+
+.car-managmend-menu-button-container
+{
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+}
+
+.car-managmend-form-close-button-container
+{
+    flex-grow: 1;
+    display: flex;
+    padding: 1em 1em 1em 1em;
+    flex-direction: column;
+}
+
+.car-managmend-modal-window-close-button
+{
+    height: 2.2em;
+    width: 100%;
+    background-color: var(--car-managmend-form-button);
+    border-color: black;
+    color: white;
+    border-radius: 6em;
+}
+.car-managmend-add-button-container
+{
+    display: flex;
+    flex-grow: 1;
+    padding: 1em 1em 1em 1em;
+    flex-direction: column;
+}
+
+.car-managmend-add-button
+{
+    height: 2.2em;
+    width: 100%;
+    background-color: var(--car-managmend-form-button);
+    border-color: black;
+    color:white;
+    border-radius: 6em;
+
+}
+
+.car-managmend-add-button:hover{
+    background-color: var(--car-managmend-form-button-hover);
+}
+
+.car-managmend-form-container
+{
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    align-items: center;
+    background-color:var(--car-managmend-form-container-background-color);
+}
+
+.car-managmend-form-container.hidden
+{
+    display: none;
+}
+
+.car-managmend-form
+{
+    height: 82%;
+    padding: 1em;
+}
+
+.car-managmend-input-field-title
+{
+    height: 1.3em;
+    margin: 0em 0em 1em 0em;
+    width: 98.5%;
+    font-size: 1.4em;
+}
+
+.car-managmend-input-field-total-ride
+{
+    height: 1.3em;
+    margin: 0em 0em 1em 0em;
+    width: 98.5%;
+    font-size: 1.4em;
+}
+
+.car-managmend-is-current-checkbox-container{
+    font-size: 1.4em;
+}
+
+.car-managmend-input-form-button-container
+{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.car-managmend-form-control-button
+{
+    flex-grow: 1;
+    height: 2em;
+    margin: 1em 0em 1em 0.5em;
+    background-color: var(--car-managmend-form-button);
+    border-color: black;
+    color:white;
+    border-radius: 6em;
+}
+
+.car-managmend-form-total-ride
+{
+        font-size: 1.2em;
+        display: flex;
+        flex-direction: row;
+        align-items: baseline;
+        margin-bottom: 0.8em;
+        margin-left: 0.4em;
+}
+
+.car-managmend-form-total-ride.hidden
+{
+    display: none;
+}
+
+.car-managmend-form-reset-button
+{
+    flex-grow: 1;
+    width: 5.6em;
+    height: 2em;
+    margin: 1em 0em 1em 0.5em;
+    background-color: var(--car-managmend-form-button);
+    border-color: black;
+    color:white;
+    border-radius: 6em;
+}
+
+@media screen and (max-width: 720px) {
+
+    .car-managmend-form-container
+    {
+        width: 13em;
+    }
+
+    .car-managmend-form
+    {
+        width: 100%;
+      box-sizing: border-box;
+    }
+
+    .car-managmend-input-field-title
+    {
+        width: 98.5%;
+    }
+}
+
+
+
+/* END Car Managment */
+
+/* Begin Modal window */
+
+  .modal-window-close-button:hover {background: #e6e6ff;}
+/*End Modal window  */
+
+
+
+.item-list-pager {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin: 1em 0;
+}
+
+.item-list-pager__button {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5em;
+    color: var( --text-color);
+    padding: 0.25em;
+    background-color: var(--button-red-color);
+    margin: 0 0.25em 0 0;
+    border-radius: 2px;
+    cursor: pointer;
+}
+
+.item-list-pager__button:hover{
+    background-color: var(--button-red-color-hover);
+}
+
+.item-list-pager__button:last-child {
+    margin-right: 0;
+}
+
+.item-list-pager__button .button-icon {
+}
+
+/*begin add/edit item form */
+
+.data-form-container{
+    display: flex;
+    flex-direction: row;
+}
+.add-word-form{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin: 1em 4em 0em;
+    
+}
+
+.form-container{
+    display: flex;
+    flex-direction: column;
+    color: white;
+    font-size: 2em;
+}
+
+.form-text{
+    margin: 0em 0em 0.5em;
+}
+
+.price-date-container{
+    display: flex;
+    flex-direction: row;
+    height: 1.2em;
+    width: 12em;
+    margin: 0.7em 0em 0em;
+}
+
+.input-field-title{
+    background-color: var(--input-field-color);
+    border-color: var(--input-field-border-color);
+    padding: 0em 0.5em;
+    margin: 1em 0em 0.5em;
+    height: 1.2em;
+    width: 16.1em;
+    font-size: 0.7em;
+}
+
+.input-field-price{
+    background-color: var(--input-field-color);
+    border-color: var(--input-field-border-color);
+    padding: 0em 0.5em;
+    height: 1.2em;
+    width: 5.5em;
+    font-size: 0.7em;
+}
+
+.price-date-text{
+    border-color: var(--input-field-border-color);
+    padding: 0em 0.5em;
+    margin: 0em 0.3em 0em 0.3em;
+    height: 1.4em;
+    width: 4em;
+    font-size: 0.7em;
+    color: black;
+
+}
+
+.input-field-date{
+    background-color: var(--input-field-color);
+    border-color: var(--input-field-border-color);
+    padding: 0em 0.5em;
+    height: 1.2em;
+    width: 6.8em;
+    font-size: 0.7em;
+}
+
+.input-field-recomend{
+    background-color: var(--input-field-color);
+    border-color: var(--input-field-border-color);
+    padding: 0em 0.5em;
+    margin: 1em 0em 0.5em;
+    height: 1.2em;
+    width: 16.1em;
+    font-size: 0.7em;
+}
+
+.is-replaced-checkbox-container{
+    padding: 0em 0.6em 0em 0.6em;
+    font-size: 1.1em;
+}
+
+.input-field-empty-js {
+    border-width: 0.12em;
+    border-color: red; 
+}
+
+.reset-button{
+    width: 5.6em;
+    height: 2em;
+    margin: 1em 0em 1em 1em;
+
+}
+
+.form-control-button{
+    width: 7em;
+    height: 2em;
+    margin: 1em 0em 1em 0em;
+}
+
+.form-button-container{
+    display: flex;
+    flex-direction: row;
+}
+
+.item-list-add-button-container{
+    margin: 0em 1em 1em 1em;
+    display: flex;
+    flex-direction: row;
+    color: var( --text-color);
+}
+
+.car-details-search{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-left: 1.4em;
+    font-size: 1.5em;
+}
+
+.car-details-search-text{
+    margin-right: 0.4em;
+}
+
+.item-list-pager__add-button{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5em;
+    width: 3em;
+    color: var( --text-color);
+    padding: 0.25em;
+    background-color: var(--button-red-color);
+    border-radius: 2px;
+    cursor: pointer;
+}
+
+.item-list-pager__add-button:hover{
+    background-color: var(--button-red-color-hover);
+}
+
+
+@media screen and (max-width: 720px) {
+    
+    .input-field-title{
+        width: 14.5em;
+    }
+
+    .input-field-recomend{
+        width: 14.5em;
+    }
+
+    .form-dialog{
+         width: 22em
+    }
+
+    .price-date-container
+    {
+        width: 100%;
+    }
+
+    .input-field-price
+    {
+        width: 3.9em;
+        flex-grow: 2;
+    }
+
+    .price-date-text
+    {
+        width: 1em;
+        flex-grow: 1;
+    }
+
+    .input-field-date
+    {
+        width: 5.7em;
+        flex-grow: 2;
+    }
+}
+/* end  add/edit item form */

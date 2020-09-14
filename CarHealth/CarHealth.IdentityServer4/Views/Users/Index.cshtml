@@ -1,0 +1,38 @@
+﻿@model IEnumerable<CarHealth.IdentityServer4.Models.IdentityModels.User>
+@{
+    ViewBag.Title = "Users list";
+}
+
+@*<a asp-action="Create">Add User</a>*@
+
+<tr>
+    <td>
+    <a class="btn btn-sm btn-info" asp-action="Create">Add User</a>
+    </td>
+
+    <td>
+    <a class="btn btn-sm btn-info" asp-action="Index" asp-controller="Roles">Roles</a>
+    </td>
+
+    <td></td>
+</tr>
+
+<table class="table">
+    <tr><th>Email</th><th>Год</th><th></th></tr>
+    @foreach (var user in Model)
+    {
+        <tr>
+            <td>@user.Email</td>
+
+            <td>
+                <form asp-action="Delete" asp-route-id="@user.Id" method="post">
+                    <a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-id="@user.Id">Edit</a>
+                    <a class="btn btn-sm btn-primary" asp-action="ChangePassword" asp-route-id="@user.Id">Change password</a>
+                    <button type="submit" class="btn btn-sm btn-danger">
+                        Delete
+                    </button>
+                </form>
+            </td>
+        </tr>
+    }
+</table>

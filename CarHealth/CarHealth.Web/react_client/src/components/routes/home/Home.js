@@ -1,6 +1,5 @@
-'use strict'
-
 import React, { Component, PureComponent } from 'react'
+import 'bootstrap/dist/css/bootstrap.css'
 
 class Home extends Component {
 

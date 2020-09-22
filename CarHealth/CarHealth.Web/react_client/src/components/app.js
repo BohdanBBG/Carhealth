@@ -1,38 +1,66 @@
+
 import React, { Component } from 'react';
 
-import { BrowserRouter, Route, Link } from 'react-router-dom';
-import createBrowserHistory from 'history/createBrowserHistory';
+import { Router, Route, NavLink } from 'react-router-dom'
+import { createBrowserHistory } from 'history';
+import 'bootstrap/dist/css/bootstrap.css'
 
-import Home from './routes/home/Home.js'
-import CarParts from './routes/car_parts/CarParts.js'
-import CarsControl from './routes/carsControl/CarsControl.js'
-import Admin from './routes/admin/Admin.js'
-import LogOut from './routes/logOut/LogOut.js'
 
 const history = createBrowserHistory();
 
 
 class App extends Component {
-  
+
+  state = {
+    
+  }
+
   render() {
+
+
+    const menuEl =
+      this.props.routes.map((route, index) => (
+        <NavLink
+          exact
+          className={`nav-item nav-link  ${route.disabled ? "disabled" : ""}`}
+          to={route.route}
+          key={index}
+          activeClassName="active">
+          {route.name}
+        </NavLink>
+
+      ));
+
+
+
     return (
-      <BrowserRouter history={history}>
-        <div>
-          <ul>
-            <li><Link to="/">Home</Link></li>
-            <li><Link to="/carParts">Car parts</Link></li>
-            <li><Link to="/carsControl">Cars control</Link></li>
-            <li><Link to="/admin">Admin</Link></li>
-            <li><Link to="/logOut">LogOut</Link></li>
-          </ul>
-          <hr />
-          <Route exact path="/" component={Home}/>                                            
-          <Route exact path="/carParts" component={CarParts} />
-          <Route path="/carsControl" component={CarsControl} />
-          <Route exact path="/admin" component={Admin}/>  
-          <Route exact path="/logOut" component={LogOut}/>  
-        </div>
-      </BrowserRouter>
+
+      <div className="container-fluid  "  >
+
+        <Router history={history}>
+
+          <div className="row ">
+
+            <div className=" pt-4 col-sm-2 nav nav-pills text-center d-flex flex-column    pl-3" >
+
+              {menuEl}
+
+            </div>
+
+            <div className="col-sm pt-3 container-fluid " >
+
+              {this.props.routes.map((route, index) => (
+                <Route exact path={route.route} component={route.component} key={index} />
+              ))}
+
+            </div>
+
+          </div>
+
+        </Router>
+
+      </div>
+
     );
   }
 }

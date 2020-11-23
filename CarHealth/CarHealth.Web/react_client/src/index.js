@@ -3,9 +3,9 @@ import React from 'react'
 import { render } from 'react-dom'
 import App from './components/app'
 
-import Home from './components/routes/home/Home.js'
-import CarPartsPage from './components/routes/car_parts/CarPartsPage.js'
-import CarsControlPage from './components/routes/carsControl/CarsControlPage.js'
+import HomePage from './components/routes/homePage/HomePage.js'
+import CarPartsPage from './components/routes/carPartsPage/CarPartsPage.js'
+import CarsControlPage from './components/routes/carsControlPage/CarsControlPage.js'
 import Admin from './components/routes/admin/Admin.js'
 import LogOut from './components/routes/logOut/LogOut.js'
 
@@ -15,7 +15,7 @@ const routes =
     {
       "route": "/",
       "name": "Home",
-      "component": Home,
+      "component": HomePage,
       "disabled": false,
       
     },
@@ -36,12 +36,6 @@ const routes =
       "name": "Admin",
       "component": Admin,
       "disabled": false,
-    },
-    {
-      "route": "/logOut",
-      "name": "LogOut",
-      "component": LogOut,
-      "disabled": true,
     }
   ];
 

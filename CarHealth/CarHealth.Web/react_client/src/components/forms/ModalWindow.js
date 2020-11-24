@@ -21,9 +21,6 @@ class ModalWindow extends Component {
                         <div className="modal-body">
                             {this.props.children}
                         </div>
-
-                      
-
                     </div>
                 </div>
             </div>

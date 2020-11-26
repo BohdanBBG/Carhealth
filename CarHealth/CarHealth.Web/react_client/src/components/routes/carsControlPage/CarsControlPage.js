@@ -94,34 +94,35 @@ const carList = [
 
 
 const columns = [
-    {
-        label: 'ID',
-        field: 'id',
-        sort: 'disabled'
-    },
+   
     {
         label: 'Title',
         field: 'title',
         attributes: {
-            'aria-controls': 'DataTable',
-            'aria-label': 'title',
         },
     },
     {
         label: 'Ride',
         field: 'ride',
-        sort: 'disabled'
+        sort: 'disabled',
+        attributes: {
+        },
     },
     {
         label: 'IsCurrent',
         field: 'isCurrent',
+        attributes: {
+        },
     },
     {
         label: 'Control',
         field: 'control',
         sort: 'disabled',
+        attributes: {
+        },
     },
 ];
+
 
 
 class CarsControlPage extends Component {
@@ -141,6 +142,7 @@ class CarsControlPage extends Component {
         }
     }
 
+
     render() {
 
         this.state.data.rows.map((item, index) => {
@@ -157,8 +159,15 @@ class CarsControlPage extends Component {
         );
 
         return (
-            <div className="card-body">
-                <MDBDataTableV5 className="table-striped text-center "
+            <div className="card-body ">
+
+                <div className="fixed-bottom ml-4" style={{ left: '90%', right: '50%',  bottom: '8%'}}>
+                    <a className="btn btn-lg btn-success btn-circle" data-toggle="modal" href="#carEntityAddModalWindow">
+                        <i className="fas fa-plus"></i>
+                    </a>
+                </div>
+
+                <MDBDataTableV5 className="table-striped text-center text-dark"
                     hover
                     entriesOptions={[5, 10, 15]}
                     theadColor="thead-dark"
@@ -205,7 +214,7 @@ class CarsControlPage extends Component {
                                     name="isCurrent"
                                     className="form-check-input"
                                     type="checkbox"
-                                    checked={this.state.currentItem == null ? false :(this.state.currentItem.isCurrent == "true")}
+                                    checked={this.state.currentItem == null ? false : (this.state.currentItem.isCurrent == "true")}
                                 />
                                   Is current
                              </label>
@@ -216,6 +225,45 @@ class CarsControlPage extends Component {
 
                 <ModalWindow title={`${this.state.currentItem === null ? "" : " Delete " + this.state.currentItem.title + " ?"}`} id="carEntityDeleteModalWindow" inCenter={false}>
                     <Form id="carEntityDeleteForm">
+                    </Form>
+                </ModalWindow>
+
+                <ModalWindow title="Add car item" id="carEntityAddModalWindow" inCenter={true}>
+                    <Form id="carEntityAddForm">
+                    <div className="form-group">
+                            <label className="mr-sm-2">Title:</label>
+                            <input
+                                name="title"
+                                type="text"
+                                className="form-control input-lg"
+                                placeholder="Title"
+                                required
+                                data-parsley-type="email" />
+                        </div>
+
+                        <div className="form-group">
+                            <label className="mr-sm-2">Ride:</label>
+                            <input
+                                name="price"
+                                type="text"
+                                className="form-control input-lg"
+                                placeholder="Ride"
+                                required
+                                data-parsley-length="[6, 10]"
+                                data-parsley-trigger="keyup" />
+                        </div>
+
+
+                        <div className="form-group form-check  ml-2 ">
+                            <label className="form-check-label">
+                                <input
+                                    name="isCurrent"
+                                    className="form-check-input"
+                                    type="checkbox"
+                                />
+                                  Is current
+                             </label>
+                        </div>
                     </Form>
                 </ModalWindow>
 

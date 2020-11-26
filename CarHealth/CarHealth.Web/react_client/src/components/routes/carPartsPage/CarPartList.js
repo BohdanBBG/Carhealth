@@ -32,13 +32,7 @@ class CarPartList extends Component {
             <div className="container-fluid " >
 
                 <div className="container-fluid  d-flex flex-row flex-wrap pb-2  " >
-
                     {listElements}
-                    {listElements}
-
-                    {listElements}
-                    {listElements}
-
                 </div>
 
                 

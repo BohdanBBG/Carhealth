@@ -11,9 +11,9 @@ class ListItem extends Component {
 
     render() {
         return (
-            <div className="p-2 col-md-2 " >
+            <div className="p-2 col-md-2" >
 
-                <div className={`card text-center ${Number.parseInt(this.props.carItem.ride) > Number.parseInt(this.props.carItem.recommendedRide) ? "border-danger" : ""} `}>
+                <div className={`card  border-secondary text-center ${Number.parseInt(this.props.carItem.ride) > Number.parseInt(this.props.carItem.recommendedRide) ? "border-danger" : ""} `}>
 
                     <div className="card-header ">
                         <h5 className="card-title text-truncate">{this.props.carItem.title}</h5>

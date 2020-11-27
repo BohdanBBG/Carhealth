@@ -5,6 +5,8 @@ import { Router, Route, NavLink } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 
 import ModalWindow from "../components/forms/ModalWindow.js"
+import HomePage from '../components/routes/homePage/HomePage.js'
+
 
 import 'bootstrap/dist/css/bootstrap.css';
 import "../styles/css/sb-admin-2.min.css";
@@ -49,6 +51,16 @@ class App extends Component {
             </div>
 
             <li className="nav-item">
+              <NavLink
+                exact
+                className={"nav-item nav-link"}
+                to={"/"}
+                key={0}
+                activeClassName={"active"}>
+                <i className="fas fa-fw fa-cog"></i>
+                {"Home"}
+              </NavLink>
+
               {menuEl}
             </li>
 
@@ -78,10 +90,14 @@ class App extends Component {
 
               <div className="container-fluid">
 
-                <div className="card shadow mb-4">
+                <Route exact path={"/"} component={HomePage} key={0} />
+
+                <div className="card shadow mb-4 border-0">
+
                   {this.props.routes.map((route, index) => (
                     <Route exact path={route.route} component={route.component} key={index} />
                   ))}
+
                 </div>
 
               </div>

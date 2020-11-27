@@ -5,9 +5,12 @@ class HomePage extends Component {
 
     render() {
 
-        return (<div>
-            <h2>Home</h2>
-        </div>);
+        return (
+            <div class="text-center">
+                <h1 class="display-4">Welcome</h1>
+                <h5>You are in the control system of your cars</h5>
+            </div>
+        );
     }
 
 }

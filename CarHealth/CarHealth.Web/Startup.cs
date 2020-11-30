@@ -23,7 +23,24 @@ namespace CarHealth.Web
 
         public void ConfigureServices(IServiceCollection services)
         {
+            var config = Configuration.Get<ApplicationSettings>();
             services.Configure<ApplicationSettings>(Configuration);
+
+            if (System.Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") != "Testing")
+            {
+                services.AddCors(options =>
+                {
+                    if (config.Cors != null && config.Cors.AllowedOrigins != null)
+                    {
+                        options.AddPolicy("default", policy =>
+                        {
+                            policy.WithOrigins(config.Cors.AllowedOrigins.ToArray())
+                           .AllowAnyHeader()
+                           .AllowAnyMethod();
+                        });
+                    }
+                });
+            }
 
             services.AddMvc();
         }
@@ -44,6 +61,11 @@ namespace CarHealth.Web
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            if (System.Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") != "Testing")
+            {
+                app.UseCors("default");
+            }
 
             app.UseAuthorization();
 

@@ -50,14 +50,26 @@ namespace CarHealth.Seed.SeedServices.IdentityServer
                     RedirectUris =
                     {
                          // адрес перенаправления после логина
-                         $"{config.Get<ApplicationSettings>().Urls.WebSpa}/callback.html",
+                       //  $"{config.Get<ApplicationSettings>().Urls.WebSpa}/callback.html",
                         // адрес перенаправления при автоматическом обновлении access_token через iframe
-                          $"{config.Get<ApplicationSettings>().Urls.WebSpa}/callback-silent.html"
+                        // $"{config.Get<ApplicationSettings>().Urls.WebSpa}/callback-silent.html",
+
+                         //React UI
+                         $"{config.Get<ApplicationSettings>().Urls.WebSpaReact}/callback.html",
+                         $"{config.Get<ApplicationSettings>().Urls.WebSpaReact}/callback-silent.html"
 
                     },
-                    PostLogoutRedirectUris= {  $"{config.Get<ApplicationSettings>().Urls.WebSpa}/index.html" },
+                    PostLogoutRedirectUris=
+                    {
+                      //  $"{config.Get<ApplicationSettings>().Urls.WebSpa}/index.html",
+                         $"{config.Get<ApplicationSettings>().Urls.WebSpaReact}/index.html"
+                    },
                     // адрес клиентского приложения, просим сервер возвращать нужные CORS-заголовки
-                    AllowedCorsOrigins = {  $"{config.Get<ApplicationSettings>().Urls.WebSpa}" },
+                    AllowedCorsOrigins =
+                    {
+                        $"{config.Get<ApplicationSettings>().Urls.WebSpa}",
+                        $"{config.Get<ApplicationSettings>().Urls.WebSpaReact}"
+                    },
 
                      // список scopes, разрешённых именно для данного клиентского приложения
                     AllowedScopes =

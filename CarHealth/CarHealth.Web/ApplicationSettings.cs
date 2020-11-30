@@ -7,6 +7,7 @@ namespace CarHealth.Web
 {
     public class ApplicationSettings
     {
+        public CorsSettings Cors { get; set; }
         public UrlsSettings Urls { get; set; }
         public AuthSettings Auth { get; set; }
     }
@@ -24,6 +25,16 @@ namespace CarHealth.Web
         public string ResponseType { get; set; }
         public string Scope { get; set; }
         public string PostLogoutRedirectUri { get; set; }
+    }
+
+    public class CorsSettings
+    {
+        public CorsSettings()
+        {
+            AllowedOrigins = new List<string>();
+        }
+
+        public List<string> AllowedOrigins { get; set; }
     }
 
 }

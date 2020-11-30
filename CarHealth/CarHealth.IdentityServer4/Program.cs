@@ -61,7 +61,7 @@ namespace CarHealth.IdentityServer4
 
             if (System.Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "DevelopmentLocalhost")
             {
-                builder.UseUrls($"https://localhost:5006");
+                builder.UseUrls($"http://localhost:5005");
             }
 
             return builder;

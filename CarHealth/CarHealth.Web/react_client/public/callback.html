@@ -1,0 +1,46 @@
+﻿<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+    integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous" />
+</head>
+
+<body>
+    
+    <style>
+        .app-initial-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .app-initial-loader .loader {
+            font-size: 140px;
+            color: #13B1E8;
+            margin: 20px 0 0 0;
+        }
+    </style>
+     <!-- <div class=app-initial-loader><i class="fas fa-circle-notch fa-spin loader"></i></div> -->
+    <!-- <script src="../src/lib/oidc-client.js"></script> -->
+    <!-- <script src="oidc-client.js" type="application/javascript"></script> -->
+    <script src="../src/lib/oidc-client.min.js" type="application/javascript">
+    console.log("aaaaa--aa-a-");
+        new Oidc.UserManager({ response_mode: "query" }).signinRedirectCallback().then(function () {
+            window.location = "/index.html";
+        }).catch(function (e) {
+            console.error(e);
+        });
+    </script>
+</body>
+
+</html>

@@ -1,32 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using IdentityServer4;
-using IdentityServer4.Configuration;
-using IdentityServer4.Models;
-using IdentityServer4.Test;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
-using CarHealth.IdentityServer4.Models;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Logging;
 using CarHealth.IdentityServer4.Models.IdentityModels;
-using IdentityServer4.Stores;
-using CarHealth.IdentityServer4.Stores.EFCoreStores;
 using CarHealth.IdentityServer4.Extensions;
-using Microsoft.Extensions.Options;
-using CarHealth.IdentityServer4.Contexts;
 using MongoDB.Driver;
-using AspNetCore.Identity.Mongo;
 
 namespace CarHealth.IdentityServer4
 {
@@ -48,14 +29,10 @@ namespace CarHealth.IdentityServer4
 
             services.Configure<ApplicationSettings>(Configuration);
 
-           
-
             services.AddMvc(options =>
             {
                 options.EnableEndpointRouting = false;
             });
-
-
 
 
             var identityServerBuilder = services.AddIdentityServer(options =>

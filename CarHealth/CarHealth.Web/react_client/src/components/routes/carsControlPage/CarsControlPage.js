@@ -214,7 +214,7 @@ class CarsControlPage extends Component {
                                     name="isCurrent"
                                     className="form-check-input"
                                     type="checkbox"
-                                    checked={this.state.currentItem == null ? false : (this.state.currentItem.isCurrent == "true")}
+                                    checked={this.state.currentItem === null ? false : (this.state.currentItem.isCurrent === "true")}
                                 />
                                   Is current
                              </label>

@@ -109,7 +109,7 @@ namespace CarHealth.Api
                // app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             if (System.Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") != "Testing")
             {

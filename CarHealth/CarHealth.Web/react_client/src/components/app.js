@@ -7,22 +7,67 @@ import { createBrowserHistory } from 'history';
 import ModalWindow from "../components/forms/ModalWindow.js"
 import HomePage from '../components/routes/homePage/HomePage.js'
 
+import AuthService from "../services/AuthService.js"
+
+import HttpUtil from '../styles/js/HttpUtil.js'
 
 import 'bootstrap/dist/css/bootstrap.css';
 import "../styles/css/sb-admin-2.min.css";
-
 
 const history = createBrowserHistory();
 
 
 class App extends Component {
 
-  state = {
+  constructor(props) {
+    super(props);
 
+    this.state = {
+      webConfig: null,
+      authService: null,
+      appUser: null
+    }
+  }
+
+  getWebConfig = () => {
+
+    let httphelper = new HttpUtil();
+
+    httphelper.httpGet("http://localhost:5003/config", (config) => {
+
+      this.setState({
+        authService: new AuthService(config)
+      }, () => {
+
+        this.state.authService.getUser((user) => {
+
+          if (user) {
+            console.log('User logged on:', user);
+            //appRouter = new AppRouter(user, config);
+            // carManager = new CarManager(user, config);
+            this.setState({
+              appUser: user,
+              webConfig: config,
+            });
+
+          } else {
+            console.log("User not logged in");
+            this.state.authService.login();
+          }
+        });
+      });
+
+    });
+  }
+
+  componentDidMount() {
+
+    this.getWebConfig();
+
+    console.log("CarPartsPage----", ' did mount');
   }
 
   render() {
-
 
     const menuEl =
       this.props.routes.map((route, index) => (

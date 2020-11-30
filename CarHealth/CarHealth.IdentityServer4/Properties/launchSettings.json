@@ -18,7 +18,7 @@
     "CarHealth.IdentityServer": {
       "commandName": "Project",
       "launchBrowser": true,
-      "applicationUrl": "https://localhost:5006",
+      "applicationUrl": "http://localhost:5005",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "DevelopmentLocalhost"
         //"ASPNETCORE_ENVIRONMENT": "Development"

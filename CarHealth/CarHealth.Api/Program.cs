@@ -43,7 +43,7 @@ namespace CarHealth.Api
 
             if (System.Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "DevelopmentLocalhost") 
             {
-                builder.UseUrls($"https://localhost:5001");
+                builder.UseUrls($"http://localhost:5000");
             }
 
 

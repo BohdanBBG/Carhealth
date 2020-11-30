@@ -140,34 +140,19 @@ class CarPartsPage extends Component {
         }
     }
 
-
-    loadDataFromApi = () => {
+    handlePageClick = ({ selected: selectedPage }) => {
 
         this.setState({
             data: carPartList,
             pageCount: Math.ceil(carPartList.length / PER_PAGE)
+        }, () =>{
+            this.setState({
+                currentPage: selectedPage,
+                offset: selectedPage * PER_PAGE,
+            },() => {
+                this.setState({  currentPageData: this.state.data.slice(this.state.offset, this.state.offset + PER_PAGE) })
+            });
         });
-
-    }
-
-    componentWillMount() {
-
-        this.loadDataFromApi();
-
-        console.log("CarPartsPage----", ' did mount');
-    }
-
-    handlePageClick = ({ selected: selectedPage }) => {
-
-        this.setState({
-            currentPage: selectedPage,
-            offset: selectedPage * PER_PAGE,
-        });
-
-        this.setState((state) => {
-            return { currentPageData: this.state.data.slice(state.offset, state.offset + PER_PAGE) };
-        });
-
     }
 
     render() {
@@ -233,8 +218,8 @@ class CarPartsPage extends Component {
                         </div>
 
                         <div className="form-group">
-                            <input type="date" min="1900-01-01" max="2100-12-31" value="2020-11-26"
-                                class="form-control" />
+                            <input type="date" min="1900-01-01" max="2100-12-31" defaultValue="2020-11-26"
+                                className="form-control" />
 
                         </div>
 

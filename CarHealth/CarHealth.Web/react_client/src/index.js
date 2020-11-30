@@ -5,8 +5,6 @@ import App from './components/app'
 
 import CarPartsPage from './components/routes/carPartsPage/CarPartsPage.js'
 import CarsControlPage from './components/routes/carsControlPage/CarsControlPage.js'
-import Admin from './components/routes/admin/Admin.js'
-
 
 const routes =
   [
@@ -26,7 +24,7 @@ const routes =
       "route": "/admin",
       "name": "Admin",
       "component": () => {
-        window.location.href = 'https://localhost:5006/Users/Index';
+        window.location.href = 'http://localhost:5005/Users/Index';
         return null;
       },
       "disabled": false,

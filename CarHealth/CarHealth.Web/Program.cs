@@ -50,10 +50,8 @@ namespace CarHealth.Web
 
             if (System.Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "DevelopmentLocalhost")
             {
-                builder.UseUrls($"https://localhost:5004");
+                builder.UseUrls($"http://localhost:5003");
             }
-
-          
 
             builder.UseStartup<Startup>();
 

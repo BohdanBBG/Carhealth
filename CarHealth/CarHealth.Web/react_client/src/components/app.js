@@ -9,13 +9,10 @@ import HomePage from '../components/routes/homePage/HomePage.js'
 
 import AuthService from "../services/AuthService.js"
 
-import HttpUtil from '../styles/js/HttpUtil.js'
-
 import 'bootstrap/dist/css/bootstrap.css';
 import "../styles/css/sb-admin-2.min.css";
 
 const history = createBrowserHistory();
-
 
 class App extends Component {
 
@@ -23,46 +20,27 @@ class App extends Component {
     super(props);
 
     this.state = {
-      webConfig: null,
-      authService: null,
-      appUser: null
+      webConfig: this.props.appConfig,
+      authService: new AuthService(this.props.appConfig),
     }
   }
 
-  getWebConfig = () => {
-
-    let httphelper = new HttpUtil();
-
-    httphelper.httpGet("http://localhost:5003/config", (config) => {
-
-      this.setState({
-        authService: new AuthService(config)
-      }, () => {
-
-        this.state.authService.getUser((user) => {
-
-          if (user) {
-            console.log('User logged on:', user);
-            //appRouter = new AppRouter(user, config);
-            // carManager = new CarManager(user, config);
-            this.setState({
-              appUser: user,
-              webConfig: config,
-            });
-
-          } else {
-            console.log("User not logged in");
-            this.state.authService.login();
-          }
-        });
-      });
-
-    });
+  logout = () => {
+    this.state.authService.logout();
   }
 
   componentDidMount() {
 
-    this.getWebConfig();
+    this.state.authService.getUser((user) => {
+
+      if (user) {
+        console.log('User logged on:', user);
+      } else {
+        console.log("User not logged in");
+
+        this.state.authService.login();
+      }
+    });
 
     console.log("CarPartsPage----", ' did mount');
   }
@@ -75,7 +53,7 @@ class App extends Component {
           exact
           className={`nav-item nav-link ${route.disabled ? "disabled" : ""}`}
           to={route.route}
-          key={index}
+          key={index + 1}
           activeClassName="active">
           <i className="fas fa-fw fa-cog"></i>
           {route.name}
@@ -87,7 +65,6 @@ class App extends Component {
 
       <div id="wrapper">
         <Router history={history}>
-
 
           <ul className="navbar-nav bg-gray-900 sidebar sidebar-dark accordion" id="accordionSidebar">
 
@@ -140,7 +117,7 @@ class App extends Component {
                 <div className="card shadow mb-4 border-0">
 
                   {this.props.routes.map((route, index) => (
-                    <Route exact path={route.route} component={route.component} key={index} />
+                    <Route exact path={route.route} component={route.component} key={index + 1} />
                   ))}
 
                 </div>
@@ -159,8 +136,12 @@ class App extends Component {
 
           </div>
 
-          <ModalWindow title="Logout" id="logout" inCenter={false}>
-            <h1>Logout</h1>
+          <ModalWindow title="Ready to Leave?" id="logout" inCenter={false}>
+            <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+            <div class="modal-footer">
+              <button class="btn btn-secondary text-white" type="button" data-dismiss="modal">Cancel</button>
+              <a class="btn btn-primary" onClick={this.logout}>Logout</a>
+            </div>
           </ModalWindow>
 
         </Router>

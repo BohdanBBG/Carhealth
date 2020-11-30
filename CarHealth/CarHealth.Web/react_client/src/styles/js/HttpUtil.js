@@ -9,8 +9,7 @@ class HttpUtil {
 
 
         xhr.onload = function () {
-            if(xhr.status === 200)
-            {
+            if (xhr.status === 200) {
                 console.log("Ok")
             }
             else if (xhr.status === 500) {
@@ -18,7 +17,7 @@ class HttpUtil {
                 alert('Request failed.  Returned status of ' + xhr.status);
             } else if (xhr.status === 401 || xhr.status === 403) {
                 console.error('Request failed.  Returned status of ' + xhr.status);
-               // document.location.href = identityUrl + "/Account/Login";
+                // document.location.href = identityUrl + "/Account/Login";
             }
             else {
                 console.error('Request failed.  Returned status of ' + xhr.status);
@@ -37,21 +36,21 @@ class HttpUtil {
 
         var xhr = new XMLHttpRequest();
 
-     //   xhr.withCredentials = true; // force to show browser's default auth dialog
+        //   xhr.withCredentials = true; // force to show browser's default auth dialog
         xhr.open(typeOfrequest, url, true);
 
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.onload = function () {
             if (xhr.status === 200) {
 
-              
+
 
             } else if (xhr.status === 500) {
                 console.error('Request failed.  Returned status of ' + xhr.status);
                 alert('Request failed.  Returned status of ' + xhr.status);
             } else if (xhr.status === 401 || xhr.status === 403) {
                 console.error('Request failed.  Returned status of ' + xhr.status);
-                alert('Request failed.  Returned status of ' + xhr.status +', unauthorized user');
+                alert('Request failed.  Returned status of ' + xhr.status + ', unauthorized user');
             }
             callback(xhr.status);
         };
@@ -67,7 +66,7 @@ class HttpUtil {
 
         var xhr = new XMLHttpRequest();
 
-      //  xhr.withCredentials = true; // force to show browser's default auth dialog
+        //  xhr.withCredentials = true; // force to show browser's default auth dialog
         xhr.open('DELETE', url, true);
 
         xhr.onload = function () {
@@ -80,7 +79,7 @@ class HttpUtil {
                 alert('Request failed.  Returned status of ' + xhr.status);
             } else if (xhr.status === 401 || xhr.status === 403) {
                 console.error('Request failed.  Returned status of ' + xhr.status);
-               // document.location.href = identityUrl + "/Account/Login";
+                // document.location.href = identityUrl + "/Account/Login";
             }
         };
 
@@ -90,46 +89,64 @@ class HttpUtil {
         xhr.send();
     }
 
-    httpGet(url, callBack, authToken = null) {
+    httpGet(url, authToken = null) { //+
 
-        var xhr = new XMLHttpRequest();
-     //   xhr.withCredentials = true; // force to show browser's default auth dialog
-        xhr.open('GET', url);
+        return new Promise(function (resolve, reject) {
+            var xhr = new XMLHttpRequest();
+            //   xhr.withCredentials = true; // force to show browser's default auth dialog
+            xhr.open('GET', url);
 
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    if (xhr.responseText !== "") {
+                        var data = JSON.parse(xhr.responseText);
 
-        xhr.onload = function () {
-            if (xhr.status === 200) {
-                if ( xhr.responseText !== "")
-                {
-                    var data = JSON.parse(xhr.responseText);
-                    console.log(1, data);
+                        console.log("----HttpUtil.httpGet:", data);
+
+                        resolve(data);
+                    }
+
+                    resolve(data);
+
+                } else if (xhr.status === 500) {
+                    console.error('Request failed.  Returned status of ' + xhr.status);
+                    alert('Request failed.  Returned status of ' + xhr.status);
+
+                    var error = new Error(this.statusText);
+                    error.code = this.status;
+                    
+                    reject(error);
+
+                } else if (xhr.status === 401 || xhr.status === 403) {
+                    console.error('Request failed.  Returned status of ' + xhr.status);
+
+                    var error = new Error(this.statusText);
+                    error.code = this.status;
+
+                    reject(error);
+
                 }
-              
-                callBack(data);
-               
-            } else if (xhr.status === 500) {
-                console.error('Request failed.  Returned status of ' + xhr.status);
-                alert('Request failed.  Returned status of ' + xhr.status);
-               // callBack(null);
-            } else if (xhr.status === 401 || xhr.status === 403) {
-                console.error('Request failed.  Returned status of ' + xhr.status);
-               // callBack(null);
-               // document.location.href = identityUrl + "/Account/Login";
+                else {
+                    console.error('Request failed.  Returned status of ' + xhr.status);
+
+                    var error = new Error(this.statusText);
+                    error.code = this.status;
+
+                    reject(error);
+                }
+            };
+
+            xhr.onerror = function() {
+                reject(new Error("Network Error"));
+              };
+
+            if (authToken !== null) {
+                xhr.setRequestHeader("Authorization", "Bearer " + authToken);
             }
-            else {
-                console.error('Request failed.  Returned status of ' + xhr.status);
-                //callBack(null);
-            }
 
-        };
-
-        if (authToken !== null) {
-            xhr.setRequestHeader("Authorization", "Bearer " + authToken);
-        }
-
-        xhr.send();
+            xhr.send();
+        });
     }
-
 }
 
 export default HttpUtil;

@@ -19,6 +19,7 @@
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3",
+    "react-toastify": "^6.1.0",
     "save-dev": "0.0.1-security"
   },
   "scripts": {

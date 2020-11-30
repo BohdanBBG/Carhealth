@@ -1,6 +1,9 @@
 
 import React, { Component } from 'react';
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import { Router, Route, NavLink } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 
@@ -45,6 +48,22 @@ class App extends Component {
     console.log("CarPartsPage----", ' did mount');
   }
 
+  getToast = () => {
+
+    toast.success("Success Notification !", {
+    });
+
+    // toast.error("Error Notification !", {
+    // });
+
+    // toast.warn("Warning Notification !", {
+    // });
+
+    // toast.info("Info Notification !", {
+    // });
+
+  }
+
   render() {
 
     const menuEl =
@@ -54,6 +73,7 @@ class App extends Component {
           className={`nav-item nav-link ${route.disabled ? "disabled" : ""}`}
           to={route.route}
           key={index + 1}
+          onClick={this.getToast}
           activeClassName="active">
           <i className="fas fa-fw fa-cog"></i>
           {route.name}
@@ -64,6 +84,7 @@ class App extends Component {
     return (
 
       <div id="wrapper">
+
         <Router history={history}>
 
           <ul className="navbar-nav bg-gray-900 sidebar sidebar-dark accordion" id="accordionSidebar">
@@ -146,8 +167,19 @@ class App extends Component {
 
         </Router>
 
-      </div>
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
 
+      </div>
     );
   }
 }

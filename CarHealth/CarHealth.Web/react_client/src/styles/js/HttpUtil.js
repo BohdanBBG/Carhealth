@@ -106,7 +106,6 @@ class HttpUtil {
                         resolve(data);
                     }
 
-                    resolve(data);
 
                 } else if (xhr.status === 500) {
                     console.error('Request failed.  Returned status of ' + xhr.status);

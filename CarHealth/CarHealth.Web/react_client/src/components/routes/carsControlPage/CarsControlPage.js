@@ -138,12 +138,16 @@ class CarsControlPage extends Component {
                 columns: columns,
                 rows: carList
             },
+            appUser: this.props.user,
             currentItem: null
         }
+
     }
 
 
     render() {
+       // console.log("----------"+ this.state.appUser.access_token);
+
 
         this.state.data.rows.map((item, index) => {
             item.ride = String(item.ride).replace(/(\d)(?=(\d{3})+([^\d]|$))/g, '$1 ');

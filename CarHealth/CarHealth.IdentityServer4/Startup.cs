@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Logging;
 using CarHealth.IdentityServer4.Models.IdentityModels;
 using CarHealth.IdentityServer4.Extensions;
 using MongoDB.Driver;
+using Microsoft.AspNetCore.Http;
 
 namespace CarHealth.IdentityServer4
 {
@@ -54,6 +55,18 @@ namespace CarHealth.IdentityServer4
             identityServerBuilder.AddAspNetIdentity<User>();
 
 
+            identityServerBuilder.Services.ConfigureExternalCookie(options =>
+            {
+                options.Cookie.IsEssential = true;
+                options.Cookie.SameSite = (SameSiteMode)(-1); //SameSiteMode.Unspecified in .NET Core 3.1
+            });
+
+            identityServerBuilder.Services.ConfigureApplicationCookie(options =>
+            {
+                options.Cookie.IsEssential = true;
+                options.Cookie.SameSite = (SameSiteMode)(-1); //SameSiteMode.Unspecified in .NET Core 3.1
+            });
+
             //.AddInMemoryPersistedGrants()
 
             // // что включать в id_token
@@ -83,6 +96,7 @@ namespace CarHealth.IdentityServer4
                     });
                 }
             });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -105,8 +119,7 @@ namespace CarHealth.IdentityServer4
 
             app.UseCors("default");
 
-            app.UseHttpsRedirection();
-            // app.UseCors("default");
+           // app.UseHttpsRedirection();
 
             app.UseIdentityServer();
 

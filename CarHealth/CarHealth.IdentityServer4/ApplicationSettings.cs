@@ -33,6 +33,8 @@ namespace CarHealth.IdentityServer4
         public string Api { get; set; }
         public string Identity { get; set; }
         public string WebSpa { get; set; }
+        public string WebSpaReact { get; set; }
+        
     }
 
     public class CorsSettings

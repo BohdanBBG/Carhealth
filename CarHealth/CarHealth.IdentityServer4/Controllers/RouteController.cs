@@ -31,5 +31,10 @@ namespace CarHealth.IdentityServer4.Controllers
         {
             return Redirect(_config.Get<ApplicationSettings>().Urls.WebSpa);
         }
+
+        public IActionResult GoToWebReactIndex()
+        {
+            return Redirect(_config.Get<ApplicationSettings>().Urls.WebSpaReact);
+        }
     }
 }

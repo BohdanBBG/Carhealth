@@ -11,6 +11,8 @@ import ModalWindow from "../components/forms/ModalWindow.js"
 import HomePage from '../components/routes/homePage/HomePage.js'
 
 import AuthService from "../services/AuthService.js"
+import HttpUtil from '../styles/js/HttpUtil.js'
+
 
 import 'bootstrap/dist/css/bootstrap.css';
 import "../styles/css/sb-admin-2.min.css";
@@ -23,29 +25,95 @@ class App extends Component {
     super(props);
 
     this.state = {
-      webConfig: this.props.appConfig,
-      authService: new AuthService(this.props.appConfig),
+      authService: new AuthService(),
+      appUser: null
     }
+
+    
+
   }
 
   logout = () => {
     this.state.authService.logout();
   }
 
+  getAppConfig = () => {
+    const httphelper = new HttpUtil();
+
+    httphelper.httpGet("http://localhost:5003/config")
+      .then(
+        response => {
+          // this.props.routes.push({
+          //   "route": "/admin",
+          //   "name": "Admin",
+          //   "component": () => {
+          //     window.location.href = `${response.urls.identity}/Users/Index`;
+          //     return null;
+          //   },
+          //   "disabled": false,
+          // });
+
+          this.state.authService.init(response.auth);
+
+          this.state.authService.getUser((user) => {
+
+            if (user) {
+
+              this.setState({ appUser: user });
+
+              console.log('User logged on:', user);
+            } else {
+              console.log("User not logged in");
+
+              this.state.authService.login();
+            }
+          });
+
+        }).catch(error => alert(`Rejected: ${error}`));
+  }
+
   componentDidMount() {
 
-    this.state.authService.getUser((user) => {
+  this.getAppConfig();
 
-      if (user) {
-        console.log('User logged on:', user);
-      } else {
-        console.log("User not logged in");
 
-        this.state.authService.login();
-      }
-    });
+    // const httphelper = new HttpUtil();
 
-    console.log("CarPartsPage----", ' did mount');
+    // httphelper.httpGet("http://localhost:5003/config").then(
+    //   response => {
+    //     this.props.routes.push({
+    //       "route": "/admin",
+    //       "name": "Admin",
+    //       "component": () => {
+    //         window.location.href = `${response.urls.identity}/Users/Index`;
+    //         return null;
+    //       },
+    //       "disabled": false,
+    //     });
+
+    //     this.setState({
+    //       authService: new AuthService(response)
+    //     }, () => {
+    //       this.state.authService.getUser((user) => {
+
+    //         if (user) {
+
+    //           this.setState({ appUser: user });
+
+    //           console.log('User logged on:', user);
+    //         } else {
+    //           console.log("User not logged in");
+
+    //           this.state.authService.login();
+    //         }
+    //       });
+    //     });
+
+    //   },
+    //   error => alert(`Rejected: ${error}`)
+    // );
+
+    console.log("App ----", ' did mount');
   }
 
   getToast = () => {
@@ -138,7 +206,7 @@ class App extends Component {
                 <div className="card shadow mb-4 border-0">
 
                   {this.props.routes.map((route, index) => (
-                    <Route exact path={route.route} component={route.component} key={index + 1} />
+                    <Route exact path={route.route} component={route.component} user={this.state.appUser} key={index + 1} />
                   ))}
 
                 </div>
@@ -158,10 +226,10 @@ class App extends Component {
           </div>
 
           <ModalWindow title="Ready to Leave?" id="logout" inCenter={false}>
-            <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-            <div class="modal-footer">
-              <button class="btn btn-secondary text-white" type="button" data-dismiss="modal">Cancel</button>
-              <a class="btn btn-primary" onClick={this.logout}>Logout</a>
+            <div className="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+            <div className="modal-footer">
+              <button className="btn btn-secondary text-white" type="button" data-dismiss="modal">Cancel</button>
+              <a className="btn btn-primary" onClick={this.logout}>Logout</a>
             </div>
           </ModalWindow>
 

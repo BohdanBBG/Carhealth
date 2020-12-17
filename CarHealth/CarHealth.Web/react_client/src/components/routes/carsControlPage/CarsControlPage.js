@@ -4,11 +4,11 @@ import 'bootstrap/dist/css/bootstrap.css';
 
 import React, { Component, PureComponent } from 'react';
 
-import ModalWindow from "../../forms/ModalWindow.js"
+import ModalWindow from "../../forms/ModalWindow.js";
 import Form from "../../forms/Form.js"
-import RowControllButtons from "../carsControlPage/carList/RowControllButtons.js"
+import RowControllButtons from "../carsControlPage/carList/RowControllButtons.js";
 
-
+import ApiService from '../../../services/ApiService.js';
 
 const carList = [
     {
@@ -94,7 +94,7 @@ const carList = [
 
 
 const columns = [
-   
+
     {
         label: 'Title',
         field: 'title',
@@ -130,23 +130,41 @@ class CarsControlPage extends Component {
     constructor(props) {
         super(props);
 
-        this.getItemFromEditButton = this.getItemFromEditButton.bind(this);
-
         this.state = {
             data:
             {
                 columns: columns,
                 rows: carList
             },
-            appUser: this.props.user,
-            currentItem: null
+            currentItem: null,
         }
+        this.apiService = new ApiService();
+
+        this.getItemFromEditButton = this.getItemFromEditButton.bind(this);
 
     }
 
+    getDataFromApi = () => {
 
+        this.apiService.httpGet("http://localhost:5003/config")
+            .then(
+                response => {
+
+                    //   this.setState({
+                    //     authService: new AuthService(response.auth)
+                    //   });
+
+                }).catch(error => alert(`CarsControlPage rejected: ${error}`));
+    }
+
+    componentDidMount() {
+
+        console.log("CarsControlPage ----", this.state.appUrls);
+
+        console.log("CarsControlPage ----", ' did mount');
+    }
     render() {
-       // console.log("----------"+ this.state.appUser.access_token);
+        // console.log("----------"+ this.state.appUser.access_token);
 
 
         this.state.data.rows.map((item, index) => {
@@ -165,7 +183,7 @@ class CarsControlPage extends Component {
         return (
             <div className="card-body ">
 
-                <div className="fixed-bottom ml-4" style={{ left: '90%', right: '50%',  bottom: '8%'}}>
+                <div className="fixed-bottom ml-4" style={{ left: '90%', right: '50%', bottom: '8%' }}>
                     <a className="btn btn-lg btn-success btn-circle" data-toggle="modal" href="#carEntityAddModalWindow">
                         <i className="fas fa-plus"></i>
                     </a>
@@ -234,7 +252,7 @@ class CarsControlPage extends Component {
 
                 <ModalWindow title="Add car item" id="carEntityAddModalWindow" inCenter={true}>
                     <Form id="carEntityAddForm">
-                    <div className="form-group">
+                        <div className="form-group">
                             <label className="mr-sm-2">Title:</label>
                             <input
                                 name="title"

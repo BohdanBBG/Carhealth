@@ -145,12 +145,12 @@ class CarPartsPage extends Component {
         this.setState({
             data: carPartList,
             pageCount: Math.ceil(carPartList.length / PER_PAGE)
-        }, () =>{
+        }, () => {
             this.setState({
                 currentPage: selectedPage,
                 offset: selectedPage * PER_PAGE,
-            },() => {
-                this.setState({  currentPageData: this.state.data.slice(this.state.offset, this.state.offset + PER_PAGE) })
+            }, () => {
+                this.setState({ currentPageData: this.state.data.slice(this.state.offset, this.state.offset + PER_PAGE) })
             });
         });
     }

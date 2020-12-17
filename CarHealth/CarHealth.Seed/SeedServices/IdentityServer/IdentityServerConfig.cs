@@ -40,7 +40,7 @@ namespace CarHealth.Seed.SeedServices.IdentityServer
                     // обязательный параметр, при помощи client_id сервер различает клиентские приложения 
                     ClientId = "CarHealth.Web",
                     ClientName = "Web",
-                    AllowedGrantTypes = GrantTypes.Implicit,
+                    AllowedGrantTypes = GrantTypes.Code,
                     AllowAccessTokensViaBrowser = true,
                      // от этой настройки зависит размер токена, 
                      // при false можно получить недостающую информацию через UserInfo endpoint
@@ -62,6 +62,7 @@ namespace CarHealth.Seed.SeedServices.IdentityServer
                     PostLogoutRedirectUris=
                     {
                       //  $"{config.Get<ApplicationSettings>().Urls.WebSpa}/index.html",
+                         $"{config.Get<ApplicationSettings>().Urls.WebSpaReact}",
                          $"{config.Get<ApplicationSettings>().Urls.WebSpaReact}/index.html"
                     },
                     // адрес клиентского приложения, просим сервер возвращать нужные CORS-заголовки
@@ -81,6 +82,7 @@ namespace CarHealth.Seed.SeedServices.IdentityServer
                     },
                     AccessTokenLifetime = 3600,// секунд, это значение по умолчанию
                     IdentityTokenLifetime = 300, // секунд, это значение по умолчанию
+                    RequireClientSecret = false,
 
                      // разрешено ли получение refresh-токенов через указание scope offline_access
                      AllowOfflineAccess = false,

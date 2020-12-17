@@ -1,119 +1,77 @@
 
 import React, { Component } from 'react';
 
+import { Router, Route, NavLink } from 'react-router-dom';
+
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import { Router, Route, NavLink } from 'react-router-dom';
+import ModalWindow from '../components/forms/ModalWindow.js';
+import HomePage from '../components/routes/homePage/HomePage.js';
+
+import { AuthService } from "../services/AuthService.js";
+
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+
+import { changeFirstName, changeSecondName } from '../store/examples/actions.js';
+import { setAppConfig, setAccessToken } from '../store/auth/actions.js';
+
 import { createBrowserHistory } from 'history';
-
-import ModalWindow from "../components/forms/ModalWindow.js"
-import HomePage from '../components/routes/homePage/HomePage.js'
-
-import AuthService from "../services/AuthService.js"
-import HttpUtil from '../styles/js/HttpUtil.js'
-
 
 import 'bootstrap/dist/css/bootstrap.css';
 import "../styles/css/sb-admin-2.min.css";
 
 const history = createBrowserHistory();
 
+
 class App extends Component {
+
+  authService;
 
   constructor(props) {
     super(props);
 
-    this.state = {
-      authService: new AuthService(),
-      appUser: null
-    }
+    this.authService = new AuthService(props.config.auth);
 
-    
+    this.props.setAppConfig(props.config);
 
   }
 
   logout = () => {
-    this.state.authService.logout();
+    this.authService.logout();
   }
 
-  getAppConfig = () => {
-    const httphelper = new HttpUtil();
+  getUser = () => {
 
-    httphelper.httpGet("http://localhost:5003/config")
-      .then(
-        response => {
-          // this.props.routes.push({
-          //   "route": "/admin",
-          //   "name": "Admin",
-          //   "component": () => {
-          //     window.location.href = `${response.urls.identity}/Users/Index`;
-          //     return null;
-          //   },
-          //   "disabled": false,
-          // });
+    this.authService.getUser().then(user => {
 
-          this.state.authService.init(response.auth);
+      if (user) {
 
-          this.state.authService.getUser((user) => {
+        this.props.setAccessToken(user.access_token);
 
-            if (user) {
+        console.log('User logged on:', user);
+        //console.log('0-0-0-0-0-0 ', this.props.accessToken);
 
-              this.setState({ appUser: user });
+      } else {
 
-              console.log('User logged on:', user);
-            } else {
-              console.log("User not logged in");
+        console.info('You are not logged in.');
 
-              this.state.authService.login();
-            }
-          });
+        this.authService.login();
+      }
 
-        }).catch(error => alert(`Rejected: ${error}`));
+    });
   }
 
   componentDidMount() {
 
-  this.getAppConfig();
-
-
-    // const httphelper = new HttpUtil();
-
-    // httphelper.httpGet("http://localhost:5003/config").then(
-    //   response => {
-    //     this.props.routes.push({
-    //       "route": "/admin",
-    //       "name": "Admin",
-    //       "component": () => {
-    //         window.location.href = `${response.urls.identity}/Users/Index`;
-    //         return null;
-    //       },
-    //       "disabled": false,
-    //     });
-
-    //     this.setState({
-    //       authService: new AuthService(response)
-    //     }, () => {
-    //       this.state.authService.getUser((user) => {
-
-    //         if (user) {
-
-    //           this.setState({ appUser: user });
-
-    //           console.log('User logged on:', user);
-    //         } else {
-    //           console.log("User not logged in");
-
-    //           this.state.authService.login();
-    //         }
-    //       });
-    //     });
-
-    //   },
-    //   error => alert(`Rejected: ${error}`)
-    // );
+    this.getUser();
 
     console.log("App ----", ' did mount');
+  }
+
+  componentWillUnmount() {
+    this.shouldCancel = true;
   }
 
   getToast = () => {
@@ -132,124 +90,171 @@ class App extends Component {
 
   }
 
+
   render() {
 
     const menuEl =
-      this.props.routes.map((route, index) => (
+      this.props.routes.map((route) => (
         <NavLink
           exact
           className={`nav-item nav-link ${route.disabled ? "disabled" : ""}`}
           to={route.route}
-          key={index + 1}
+          key={route.name}
           onClick={this.getToast}
           activeClassName="active">
           <i className="fas fa-fw fa-cog"></i>
           {route.name}
         </NavLink>
-
       ));
 
+    const { changeFirstName, changeSecondName } = this.props;
+
     return (
+      <div>
 
-      <div id="wrapper">
+        <div id="wrapper">
 
-        <Router history={history}>
+          <Router history={history}>
 
-          <ul className="navbar-nav bg-gray-900 sidebar sidebar-dark accordion" id="accordionSidebar">
+            <ul className="navbar-nav bg-gray-900 sidebar sidebar-dark accordion" id="accordionSidebar">
 
-            <div className="sidebar-brand d-flex align-items-center justify-content-center">
-              <p className="sidebar-brand-text mx-3">Welcome</p>
-            </div>
+              <div className="sidebar-brand d-flex align-items-center justify-content-center">
+                <p className="sidebar-brand-text mx-3">Welcome</p>
+              </div>
 
-            <li className="nav-item">
-              <NavLink
-                exact
-                className={"nav-item nav-link"}
-                to={"/"}
-                key={0}
-                activeClassName={"active"}>
-                <i className="fas fa-fw fa-cog"></i>
-                {"Home"}
-              </NavLink>
+              <li className="nav-item">
+                <NavLink
+                  exact
+                  className={"nav-item nav-link"}
+                  to={"/"}
+                  key={0}
+                  activeClassName={"active"}>
+                  <i className="fas fa-fw fa-cog"></i>
+                  {"Home"}
+                </NavLink>
 
-              {menuEl}
-            </li>
+                {menuEl}
+              </li>
 
-          </ul>
+            </ul>
 
-          <div id="content-wrapper" className="d-flex flex-column">
+            <div id="content-wrapper" className="d-flex flex-column">
 
-            <div id="content">
+              <div id="content">
 
-              <nav className="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+                <nav className="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
 
-                <ul className="navbar-nav ml-auto">
+                  <ul className="navbar-nav ml-auto">
 
-                  <div className="topbar-divider d-none d-sm-block"></div>
+                    <div className="topbar-divider d-none d-sm-block"></div>
 
-                  <li className="nav-item dropdown no-arrow " >
-                    <a className="nav-link text-dark" data-toggle="modal" href="#logout">
-                      <i className="fas fa-sign-out-alt fa-sm fa-fw mr-2 "></i>
-                                    Logout
-                    </a>
+                    <li className="nav-item dropdown no-arrow " >
+                      <a className="nav-link text-dark" data-toggle="modal" href="#logout">
+                        <i className="fas fa-sign-out-alt fa-sm fa-fw mr-2 "></i>
+                            Logout
+            </a>
 
-                  </li>
+                    </li>
 
-                </ul>
+                  </ul>
 
-              </nav>
+                </nav>
 
-              <div className="container-fluid">
+                <div className="container-fluid">
 
-                <Route exact path={"/"} component={HomePage} key={0} />
+                  <Route exact path={"/"} component={HomePage} key={0} />
 
-                <div className="card shadow mb-4 border-0">
+                  <div className="card shadow mb-4 border-0">
 
-                  {this.props.routes.map((route, index) => (
-                    <Route exact path={route.route} component={route.component} user={this.state.appUser} key={index + 1} />
-                  ))}
+                    {this.props.routes.map((route) => (
+                      <Route exact path={route.route} component={route.component} urls={this.props.appConfig} key={route.name} />
+                    ))}
+
+                  </div>
 
                 </div>
 
               </div>
 
-            </div>
-
-            <footer className="sticky-footer ">
-              <div className="container my-auto">
-                <div className="copyright text-center my-auto">
-                  <span>Copyright &copy; CarHealth 2021</span>
+              <footer className="sticky-footer ">
+                <div className="container my-auto">
+                  <div className="copyright text-center my-auto">
+                    <span>Copyright &copy; CarHealth 2021</span>
+                  </div>
                 </div>
-              </div>
-            </footer>
+              </footer>
 
-          </div>
-
-          <ModalWindow title="Ready to Leave?" id="logout" inCenter={false}>
-            <div className="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-            <div className="modal-footer">
-              <button className="btn btn-secondary text-white" type="button" data-dismiss="modal">Cancel</button>
-              <a className="btn btn-primary" onClick={this.logout}>Logout</a>
             </div>
-          </ModalWindow>
 
-        </Router>
+            <ModalWindow title="Ready to Leave?" id="logout" inCenter={false}>
+              <div className="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+              <div className="modal-footer">
+                <button className="btn btn-secondary text-white" type="button" data-dismiss="modal">Cancel</button>
+                <a className="btn btn-primary" onClick={this.logout}>Logout</a>
+              </div>
+            </ModalWindow>
 
-        <ToastContainer
-          position="top-right"
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-        />
+          </Router>
 
-      </div>
-    );
+          <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+          />
+
+        </div>
+
+        <div>
+          <input
+            type="text"
+            value={this.props.firstName}
+            placeholder="First Name"
+            onChange={(event) => {
+              changeFirstName(event.target.value);
+            }}
+          ></input>
+        </div>
+        <div>
+          <input
+            type="text"
+            value={this.props.secondName}
+            placeholder="Second Name"
+            onChange={(event) => {
+              changeSecondName(event.target.value);
+            }}
+          ></input>
+        </div>
+
+        <div>{this.props.firstName + ' ' + this.props.secondName}</div>
+      </div>);
   }
 }
 
-export default App;
+const putStateToProps = (state) => {
+
+  return {
+    firstName: state.example.firstName,
+    secondName: state.example.secondName,
+    accessToken: state.config.accessToken,
+    appConfig: state.config.appConfig
+  };
+}
+const putActionsToProps = (dispatch) => {
+
+  return {
+    changeFirstName: bindActionCreators(changeFirstName, dispatch),
+    changeSecondName: bindActionCreators(changeSecondName, dispatch),
+
+    setAccessToken: bindActionCreators(setAccessToken, dispatch),
+    setAppConfig: bindActionCreators(setAppConfig, dispatch),
+  };
+
+};
+
+export default connect(putStateToProps, putActionsToProps)(App);

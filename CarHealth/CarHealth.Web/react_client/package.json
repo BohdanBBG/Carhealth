@@ -16,11 +16,14 @@
     "react-bootstrap": "^1.4.0",
     "react-dom": "^16.14.0",
     "react-paginate": "^6.5.0",
+    "react-redux": "^7.2.2",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3",
     "react-toastify": "^6.1.0",
-    "save-dev": "0.0.1-security"
+    "redux": "^4.0.5",
+    "save-dev": "0.0.1-security",
+    "superagent": "^6.1.0"
   },
   "scripts": {
     "start": "react-scripts start",

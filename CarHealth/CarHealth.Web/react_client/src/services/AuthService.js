@@ -1,16 +1,12 @@
 
-import Oidc from 'oidc-client';
+import { Log, UserManager } from 'oidc-client';
 
-class AuthService {
+export class AuthService {
 
-    constructor() {
-        this.config = null;
-    }
-
-    init(authConfig) {
+    constructor(authConfig) {
         this.config = authConfig;
 
-        this.userManager = new Oidc.UserManager({
+        this.userManager = new UserManager({
             authority: this.config.authority,
             client_id: this.config.clientId,
             redirect_uri: this.config.redirectUri,
@@ -20,11 +16,11 @@ class AuthService {
             monitorSession: true,
             checkSessionInterval: 30000,
             revokeAccessTokenOnSignout: true,
-            clockSkew: 300
+            clockSkew: 300,
         });
 
-        Oidc.Log.logger = console;
-        Oidc.Log.level = 4;
+        Log.logger = console;
+        Log.level = 4;
 
         this.userManager.events.addUserLoaded(function () {
             console.log("userLoaded");
@@ -44,20 +40,21 @@ class AuthService {
 
     }
 
-    getUser(callback) {
-        this.userManager.getUser().then(function (user) {
-            callback(user);
-
-        });
+    getUser() {
+        return this.userManager.getUser();
     }
+    // getUser(callback) {
+    //     this.userManager.getUser().then(function (user) {
+    //         callback(user);
+
+    //     });
+    // }
 
     login() {
-        this.userManager.signinRedirect();
+        return this.userManager.signinRedirect();
     }
     logout() {
-        this.userManager.signoutRedirect();
+        return this.userManager.signoutRedirect();
     }
 
 }
-
-export default AuthService;

@@ -1,5 +1,7 @@
 
-class HttpUtil {
+const superagent = require('superagent');
+
+export default class ApiService {
 
     httpChek(url, callBack, authToken = null) {
 
@@ -89,63 +91,23 @@ class HttpUtil {
         xhr.send();
     }
 
-    httpGet(url, authToken = null) { //+
 
+    getRequest(url, authToken = null) {
         return new Promise(function (resolve, reject) {
-            var xhr = new XMLHttpRequest();
-            //   xhr.withCredentials = true; // force to show browser's default auth dialog
-            xhr.open('GET', url);
+            superagent
+                .get(url)
+                .set('Content-Type', 'application/json; charset=utf-8 ')
+                .set("Authorization", "Bearer " + authToken)
+                .then(res => {
 
-            xhr.onload = function () {
-                if (xhr.status === 200) {
-                    if (xhr.responseText !== "") {
-                        var data = JSON.parse(xhr.responseText);
+                    console.log("----HttpService.getRequest:", JSON.parse(res.text));
 
-                        console.log("----HttpUtil.httpGet:", data);
-
-                        resolve(data);
-                    }
-
-
-                } else if (xhr.status === 500) {
-                    console.error('Request failed.  Returned status of ' + xhr.status);
-                    alert('Request failed.  Returned status of ' + xhr.status);
-
-                    var error = new Error(this.statusText);
-                    error.code = this.status;
-                    
-                    reject(error);
-
-                } else if (xhr.status === 401 || xhr.status === 403) {
-                    console.error('Request failed.  Returned status of ' + xhr.status);
-
-                    var error = new Error(this.statusText);
-                    error.code = this.status;
-
-                    reject(error);
-
-                }
-                else {
-                    console.error('Request failed.  Returned status of ' + xhr.status);
-
-                    var error = new Error(this.statusText);
-                    error.code = this.status;
-
-                    reject(error);
-                }
-            };
-
-            xhr.onerror = function() {
-                reject(new Error("Network Error"));
-              };
-
-            if (authToken !== null) {
-                xhr.setRequestHeader("Authorization", "Bearer " + authToken);
-            }
-
-            xhr.send();
+                    resolve(JSON.parse(res.text));
+                })
+                .catch(err => {
+                    reject(err);
+                });
         });
     }
-}
 
-export default HttpUtil;
+}

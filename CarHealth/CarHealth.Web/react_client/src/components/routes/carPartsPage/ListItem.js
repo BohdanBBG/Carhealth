@@ -53,7 +53,7 @@ class ListItem extends Component {
                             <Dropdown>
                                 <Dropdown.Toggle variant="white" className="btn btn-light bg-white" id="dropdown-basic">
                                     <span>
-                                        Date: {this.props.carItem.date}
+                                        Date:{new Date().toLocaleDateString()}
                                     </span>
                                 </Dropdown.Toggle>
 

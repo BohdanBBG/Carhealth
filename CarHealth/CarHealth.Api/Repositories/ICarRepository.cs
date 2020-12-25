@@ -21,7 +21,7 @@ namespace CarHealth.Api.Repositories
         public Task<IList<CarItem>> FindCarItem(string name, string userId);
         public Task<CarItemsSendModel> GetCarItemsAsync(int offset, int limit, string userId);
         public Task<CarTotalRideModel> GetTotalRideAsync(string userId);
-        public Task<bool> SetTotalRideAsync(UpdateTotalRideModel value, string userId);
+        public Task<bool> SetTotalRideAsync(UpdateCarMiliageModel value, string userId);
         public Task<bool> AddNewCarItemAsync(CarItem data, string userId);
         public Task<bool> UpdateCarItemAsync(UpdateCarItemModel value, string userId);
         public Task<bool> DeleteCarItemAsync(string detailId, string userId);

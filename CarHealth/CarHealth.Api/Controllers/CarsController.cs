@@ -1,19 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using CarHealth.Api.Models;
 using Microsoft.AspNetCore.Authorization;
 using CarHealth.Api.Repositories;
-using Microsoft.Extensions.Configuration;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
 using CarHealth.Api.Models.HttpModels;
 using MongoDB.Bson;
 using System.Security.Claims;
 using IdentityModel;
-using Microsoft.AspNetCore.Http;
 
 namespace CarHealth.Api.Controllers
 {
@@ -64,9 +59,9 @@ namespace CarHealth.Api.Controllers
 
             return Ok(cars.Select(x => new CarEntitySendModel
             {
-                CarEntityName = x.CarEntityName,
+                CarEntityName = x.CarName,
                 Id = x.Id,
-                TotalRide = x.CarsTotalRide,
+                TotalRide = x.Mileage,
                 IsDefault = x.IsCurrent
 
             }));
@@ -92,8 +87,8 @@ namespace CarHealth.Api.Controllers
 
             await _repository.AddUserNewCarAsync(new CarEntity
             {
-                CarEntityName = carEntity.CarEntityName,
-                CarsTotalRide = int.Parse(carEntity.CarsTotalRide),
+                CarName = carEntity.CarName,
+                Mileage = int.Parse(carEntity.Mileage),
                 IsCurrent = carEntity.IsCurrent,
                 UserId = UserId,
             });
@@ -163,7 +158,7 @@ namespace CarHealth.Api.Controllers
         }
 
         [HttpPost("totalride/set")]
-        public async Task<IActionResult> SetTotalRideAsync([FromBody] UpdateTotalRideModel value)
+        public async Task<IActionResult> SetTotalRideAsync([FromBody] UpdateCarMiliageModel value)
         {
             if (await _repository.SetTotalRideAsync(value, UserId))
             {
@@ -182,11 +177,12 @@ namespace CarHealth.Api.Controllers
                 Id = ObjectId.GenerateNewId().ToString(),
                 CarEntityId = data.CarEntityId,
                 Name = data.Name,
-                TotalRide = 0,
+                DetailMileage = 0,
                 ChangeRide = int.Parse(data.ChangeRide),
                 PriceOfDetail = int.Parse(data.PriceOfDetail),
                 RecomendedReplace = int.Parse(data.RecomendedReplace),
-                DateOfReplace = DateTime.Parse(data.DateOfReplace)
+                Replaced = DateTime.Parse(data.Replaced),
+                ReplaceAt = DateTime.Parse(data.ReplaceAt)
 
             }, UserId))
             {

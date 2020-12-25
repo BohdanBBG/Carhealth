@@ -23,11 +23,8 @@ namespace CarHealth.Seed.SeedServices.IdentityServer
             // claims этих scopes будут включены в access_token
             return new List<ApiResource>
             {
-                // определяем scope "CarHealth.Api" для IdentityServer
                 new ApiResource("CarHealth.Api","Carhealth Api",
-                // эти claims войдут в scope CarHealth.Api
-                new List<string>{}),
-
+                new List<string>{})
             };
         }
 
@@ -37,42 +34,67 @@ namespace CarHealth.Seed.SeedServices.IdentityServer
             {
                 new Client
                 { 
-                    // обязательный параметр, при помощи client_id сервер различает клиентские приложения 
                     ClientId = "CarHealth.Web",
                     ClientName = "Web",
                     AllowedGrantTypes = GrantTypes.Code,
                     AllowAccessTokensViaBrowser = true,
-                     // от этой настройки зависит размер токена, 
-                     // при false можно получить недостающую информацию через UserInfo endpoint
                     AlwaysIncludeUserClaimsInIdToken = true,
-                    // белый список адресов на который клиентское приложение может попросить
-                    // перенаправить User Agent, важно для безопасности
                     RedirectUris =
                     {
-                         // адрес перенаправления после логина
-                       //  $"{config.Get<ApplicationSettings>().Urls.WebSpa}/callback.html",
-                        // адрес перенаправления при автоматическом обновлении access_token через iframe
-                        // $"{config.Get<ApplicationSettings>().Urls.WebSpa}/callback-silent.html",
+                         $"{config.Get<ApplicationSettings>().Urls.WebSpa}/callback.html",
+                         $"{config.Get<ApplicationSettings>().Urls.WebSpa}/callback-silent.html",
 
-                         //React UI
+                    },
+                    PostLogoutRedirectUris=
+                    {
+                      $"{config.Get<ApplicationSettings>().Urls.WebSpa}/index.html",
+                      $"{config.Get<ApplicationSettings>().Urls.WebSpa}",
+
+                    },
+                    AllowedCorsOrigins =
+                    {
+                        $"{config.Get<ApplicationSettings>().Urls.WebSpa}",
+                    },
+
+                    AllowedScopes =
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                         IdentityServerConstants.StandardScopes.Email,
+                        "CarHealth.Api"
+                    },
+                    AccessTokenLifetime = 3600,// секунд, это значение по умолчанию
+                    IdentityTokenLifetime = 300, // секунд, это значение по умолчанию
+                    RequireClientSecret = false,
+
+                     // разрешено ли получение refresh-токенов через указание scope offline_access
+                     AllowOfflineAccess = false,
+                     RequireConsent = false
+                },
+                 new Client
+                {
+                    ClientId = "CarHealth.Web.React",
+                    ClientName = "Web.React",
+                    AllowedGrantTypes = GrantTypes.Code,
+                    AllowAccessTokensViaBrowser = true,
+                    AlwaysIncludeUserClaimsInIdToken = true,
+                    RedirectUris =
+                    {
                          $"{config.Get<ApplicationSettings>().Urls.WebSpaReact}/callback.html",
                          $"{config.Get<ApplicationSettings>().Urls.WebSpaReact}/callback-silent.html"
 
                     },
                     PostLogoutRedirectUris=
                     {
-                      //  $"{config.Get<ApplicationSettings>().Urls.WebSpa}/index.html",
                          $"{config.Get<ApplicationSettings>().Urls.WebSpaReact}",
                          $"{config.Get<ApplicationSettings>().Urls.WebSpaReact}/index.html"
                     },
-                    // адрес клиентского приложения, просим сервер возвращать нужные CORS-заголовки
                     AllowedCorsOrigins =
                     {
                         $"{config.Get<ApplicationSettings>().Urls.WebSpa}",
                         $"{config.Get<ApplicationSettings>().Urls.WebSpaReact}"
                     },
 
-                     // список scopes, разрешённых именно для данного клиентского приложения
                     AllowedScopes =
                     {
                         IdentityServerConstants.StandardScopes.OpenId,

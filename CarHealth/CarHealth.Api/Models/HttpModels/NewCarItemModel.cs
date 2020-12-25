@@ -22,7 +22,10 @@ namespace CarHealth.Api.Models
         public string PriceOfDetail { get; set; }
 
         [Required]
-        public string DateOfReplace { get; set; }
+        public string Replaced { get; set; }
+
+        [Required]
+        public string ReplaceAt { get; set; }
 
         [Required]
         public string RecomendedReplace { get; set; }

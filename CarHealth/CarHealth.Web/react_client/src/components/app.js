@@ -11,12 +11,6 @@ import HomePage from '../components/routes/homePage/HomePage.js';
 
 import { AuthService } from "../services/AuthService.js";
 
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-
-import { changeFirstName, changeSecondName } from '../store/examples/actions.js';
-import { setAppConfig, setAccessToken } from '../store/auth/actions.js';
-
 import { createBrowserHistory } from 'history';
 
 import 'bootstrap/dist/css/bootstrap.css';
@@ -27,14 +21,11 @@ const history = createBrowserHistory();
 
 class App extends Component {
 
-  authService;
 
   constructor(props) {
     super(props);
 
-    this.authService = new AuthService(props.config.auth);
-
-    this.props.setAppConfig(props.config);
+    this.authService = new AuthService();
 
   }
 
@@ -48,10 +39,7 @@ class App extends Component {
 
       if (user) {
 
-        this.props.setAccessToken(user.access_token);
-
         console.log('User logged on:', user);
-        //console.log('0-0-0-0-0-0 ', this.props.accessToken);
 
       } else {
 
@@ -107,7 +95,6 @@ class App extends Component {
         </NavLink>
       ));
 
-    const { changeFirstName, changeSecondName } = this.props;
 
     return (
       <div>
@@ -167,7 +154,7 @@ class App extends Component {
                   <div className="card shadow mb-4 border-0">
 
                     {this.props.routes.map((route) => (
-                      <Route exact path={route.route} component={route.component} urls={this.props.appConfig} key={route.name} />
+                      <Route exact path={route.route} component={route.component} key={route.name} />
                     ))}
 
                   </div>
@@ -210,51 +197,8 @@ class App extends Component {
 
         </div>
 
-        <div>
-          <input
-            type="text"
-            value={this.props.firstName}
-            placeholder="First Name"
-            onChange={(event) => {
-              changeFirstName(event.target.value);
-            }}
-          ></input>
-        </div>
-        <div>
-          <input
-            type="text"
-            value={this.props.secondName}
-            placeholder="Second Name"
-            onChange={(event) => {
-              changeSecondName(event.target.value);
-            }}
-          ></input>
-        </div>
-
-        <div>{this.props.firstName + ' ' + this.props.secondName}</div>
       </div>);
   }
 }
 
-const putStateToProps = (state) => {
-
-  return {
-    firstName: state.example.firstName,
-    secondName: state.example.secondName,
-    accessToken: state.config.accessToken,
-    appConfig: state.config.appConfig
-  };
-}
-const putActionsToProps = (dispatch) => {
-
-  return {
-    changeFirstName: bindActionCreators(changeFirstName, dispatch),
-    changeSecondName: bindActionCreators(changeSecondName, dispatch),
-
-    setAccessToken: bindActionCreators(setAccessToken, dispatch),
-    setAppConfig: bindActionCreators(setAppConfig, dispatch),
-  };
-
-};
-
-export default connect(putStateToProps, putActionsToProps)(App);
+export default App;

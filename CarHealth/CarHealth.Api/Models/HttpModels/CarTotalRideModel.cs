@@ -9,6 +9,6 @@ namespace CarHealth.Api.Models
     public class CarTotalRideModel
     {
         [Required]
-        public int CarsTotalRide { get; set; }
+        public int Miliage { get; set; }
     }
 }

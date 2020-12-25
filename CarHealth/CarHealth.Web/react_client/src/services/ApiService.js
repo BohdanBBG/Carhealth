@@ -1,7 +1,13 @@
 
+import { AuthService } from "../services/AuthService.js";
+
 const superagent = require('superagent');
 
-export default class ApiService {
+export class ApiService {
+
+    constructor() {
+        this.authService = new AuthService();
+    }
 
     httpChek(url, callBack, authToken = null) {
 
@@ -91,23 +97,38 @@ export default class ApiService {
         xhr.send();
     }
 
+    async getRequest(url) {
+        const user = await this.authService.getUser();
+        if (user && user.access_token) {
+            return new Promise(function (resolve, reject) {
+                superagent
+                    .get(url)
+                    .set('Content-Type', 'application/json; charset=utf-8 ')
+                    .set("Authorization", `Bearer ${user.access_token}`)
+                    .then(res => {
+                        if (res.text !== "") {
 
-    getRequest(url, authToken = null) {
-        return new Promise(function (resolve, reject) {
-            superagent
-                .get(url)
-                .set('Content-Type', 'application/json; charset=utf-8 ')
-                .set("Authorization", "Bearer " + authToken)
-                .then(res => {
+                            console.log("----HttpService.getRequest:", JSON.parse(res.text));
 
-                    console.log("----HttpService.getRequest:", JSON.parse(res.text));
+                            resolve(JSON.parse(res.text));
 
-                    resolve(JSON.parse(res.text));
-                })
-                .catch(err => {
-                    reject(err);
-                });
-        });
+                        }
+                    })
+                    .catch(err => {
+                        reject(err);
+                    });
+            });
+        } else {
+            this.authService.login();
+        }//else if (user) {
+        //   return this.authService.renewToken().then(renewedUser => {
+        //     return this._callApi(renewedUser.access_token);
+        //   });
+        //}
+        // else {
+        //     throw new Error('user is not logged in');
+        // }
+
     }
 
 }

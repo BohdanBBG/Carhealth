@@ -3,13 +3,10 @@ using CarHealth.Api.Models;
 using CarHealth.Api.Models.IdentityModels;
 using CarHealth.Api.Repositories;
 using CarHealth.ApiTest.TestRepositories;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace CarHealth.ApiTest.Utils
@@ -50,13 +47,13 @@ namespace CarHealth.ApiTest.Utils
 
         #region CarEntity
 
-        public  CarEntity CreateTestCarEntity(string userId, bool isCurrent = false)
+        public CarEntity CreateTestCarEntity(string userId, bool isCurrent = false)
         {
             return new CarEntity
             {
                 UserId = userId,
-                CarEntityName = _faker.Lorem.Word(),
-                CarsTotalRide = new Random().Next(),
+                CarName = _faker.Lorem.Word(),
+                Mileage = new Random().Next(),
                 IsCurrent = isCurrent,
             };
         }
@@ -78,8 +75,8 @@ namespace CarHealth.ApiTest.Utils
         /// <param name="userId"></param>
         /// <param name="count"></param>
         /// <returns></returns>
-        public async Task<List<CarEntity>> CreateCarEntityInTestRepo(string userId, int count = 1) 
-        { 
+        public async Task<List<CarEntity>> CreateCarEntityInTestRepo(string userId, int count = 1)
+        {
             int countAddedCarEntities = 0;
 
             var carEntities = Enumerable.Range(0, count).Select(x =>
@@ -89,9 +86,9 @@ namespace CarHealth.ApiTest.Utils
                 return new CarEntity
                 {
                     UserId = userId,
-                    CarEntityName = _faker.Lorem.Word(),
-                    CarsTotalRide = new Random().Next(),
-                    IsCurrent = countAddedCarEntities == 1 ? true : false,
+                    CarName = _faker.Lorem.Word(),
+                    Mileage = new Random().Next(),
+                    IsCurrent = countAddedCarEntities == 1,
                 };
 
             }).ToList();
@@ -110,7 +107,7 @@ namespace CarHealth.ApiTest.Utils
 
         #region CarItem
 
-        public  List<CarItem> CreateTestCarItem(string userId, int count = 1)
+        public List<CarItem> CreateTestCarItem(string userId, int count = 1)
         {
 
             var carItems = Enumerable.Range(0, count).Select(x =>
@@ -118,16 +115,17 @@ namespace CarHealth.ApiTest.Utils
                 return new CarItem
                 {
                     Name = _faker.Lorem.Word(),
-                    TotalRide = new Random().Next(),
+                    DetailMileage = new Random().Next(),
                     ChangeRide = new Random().Next(),
                     PriceOfDetail = new Random().Next(),
-                    DateOfReplace = System.DateTime.Now,
+                    Replaced = DateTime.Now,
+                    ReplaceAt = DateTime.Now.AddYears(2),
                     RecomendedReplace = new Random().Next(),
                     CarEntityId = "",
                 };
             }).ToList();
 
-          
+
             return carItems;
         }
 
@@ -143,22 +141,23 @@ namespace CarHealth.ApiTest.Utils
 
             int counter = -1;
 
-            var carItems = Enumerable.Range(0,count).Select(x=>
-            {
-                counter++;
+            var carItems = Enumerable.Range(0, count).Select(x =>
+             {
+                 counter++;
 
-                return new CarItem
-                {
-                    Name = names != null && counter < names.Count() ?
-                                            names[counter] : _faker.Lorem.Word(),
-                    TotalRide = new Random().Next(),
-                    ChangeRide = new Random().Next(),
-                    PriceOfDetail = new Random().Next(),
-                    DateOfReplace = System.DateTime.Now,
-                    RecomendedReplace = new Random().Next(),
-                    CarEntityId = carEntity.FirstOrDefault().Id,
-                };
-            }).ToList();
+                 return new CarItem
+                 {
+                     Name = names != null && counter < names.Count() ?
+                                             names[counter] : _faker.Lorem.Word(),
+                     DetailMileage = new Random().Next(),
+                     ChangeRide = new Random().Next(),
+                     PriceOfDetail = new Random().Next(),
+                     Replaced = DateTime.Now,
+                     ReplaceAt = DateTime.Now.AddYears(2),
+                     RecomendedReplace = new Random().Next(),
+                     CarEntityId = carEntity.FirstOrDefault().Id,
+                 };
+             }).ToList();
 
             foreach (var item in carItems)
             {

@@ -1,10 +1,12 @@
 
 import { Log, UserManager } from 'oidc-client';
 
+import { store } from '../index.js';
+
 export class AuthService {
 
-    constructor(authConfig) {
-        this.config = authConfig;
+    constructor() {
+        this.config = store.getState().config.appConfig.auth;
 
         this.userManager = new UserManager({
             authority: this.config.authority,
@@ -31,8 +33,9 @@ export class AuthService {
         this.userManager.events.addAccessTokenExpiring(function () {
             console.log("access_token expiring...");
         });
-        this.userManager.events.addAccessTokenExpired(function () {
+        this.userManager.events.addAccessTokenExpired( () => {
             console.log("access_token expired");
+            this.login();
         });
         this.userManager.events.addSilentRenewError(function (err) {
             console.error("silentRenewError: ", err);
@@ -43,13 +46,7 @@ export class AuthService {
     getUser() {
         return this.userManager.getUser();
     }
-    // getUser(callback) {
-    //     this.userManager.getUser().then(function (user) {
-    //         callback(user);
-
-    //     });
-    // }
-
+   
     login() {
         return this.userManager.signinRedirect();
     }

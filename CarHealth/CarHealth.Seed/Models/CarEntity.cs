@@ -1,24 +1,19 @@
-﻿using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
-using System;
+﻿using MongoDB.Bson.Serialization.Attributes;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
+
 
 namespace CarHealth.Seed.Models
 {
     public class CarEntity: BaseEntity
     {
-      
 
         [Required]
         [StringLength(100, MinimumLength = 2)]
-        public string CarEntityName { get; set; }
+        public string CarName { get; set; }
 
         [Required]
-        public int CarsTotalRide { get; set; }
+        public int Mileage { get; set; }
 
         [Required]
         public bool IsCurrent { get; set; }// indicate that this CarEntity will be used by Controller like default CarEntity

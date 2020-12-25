@@ -17,7 +17,7 @@ namespace CarHealth.Api.Models.HttpModels
         public string Name { get; set; }
 
         [Required]
-        public int TotalRide { get; set; }
+        public int DetailMileage { get; set; }
 
         [Required]
         public int ChangeRide { get; set; }
@@ -26,7 +26,10 @@ namespace CarHealth.Api.Models.HttpModels
         public int PriceOfDetail { get; set; }
 
         [Required]
-        public DateTime DateOfReplace { get; set; }
+        public DateTime Replaced { get; set; }
+
+        [Required]
+        public DateTime ReplaceAt { get; set; }
 
         [Required]
         public int RecomendedReplace { get; set; }

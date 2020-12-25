@@ -36,9 +36,8 @@ namespace CarHealth.Api.Repositories
 
         public bool IsEmptyDb()
         {
-            // строитель фильтров
             var builder = new FilterDefinitionBuilder<CarEntity>();
-            var filter = builder.Empty; // фильтр для выборки всех документов
+            var filter = builder.Empty; // filter for get all documents
 
             return !CarEntities.Find(filter).Any();
         }
@@ -99,10 +98,10 @@ namespace CarHealth.Api.Repositories
                 carEntity.IsCurrent = true;
             }
 
-            await this.SetTotalRideAsync(new UpdateTotalRideModel
+            await this.SetTotalRideAsync(new UpdateCarMiliageModel
             {
                 Id = carEntity.Id,
-                TotalRide = carEntity.CarsTotalRide
+                Miliage = carEntity.Mileage
             }, carEntity.UserId);
 
             await CarEntities.InsertOneAsync(carEntity);
@@ -115,16 +114,16 @@ namespace CarHealth.Api.Repositories
 
             var filterUser = builderFilter.Eq("UserId", userId);
             var filterCarEntity = builderFilter.Eq("Id", carEntity.Id);
-            var update = builderUpdate.Set("CarEntityName", carEntity.CarEntityName);
+            var update = builderUpdate.Set("CarEntityName", carEntity.CarName);
 
             var car = await CarEntities.Find(filterUser & filterCarEntity).FirstOrDefaultAsync();
 
             if (car != null)
             {
-                await this.SetTotalRideAsync(new UpdateTotalRideModel
+                await this.SetTotalRideAsync(new UpdateCarMiliageModel
                 {
                     Id = car.Id,
-                    TotalRide = carEntity.CarsTotalRide
+                    Miliage = carEntity.Mileage
                 }, userId);
 
                 await CarEntities.UpdateOneAsync(filterUser & filterCarEntity, update);
@@ -174,9 +173,9 @@ namespace CarHealth.Api.Repositories
             if (car != null)
             {
                 var builder = new FilterDefinitionBuilder<CarItem>();
-                var filter = builder.Empty; // фильтр для выборки всех документов
+                var filter = builder.Empty; // filter for get all documents
 
-                if (!String.IsNullOrWhiteSpace(name)) // фильтр по имени
+                if (!String.IsNullOrWhiteSpace(name)) // filter by name
                 {
                     filter = filter & builder.Regex("Name", new BsonRegularExpression(name)) & builder.Eq("CarEntityId", car.Id);
                 }
@@ -209,10 +208,11 @@ namespace CarHealth.Api.Repositories
                         {
                             Id = x.Id,
                             Name = x.Name,
-                            TotalRide = x.TotalRide,
+                            DetailMileage = x.DetailMileage,
                             ChangeRide = x.ChangeRide,
                             PriceOfDetail = x.PriceOfDetail,
-                            DateOfReplace = x.DateOfReplace,
+                            Replaced = x.Replaced,
+                            ReplaceAt = x.ReplaceAt,
                             RecomendedReplace = x.RecomendedReplace
 
                         }).ToList()
@@ -232,32 +232,32 @@ namespace CarHealth.Api.Repositories
             {
                 return new CarTotalRideModel
                 {
-                    CarsTotalRide = car.CarsTotalRide
+                    Miliage = car.Mileage
                 };
             }
             return null;
         }
 
-        public async Task<bool> SetTotalRideAsync(UpdateTotalRideModel value, string userId)
+        public async Task<bool> SetTotalRideAsync(UpdateCarMiliageModel value, string userId)
         {
             var carEntity = await CarEntities.Find(x => x.UserId == userId && x.Id == value.Id).FirstOrDefaultAsync();
 
             if (carEntity != null)
             {
-                if (value.TotalRide <= carEntity.CarsTotalRide)
+                if (value.Miliage <= carEntity.Mileage)
                 {
                     return true;
                 }
 
-                if (value.TotalRide > 0)
+                if (value.Miliage > 0)
                 {
-                    int carEntityTotalRide = carEntity.CarsTotalRide;
+                    int carEntityTotalRide = carEntity.Mileage;
 
                     var filterCarEntity = Builders<CarEntity>.Filter.Eq("Id", carEntity.Id);
                     var filterCarItem = Builders<CarItem>.Filter.Eq("CarEntityId", carEntity.Id);
 
-                    var updateCarItemTotalRide = Builders<CarItem>.Update.Inc<int>("TotalRide", (value.TotalRide - carEntityTotalRide));
-                    var updateCarEntityTotalRide = Builders<CarEntity>.Update.Set("CarsTotalRide", value.TotalRide);
+                    var updateCarItemTotalRide = Builders<CarItem>.Update.Inc<int>("TotalRide", (value.Miliage - carEntityTotalRide));
+                    var updateCarEntityTotalRide = Builders<CarEntity>.Update.Set("CarsTotalRide", value.Miliage);
 
                     var resultCarItem = await CarItems.UpdateManyAsync(filterCarItem, updateCarItemTotalRide);
                     var resultCarEntity = await CarEntities.UpdateOneAsync(filterCarEntity, updateCarEntityTotalRide);
@@ -309,10 +309,11 @@ namespace CarHealth.Api.Repositories
                 {
                     Id = carItem.Id,
                     Name = value.Name,
-                    TotalRide = value.IsTotalRideChanged ? 0 : carItem.TotalRide,
+                    DetailMileage = value.IsTotalRideChanged ? 0 : carItem.DetailMileage,
                     ChangeRide = int.Parse(value.ChangeRide),
                     PriceOfDetail = int.Parse(value.PriceOfDetail),
-                    DateOfReplace = DateTime.Parse(value.DateOfReplace),
+                    Replaced = DateTime.Parse(value.Replaced),
+                    ReplaceAt = DateTime.Parse(value.ReplaceAt),
                     RecomendedReplace = int.Parse(value.RecomendedReplace),
                     CarEntityId = carItem.CarEntityId
                 });

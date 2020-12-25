@@ -1,8 +1,5 @@
 ﻿using CarHealth.Api.Models;
 using CarHealth.Api.Models.HttpModels;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
@@ -91,12 +88,12 @@ namespace CarHealth.Api.Repositories.EFCoreRepository
             {
                 if (carEntity.IsCurrent)
                 {
-                    car.CarEntityName = carEntity.CarEntityName;
+                    car.CarName = carEntity.CarName;
                     await this.SetUserCurCarAsync(carEntity.Id, userId);
                 }
                 else
                 {
-                    car.CarEntityName = carEntity.CarEntityName;
+                    car.CarName = carEntity.CarName;
                     car.IsCurrent = false;
                 }
 
@@ -166,10 +163,11 @@ namespace CarHealth.Api.Repositories.EFCoreRepository
                     {
                         Id = x.Id,
                         Name = x.Name,
-                        TotalRide = x.TotalRide,
+                        DetailMileage = x.DetailMileage,
                         ChangeRide = x.ChangeRide,
                         PriceOfDetail = x.PriceOfDetail,
-                        DateOfReplace = x.DateOfReplace,
+                        Replaced = x.Replaced,
+                        ReplaceAt = x.ReplaceAt,
                         RecomendedReplace = x.RecomendedReplace
 
                     }).ToList()
@@ -186,37 +184,37 @@ namespace CarHealth.Api.Repositories.EFCoreRepository
             {
                 return new CarTotalRideModel
                 {
-                    CarsTotalRide = car.CarsTotalRide
+                    Miliage = car.Mileage
                 };
             }
 
             return null;
         }
-        public async Task<bool> SetTotalRideAsync(UpdateTotalRideModel value, string userId)
+        public async Task<bool> SetTotalRideAsync(UpdateCarMiliageModel value, string userId)
         {
 
             var carEntity = await _db.CarEntities.FirstOrDefaultAsync(x => x.Id == value.Id && x.UserId == userId);
 
             if (carEntity != null)
             {
-                if (value.TotalRide < carEntity.CarsTotalRide)
+                if (value.Miliage < carEntity.Mileage)
                 {
                     return true;
                 }
 
-                if (value.TotalRide > 0 &&
-                    value.TotalRide > carEntity.CarsTotalRide
+                if (value.Miliage > 0 &&
+                    value.Miliage > carEntity.Mileage
                     )
                 {
-                    int carEntityTotalRide = carEntity.CarsTotalRide;
+                    int carEntityTotalRide = carEntity.Mileage;
 
                     await _db.CarItems.Where(x => x.CarEntityId == carEntity.Id).
                         ForEachAsync(item =>
                         {
-                            item.TotalRide += (value.TotalRide - carEntityTotalRide);
+                            item.DetailMileage += (value.Miliage - carEntityTotalRide);
                         });
 
-                    carEntity.CarsTotalRide = value.TotalRide;
+                    carEntity.Mileage = value.Miliage;
 
                     await _db.SaveChangesAsync();
 
@@ -248,10 +246,11 @@ namespace CarHealth.Api.Repositories.EFCoreRepository
                 if (carItem != null)
                 {
                     carItem.Name = value.Name;
-                    carItem.TotalRide = value.IsTotalRideChanged ? 0 : carItem.TotalRide;
+                    carItem.DetailMileage = value.IsTotalRideChanged ? 0 : carItem.DetailMileage;
                     carItem.ChangeRide = int.Parse(value.ChangeRide);
                     carItem.PriceOfDetail = int.Parse(value.PriceOfDetail);
-                    carItem.DateOfReplace = DateTime.Parse(value.DateOfReplace);
+                    carItem.Replaced = DateTime.Parse(value.Replaced);
+                    carItem.ReplaceAt = DateTime.Parse(value.ReplaceAt);
                     carItem.RecomendedReplace = int.Parse(value.RecomendedReplace);
 
                     await _db.SaveChangesAsync();

@@ -1,12 +1,10 @@
 
 import {
     ACTION_SET_APP_CONFIG,
-    ACTION_SET_ACCESS_TOKEN
 } from '../auth/actions.js';
 
 const initialState = { // if we skip it, the application will return undefined for states on first launch
     appConfig: {},
-    accessToken: ""
 };
 
 
@@ -18,12 +16,10 @@ export const authReducer = (state = initialState, action) => {
                 ...state,
                 appConfig: action.payload
             };
-        case ACTION_SET_ACCESS_TOKEN:
-            return {
-                ...state,
-                accessToken: action.payload
-             };
+      
+        default: {
+            return state;
+        }
     }
 
-    return state;
 };

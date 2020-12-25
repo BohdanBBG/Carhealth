@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using CarHealth.Api.Contexts;
 using CarHealth.Api.Repositories.EFCoreRepository;
 using Microsoft.IdentityModel.Logging;
+using Microsoft.IdentityModel.Tokens;
 
 namespace CarHealth.Api
 {
@@ -67,6 +68,11 @@ namespace CarHealth.Api
                 o.Authority = config.JwtBearerAuth.Authority;
                 o.Audience = config.JwtBearerAuth.Audience;
                 o.RequireHttpsMetadata = false;
+                o.TokenValidationParameters = new
+                TokenValidationParameters()
+                {
+                    ValidateAudience = false
+                };
             });
 
             if (System.Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Testing")
@@ -98,15 +104,16 @@ namespace CarHealth.Api
 
         public void Configure(IApplicationBuilder app)
         {
-           
+
             if (HostingEnvironmentHelper.IsDevelopmentAny())
             {
+                IdentityModelEventSource.ShowPII = true; // show detail of error and see the problem
                 app.UseDeveloperExceptionPage();
             }
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-               // app.UseHsts();
+                // app.UseHsts();
             }
 
             //app.UseHttpsRedirection();
@@ -163,7 +170,7 @@ namespace CarHealth.Api
 
             services.AddDbContext<CarContext>(options =>
            options.UseSqlServer(config.EFCoreDb.CarsDb)); // for EF Core data repository
-         
+
         }
 
     }

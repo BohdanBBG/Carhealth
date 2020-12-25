@@ -22,8 +22,10 @@ export const exampleReducer = (state = initialState, action) => {
             return {
                 ...state,
                 secondName: action.payload
-             };
+            };
+        default: {
+            return state;
+        }
     }
 
-    return state;
 };

@@ -1,5 +1,5 @@
 
-import React, { Component, PureComponent, Children } from 'react'
+import React, { Component, Children } from 'react'
 import 'bootstrap/dist/css/bootstrap.css'
 
 class Form extends Component {

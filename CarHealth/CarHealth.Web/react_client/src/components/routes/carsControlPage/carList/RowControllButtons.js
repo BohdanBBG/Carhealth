@@ -1,5 +1,5 @@
 
-import React, { Component, PureComponent } from 'react'
+import React, { Component} from 'react'
 import Dropdown from 'react-bootstrap/Dropdown';
 import 'bootstrap/dist/css/bootstrap.css'
 

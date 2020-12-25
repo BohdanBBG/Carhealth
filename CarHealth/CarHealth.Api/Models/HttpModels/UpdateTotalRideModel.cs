@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace CarHealth.Api.Models
 {
-    public class UpdateTotalRideModel
+    public class UpdateCarMiliageModel
     {
         [Required]
         public string Id { get; set; }
 
         [Required]
-        public int TotalRide { get; set; }
+        public int Miliage { get; set; }
     }
 
 }

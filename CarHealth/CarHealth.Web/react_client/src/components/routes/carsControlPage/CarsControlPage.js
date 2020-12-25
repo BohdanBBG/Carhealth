@@ -2,13 +2,17 @@
 import { MDBDataTableV5 } from 'mdbreact';
 import 'bootstrap/dist/css/bootstrap.css';
 
-import React, { Component, PureComponent } from 'react';
+import React, { Component } from 'react';
 
 import ModalWindow from "../../forms/ModalWindow.js";
 import Form from "../../forms/Form.js"
 import RowControllButtons from "../carsControlPage/carList/RowControllButtons.js";
 
-import ApiService from '../../../services/ApiService.js';
+import { ApiService } from '../../../services/ApiService.js';
+
+import { connect } from 'react-redux';
+
+import Loader from '../../loader.js'
 
 const carList = [
     {
@@ -96,21 +100,21 @@ const carList = [
 const columns = [
 
     {
-        label: 'Title',
-        field: 'title',
+        label: 'Car name',
+        field: 'carEntityName',
         attributes: {
         },
     },
     {
-        label: 'Ride',
-        field: 'ride',
+        label: 'Miliage',
+        field: 'totalRide',
         sort: 'disabled',
         attributes: {
         },
     },
     {
-        label: 'IsCurrent',
-        field: 'isCurrent',
+        label: 'Is current',
+        field: 'isDefault',
         attributes: {
         },
     },
@@ -124,7 +128,6 @@ const columns = [
 ];
 
 
-
 class CarsControlPage extends Component {
 
     constructor(props) {
@@ -134,51 +137,84 @@ class CarsControlPage extends Component {
             data:
             {
                 columns: columns,
-                rows: carList
+                rows: []
             },
             currentItem: null,
         }
+
         this.apiService = new ApiService();
 
         this.getItemFromEditButton = this.getItemFromEditButton.bind(this);
 
     }
 
-    getDataFromApi = () => {
 
-        this.apiService.httpGet("http://localhost:5003/config")
+    getTestData = () => {
+
+        console.log('CarsControlPage.js 0-0-0-0-0-0 ', this.props);
+
+        this.apiService.getRequest(`${this.props.appConfig.urls.api}/test/ping`)
             .then(
                 response => {
 
-                    //   this.setState({
-                    //     authService: new AuthService(response.auth)
-                    //   });
+                    console.log("----CarsControlPage.getTestRequest:", response);
+                })
+            .catch(error => { console.error("----CarsControlPage.getTestRequest Rejected:", error) });
+    }
 
-                }).catch(error => alert(`CarsControlPage rejected: ${error}`));
+    getUserCars = () => {
+
+        this.apiService.getRequest(`${this.props.appConfig.urls.api}/api/Cars/allUsersCars`)
+            .then(
+                response => {
+                    response.map((item => {
+                        item.totalRide = String(item.totalRide).replace(/(\d)(?=(\d{3})+([^\d]|$))/g, '$1 ');
+
+                        item["isDefault"] = item.isDefault.toString();
+
+
+                        item["control"] = <RowControllButtons
+                            key={item.id}
+                            index={item.id}
+                            onEditButtonClick={this.getItemFromEditButton.bind(this, item)}
+                        />
+                    }));
+
+                    this.setState({
+                        data: {
+                            columns: columns,
+                            rows: response
+
+                        }
+                    });
+                    console.log("----CarsControlPage.getUserCars: ", response)
+                })
+            .catch(error => { console.error("----CarsControlPage.getTestRequest Rejected:", error) });
     }
 
     componentDidMount() {
 
-        console.log("CarsControlPage ----", this.state.appUrls);
+        // this.getTestData();
+        this.getUserCars();
 
         console.log("CarsControlPage ----", ' did mount');
     }
+
     render() {
-        // console.log("----------"+ this.state.appUser.access_token);
 
+        console.log("----Caaaaaaaaaaaaaaaaaaaaaaaaa: ", this.state.data);
+        // this.state.data.rows.map((item, index) => {
+        //     item.carsTotalRide = String(item.carsTotalRide).replace(/(\d)(?=(\d{3})+([^\d]|$))/g, '$1 ');
 
-        this.state.data.rows.map((item, index) => {
-            item.ride = String(item.ride).replace(/(\d)(?=(\d{3})+([^\d]|$))/g, '$1 ');
+        //     item.isCurrent = item.isCurrent.toString();
 
-            item.isCurrent = item.isCurrent.toString();
-
-            item["control"] = <RowControllButtons
-                key={1}
-                index={index + 1}
-                onEditButtonClick={this.getItemFromEditButton.bind(this, item)}
-            />
-        }
-        );
+        //     item["control"] = <RowControllButtons
+        //         key={index}
+        //         index={index}
+        //         onEditButtonClick={this.getItemFromEditButton.bind(this, item)}
+        //     />
+        // }
+        // );
 
         return (
             <div className="card-body ">
@@ -301,4 +337,12 @@ class CarsControlPage extends Component {
 
 }
 
-export default CarsControlPage
+
+const putStateToProps = (state) => {
+
+    return {
+        appConfig: state.config.appConfig,
+    };
+}
+
+export default connect(putStateToProps)(CarsControlPage);

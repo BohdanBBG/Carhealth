@@ -1,5 +1,5 @@
 
-import React, { Component, PureComponent } from 'react'
+import React, { Component } from 'react'
 import 'bootstrap/dist/css/bootstrap.css'
 
 import ListItem from './ListItem.js'
@@ -19,10 +19,10 @@ class CarPartList extends Component {
 
     render() {
 
-        const listElements = this.props.data.map((item, index) =>
+        const listElements = this.props.data.map((item) =>
             <ListItem
                 carItem={item}
-                key={index}
+                key={item.id}
                 onEditButtonClick={this.getItemFromEditButton.bind(this, item)}>
 
             </ListItem>);
@@ -35,7 +35,7 @@ class CarPartList extends Component {
                     {listElements}
                 </div>
 
-                
+
                 <ModalWindow title="Edit car item" id="carItemEditModalWindow" inCenter={true}>
                     <Form id="carItemEditForm" >
                         <div className="form-group">
@@ -54,7 +54,7 @@ class CarPartList extends Component {
                             <label className="mr-sm-2">Price:</label>
                             <input
                                 name="price"
-                                defaultValue={`${this.state.currentItem === null ? "" : String(this.state.currentItem.price).replace(/(\d)(?=(\d{3})+([^\d]|$))/g, '$1 ') }`}
+                                defaultValue={`${this.state.currentItem === null ? "" : String(this.state.currentItem.price).replace(/(\d)(?=(\d{3})+([^\d]|$))/g, '$1 ')}`}
                                 type="text"
                                 className="form-control input-lg"
                                 placeholder="Price"

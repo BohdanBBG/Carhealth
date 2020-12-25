@@ -1,19 +1,12 @@
-﻿using Bogus;
-using CarHealth.Api;
-using CarHealth.Api.Controllers;
+﻿using CarHealth.Api;
 using CarHealth.Api.Models;
 using CarHealth.Api.Models.HttpModels;
-using CarHealth.Api.Repositories;
 using CarHealth.ApiTest.Exceptions;
 using CarHealth.ApiTest.Utils;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -105,7 +98,7 @@ namespace CarHealth.ApiTest.Controllers
             var response = await _apiUtil.GetAsync<CarTotalRideModel>("/api/Cars/totalride", _accessToken);
 
             // Assert
-            Assert.Equal(carEntities.FirstOrDefault().CarsTotalRide, response.CarsTotalRide);
+            Assert.Equal(carEntities.FirstOrDefault().Mileage, response.Miliage);
 
         }
 
@@ -162,8 +155,8 @@ namespace CarHealth.ApiTest.Controllers
             // Act
             var response = await _apiUtil.CreateAsync("/api/Cars/add/car", new NewCarModel
             {
-                CarEntityName = carEntity.CarEntityName,
-                CarsTotalRide = carEntity.CarsTotalRide.ToString(),
+                CarName = carEntity.CarName,
+                Mileage = carEntity.Mileage.ToString(),
                 IsCurrent = carEntity.IsCurrent
             }, _accessToken);
 
@@ -172,7 +165,7 @@ namespace CarHealth.ApiTest.Controllers
             // Assert
 
             Assert.NotNull(carDbEntity);
-            Assert.Equal(carEntity.CarEntityName, carDbEntity.CarEntityName);
+            Assert.Equal(carEntity.CarName, carDbEntity.CarName);
             Assert.Equal(carEntity.UserId, carDbEntity.UserId);
         }
 
@@ -195,7 +188,8 @@ namespace CarHealth.ApiTest.Controllers
                 Name = carItems.FirstOrDefault().Name,
                 ChangeRide = carItems.FirstOrDefault().ChangeRide.ToString(),
                 PriceOfDetail = carItems.FirstOrDefault().PriceOfDetail.ToString(),
-                DateOfReplace = carItems.FirstOrDefault().DateOfReplace.ToString(),
+                Replaced = carItems.FirstOrDefault().Replaced.ToString(),
+                ReplaceAt = carItems.FirstOrDefault().ReplaceAt.ToString(),
                 RecomendedReplace = carItems.FirstOrDefault().RecomendedReplace.ToString()
             };
 
@@ -216,22 +210,22 @@ namespace CarHealth.ApiTest.Controllers
             await PrepareTestUser();
 
             var carEntity = await _dataUtil.CreateCarEntityInTestRepo(_user.Id);
-            var updatedTotalRide = new UpdateTotalRideModel
+            var updatedTotalRide = new UpdateCarMiliageModel
             {
                 Id = carEntity.FirstOrDefault().Id,
-                TotalRide = carEntity.FirstOrDefault().CarsTotalRide + 2
+                Miliage = carEntity.FirstOrDefault().Mileage + 2
             };
 
             // Act
 
             var totalRideResponse = await _apiUtil.CreateAsync("/api/Cars/totalride/set", updatedTotalRide, _accessToken);
 
-            var carDbEntity = await _apiUtil.GetAsync<UpdateTotalRideModel>("/api/Cars/car", _accessToken);
+            var carDbEntity = await _apiUtil.GetAsync<UpdateCarMiliageModel>("/api/Cars/car", _accessToken);
 
             // Assert
 
             Assert.NotNull(carDbEntity);
-            Assert.NotEqual(updatedTotalRide.TotalRide, carDbEntity.TotalRide);
+            Assert.NotEqual(updatedTotalRide.Miliage, carDbEntity.Miliage);
 
         }
 
@@ -242,10 +236,10 @@ namespace CarHealth.ApiTest.Controllers
             await PrepareTestUser();
 
             var carEntity = await _dataUtil.CreateCarEntityInTestRepo(_user.Id);
-            var updatedTotalRide = new UpdateTotalRideModel
+            var updatedTotalRide = new UpdateCarMiliageModel
             {
                 Id = "not_valid_id",
-                TotalRide = -1
+                Miliage = -1
             };
 
             // Act
@@ -278,9 +272,9 @@ namespace CarHealth.ApiTest.Controllers
             var updatedCar = new EditCarModel
             {
                 Id = carDbEntity.Id,
-                CarEntityName = "New test name",
+                CarName = "New test name",
                 IsCurrent = true,
-                CarsTotalRide = carDbEntity.CarsTotalRide + count
+                Mileage = carDbEntity.Mileage + count
             };
 
             // Act
@@ -292,7 +286,7 @@ namespace CarHealth.ApiTest.Controllers
             // Assert
 
             Assert.Contains(updatedCar.Id, allCarEntitiesDb.Select(x => x.Id));
-            Assert.DoesNotContain(carDbEntity.CarEntityName, allCarEntitiesDb.Select(x => x.CarEntityName));
+            Assert.DoesNotContain(carDbEntity.CarName, allCarEntitiesDb.Select(x => x.CarEntityName));
             Assert.Equal(allCarEntitiesDb.Count(), carEntities.Count());
         }
 
@@ -315,7 +309,8 @@ namespace CarHealth.ApiTest.Controllers
                 IsTotalRideChanged = false,
                 ChangeRide = new Random().Next().ToString(),
                 PriceOfDetail = new Random().Next().ToString(),
-                DateOfReplace = System.DateTime.Now.ToString(),
+                Replaced = DateTime.Now.ToString(),
+                ReplaceAt = DateTime.Now.ToString(),
                 RecomendedReplace = new Random().Next().ToString(),
             };
 
@@ -331,8 +326,8 @@ namespace CarHealth.ApiTest.Controllers
 
             Assert.DoesNotContain(updatedCarItem.Name, allCarItemsDb.CarItems.Select(x => x.Name));
 
-            Assert.Equal(allCarItemsDb.CarItems.FirstOrDefault(x => x.Id == updatedCarItem.Id).TotalRide,
-                    carItems.FirstOrDefault(x => x.Id == updatedCarItem.Id).TotalRide); // if IsTotalRideChanged = false, then TotalRide must be the same
+            Assert.Equal(allCarItemsDb.CarItems.FirstOrDefault(x => x.Id == updatedCarItem.Id).DetailMileage,
+                    carItems.FirstOrDefault(x => x.Id == updatedCarItem.Id).DetailMileage); // if IsTotalRideChanged = false, then TotalRide must be the same
 
             Assert.Equal(carItems.FirstOrDefault().CarEntityId, allCarItemsDb.CarEntityId);
 

@@ -10,10 +10,10 @@ namespace CarHealth.Api.Models
     {
         [Required]
         [StringLength(100, MinimumLength = 2)]
-        public string CarEntityName { get; set; }
+        public string CarName { get; set; }
 
         [Required]
-        public string CarsTotalRide { get; set; }
+        public string Mileage { get; set; }
 
         public List<CarItem> CarItems { get; set; }
 

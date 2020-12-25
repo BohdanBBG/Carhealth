@@ -187,9 +187,9 @@ namespace CarHealth.Seed.SeedServices
                             carEntity = new CarEntity
                             {
                                 Id = ObjectId.GenerateNewId().ToString(),
-                                CarEntityName = "Car2",
+                                CarName = "Car2",
                                 IsCurrent = true,
-                                CarsTotalRide = car.CarsTotalRide,
+                                Mileage = car.Mileage,
                                 UserId = user.Id.ToString(),
                             };
                         }
@@ -198,9 +198,9 @@ namespace CarHealth.Seed.SeedServices
                             carEntity = new CarEntity
                             {
                                 Id = ObjectId.GenerateNewId().ToString(),
-                                CarEntityName = car.CarEntityName,
+                                CarName = car.CarName,
                                 IsCurrent = true,
-                                CarsTotalRide = car.CarsTotalRide,
+                                Mileage = car.Mileage,
                                 UserId = user.Id.ToString(),
                             };
                         }
@@ -215,10 +215,11 @@ namespace CarHealth.Seed.SeedServices
                                 CarEntityId = carEntity.Id,
                                 Id = ObjectId.GenerateNewId().ToString(),
                                 Name = details.Name,
-                                TotalRide = details.TotalRide,
+                                DetailMileage = details.DetailMileage,
                                 ChangeRide = details.ChangeRide,
                                 PriceOfDetail = details.PriceOfDetail,
-                                DateOfReplace = details.DateOfReplace,
+                                Replaced = details.Replaced,
+                                ReplaceAt = details.ReplaceAt,
                                 RecomendedReplace = details.RecomendedReplace,
                                 CarEntity = carEntity
                             }, user.Id.ToString());

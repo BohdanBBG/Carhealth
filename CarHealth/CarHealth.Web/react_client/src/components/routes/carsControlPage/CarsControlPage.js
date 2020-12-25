@@ -13,88 +13,7 @@ import { ApiService } from '../../../services/ApiService.js';
 import { connect } from 'react-redux';
 
 import Loader from '../../loader.js'
-
-const carList = [
-    {
-        id: "1",
-        title: "Default loved user`s car",
-        ride: "1000",
-        isCurrent: true
-    },
-    {
-        id: "2",
-        title: "Car1",
-        ride: "10000",
-        isCurrent: false,
-    },
-    {
-        id: "3",
-        title: "Some car",
-        ride: "10000",
-        isCurrent: false,
-    },
-    {
-        id: "4",
-        title: "One of cars",
-        ride: "100000",
-        isCurrent: false,
-    },
-    {
-        id: "2",
-        title: "Car1",
-        ride: "1000000",
-        isCurrent: false,
-    },
-    {
-        id: "2",
-        title: "Car1",
-        ride: "10000",
-        isCurrent: false,
-    },
-    {
-        id: "3",
-        title: "Some car",
-        ride: "10000",
-        isCurrent: false,
-    },
-    {
-        id: "4",
-        title: "One of cars",
-        ride: "100000",
-        isCurrent: false,
-    },
-    {
-        id: "2",
-        title: "Car1",
-        ride: "1000000",
-        isCurrent: false,
-    },
-    {
-        id: "2",
-        title: "Car1",
-        ride: "10000",
-        isCurrent: false,
-    },
-    {
-        id: "3",
-        title: "Some car",
-        ride: "10000",
-        isCurrent: false,
-    },
-    {
-        id: "4",
-        title: "One of cars",
-        ride: "100000",
-        isCurrent: false,
-    },
-    {
-        id: "2",
-        title: "Car1",
-        ride: "1000000",
-        isCurrent: false,
-    },
-];
-
+import { ToastContainer, toast } from 'react-toastify';
 
 
 const columns = [
@@ -148,18 +67,11 @@ class CarsControlPage extends Component {
 
     }
 
+    componentDidMount() {
 
-    getTestData = () => {
+        this.getUserCars();
 
-        console.log('CarsControlPage.js 0-0-0-0-0-0 ', this.props);
-
-        this.apiService.getRequest(`${this.props.appConfig.urls.api}/test/ping`)
-            .then(
-                response => {
-
-                    console.log("----CarsControlPage.getTestRequest:", response);
-                })
-            .catch(error => { console.error("----CarsControlPage.getTestRequest Rejected:", error) });
+        console.log("CarsControlPage ----", ' did mount');
     }
 
     getUserCars = () => {
@@ -171,7 +83,6 @@ class CarsControlPage extends Component {
                         item.totalRide = String(item.totalRide).replace(/(\d)(?=(\d{3})+([^\d]|$))/g, '$1 ');
 
                         item["isDefault"] = item.isDefault.toString();
-
 
                         item["control"] = <RowControllButtons
                             key={item.id}
@@ -192,12 +103,46 @@ class CarsControlPage extends Component {
             .catch(error => { console.error("----CarsControlPage.getTestRequest Rejected:", error) });
     }
 
-    componentDidMount() {
+    deleteCar = (url, itemId) => {
 
-        // this.getTestData();
-        this.getUserCars();
+        this.apiService.deleteRequest(url)
+            .then(() => {
 
-        console.log("CarsControlPage ----", ' did mount');
+                this.getSuccessToast("Car successfully deleted");
+                this.setState({
+                    data: {
+                        columns: columns,
+                        rows: this.state.data.rows.filter(function (value) {
+                            return value.id !== itemId;
+                        })
+                    }
+                });
+
+            }
+            ).catch(error => {
+                console.error("----CarPartsPage.CarPartList Rejected:", error);
+                this.getErrorToast(error);
+            })
+    }
+
+    getSuccessToast = (message) => {
+        toast.success(message, {
+        });
+    }
+
+    getErrorToast = (message) => {
+        toast.error(message, {
+        });
+    }
+
+    getInfoToast = (message) => {
+        toast.info(message, {
+        });
+    }
+
+    getWarnToast = (message) => {
+        toast.warn(message, {
+        });
     }
 
     render() {
@@ -217,115 +162,111 @@ class CarsControlPage extends Component {
         // );
 
         return (
-            <div className="card-body ">
+            <>
+                {this.state.data.rows.length === 0
+                    ? <Loader></Loader>
+                    : <>
+                        <div className="card-body ">
 
-                <div className="fixed-bottom ml-4" style={{ left: '90%', right: '50%', bottom: '8%' }}>
-                    <a className="btn btn-lg btn-success btn-circle" data-toggle="modal" href="#carEntityAddModalWindow">
-                        <i className="fas fa-plus"></i>
-                    </a>
-                </div>
+                            <div className="fixed-bottom ml-4" style={{ left: '90%', right: '50%', bottom: '8%' }}>
+                                <a className="btn btn-lg btn-success btn-circle" data-toggle="modal" href="#carEntityAddModalWindow">
+                                    <i className="fas fa-plus"></i>
+                                </a>
+                            </div>
 
-                <MDBDataTableV5 className="table-striped text-center text-dark"
-                    hover
-                    entriesOptions={[5, 10, 15]}
-                    theadColor="thead-dark"
-                    entries={6}
-                    data={this.state.data}
-                    searchTop
-                    pagingTop
-                    barReverse
-                    searchBottom={false}
-                    fullPagination
-                />
+                            <MDBDataTableV5 className="table-striped p-4"
+                                hover
+                                entriesOptions={[5, 10, 15]}
+                                theadColor="thead-dark"
+                                entries={6}
+                                data={this.state.data}
+                                searchTop
+                                pagingTop
+                                barReverse
+                                searchBottom={false}
+                                fullPagination
+                            />
 
-                <ModalWindow title="Edit car item" id="carEntityEditModalWindow" inCenter={true}>
-                    <Form id="carEntityEditForm" >
-                        <div className="form-group">
-                            <label className="mr-sm-2">Title:</label>
-                            <input
-                                name="title"
-                                defaultValue={`${this.state.currentItem === null ? "" : this.state.currentItem.title}`}
-                                type="text"
-                                className="form-control input-lg"
-                                placeholder="Title"
-                                required
-                                data-parsley-type="email" />
+                            <ModalWindow title="Edit car item" id="carEntityEditModalWindow" inCenter={true}>
+                                <Form id="carEntityEditForm" >
+                                    <div className="form-group">
+                                        <label className="mr-sm-2">Car name:</label>
+                                        <input
+                                            name="carEntityName"
+                                            defaultValue={`${this.state.currentItem === null ? "" : this.state.currentItem.carEntityName}`}
+                                            type="text"
+                                            className="form-control input-lg"
+                                            placeholder="Car name"
+                                        />
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label className="mr-sm-2">Miliage:</label>
+                                        <input
+                                            name="totalRide"
+                                            type="text"
+                                            defaultValue={`${this.state.currentItem === null ? "" : String(this.state.currentItem.totalRide).replace(/(\d)(?=(\d{3})+([^\d]|$))/g, '$1 ')}`}
+                                            className="form-control input-lg"
+                                            placeholder="Miliage"
+                                        />
+                                    </div>
+                                </Form>
+                            </ModalWindow>
+
+                            <ModalWindow title={`${this.state.currentItem === null ? "" : " Delete " + this.state.currentItem.carEntityName + " ?"}`} id="carEntityDeleteModalWindow" inCenter={false}>
+                                <div className="row justify-content-end mr-2">
+                                    <button type="button" className="btn btn-secondary col-2" data-dismiss="modal">Close</button>
+                                    <button type="submit" className="btn btn-primary col-2 ml-2"
+                                        onClick={(event) => {
+                                            event.stopPropagation();
+
+                                            this.deleteCar(`${this.props.appConfig.urls.api}/api/Cars/delete/car?carEntityId=${this.state.currentItem?.id}`, this.state.currentItem?.id);
+                                        }}
+                                        data-dismiss="modal">
+                                        Accept
+                            </button>
+                                </div>
+                            </ModalWindow>
+
+                            <ModalWindow title="Add car item" id="carEntityAddModalWindow" inCenter={true}>
+                                <Form id="carEntityAddForm">
+                                    <div className="form-group">
+                                        <label className="mr-sm-2">Car name:</label>
+                                        <input
+                                            name="carEntityName"
+                                            type="text"
+                                            className="form-control input-lg"
+                                            placeholder="Car name"
+                                        />
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label className="mr-sm-2">Miliage:</label>
+                                        <input
+                                            name="totalRide"
+                                            type="text"
+                                            className="form-control input-lg"
+                                            placeholder="Miliage"
+                                        />
+                                    </div>
+                                </Form>
+                            </ModalWindow>
+
                         </div>
-
-                        <div className="form-group">
-                            <label className="mr-sm-2">Ride:</label>
-                            <input
-                                name="price"
-                                type="text"
-                                defaultValue={`${this.state.currentItem === null ? "" : String(this.state.currentItem.ride).replace(/(\d)(?=(\d{3})+([^\d]|$))/g, '$1 ')}`}
-                                className="form-control input-lg"
-                                placeholder="Ride"
-                                required
-                                data-parsley-length="[6, 10]"
-                                data-parsley-trigger="keyup" />
-                        </div>
-
-
-                        <div className="form-group form-check  ml-2 ">
-                            <label className="form-check-label">
-                                <input
-                                    name="isCurrent"
-                                    className="form-check-input"
-                                    type="checkbox"
-                                    checked={this.state.currentItem === null ? false : (this.state.currentItem.isCurrent === "true")}
-                                />
-                                  Is current
-                             </label>
-                        </div>
-
-                    </Form>
-                </ModalWindow>
-
-                <ModalWindow title={`${this.state.currentItem === null ? "" : " Delete " + this.state.currentItem.title + " ?"}`} id="carEntityDeleteModalWindow" inCenter={false}>
-                    <Form id="carEntityDeleteForm">
-                    </Form>
-                </ModalWindow>
-
-                <ModalWindow title="Add car item" id="carEntityAddModalWindow" inCenter={true}>
-                    <Form id="carEntityAddForm">
-                        <div className="form-group">
-                            <label className="mr-sm-2">Title:</label>
-                            <input
-                                name="title"
-                                type="text"
-                                className="form-control input-lg"
-                                placeholder="Title"
-                                required
-                                data-parsley-type="email" />
-                        </div>
-
-                        <div className="form-group">
-                            <label className="mr-sm-2">Ride:</label>
-                            <input
-                                name="price"
-                                type="text"
-                                className="form-control input-lg"
-                                placeholder="Ride"
-                                required
-                                data-parsley-length="[6, 10]"
-                                data-parsley-trigger="keyup" />
-                        </div>
-
-
-                        <div className="form-group form-check  ml-2 ">
-                            <label className="form-check-label">
-                                <input
-                                    name="isCurrent"
-                                    className="form-check-input"
-                                    type="checkbox"
-                                />
-                                  Is current
-                             </label>
-                        </div>
-                    </Form>
-                </ModalWindow>
-
-            </div>
+                        <ToastContainer
+                            position="top-right"
+                            autoClose={5000}
+                            hideProgressBar={false}
+                            newestOnTop
+                            closeOnClick
+                            rtl={false}
+                            pauseOnFocusLoss
+                            draggable
+                            pauseOnHover
+                        />
+                    </>
+                }
+            </>
         );
     }
 

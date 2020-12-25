@@ -8,6 +8,9 @@ import CarPartList from './CarPartList.js';
 import ModalWindow from "../../forms/ModalWindow.js";
 import Form from "../../forms/Form.js";
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import { ApiService } from '../../../services/ApiService.js';
 
 import { connect } from 'react-redux';
@@ -30,7 +33,7 @@ class CarPartsPage extends Component {
 
     handlePageClick = ({ selected: selectedPage = 0 }) => {
 
-        this.apiService.getRequest(`${this.props.appConfig.urls.api}/api/cars/cardetails?offset=${selectedPage * this.state.limit }&limit=${this.state.limit}`)
+        this.apiService.getRequest(`${this.props.appConfig.urls.api}/api/cars/cardetails?offset=${selectedPage * this.state.limit}&limit=${this.state.limit}`)
             .then(
                 response => {
 
@@ -42,7 +45,10 @@ class CarPartsPage extends Component {
 
                     console.log("----CarPartsPage.getPageData: ", response)
                 })
-            .catch(error => { console.error("----CarPartsPage.getPageData Rejected:", error) });
+            .catch(error => {
+                console.error("----CarPartsPage.getPageData Rejected:", error);
+                this.getErrorToast = (error);
+            });
     }
 
     componentDidMount() {
@@ -51,6 +57,31 @@ class CarPartsPage extends Component {
 
         console.log("CarPartsPage ----", ' did mount');
     }
+
+    getSuccessToast = (message) => {
+        toast.success(message, {
+        });
+    }
+
+    getErrorToast = (message) => {
+        toast.error(message, {
+        });
+    }
+
+    getInfoToast = (message) => {
+        toast.info(message, {
+        });
+    }
+
+    getWarnToast = (message) => {
+        toast.warn(message, {
+        });
+    }
+
+    setStateOnItemChange = (items) => {
+        this.setState({ currentPageData: items });
+    }
+
 
     render() {
 
@@ -72,7 +103,7 @@ class CarPartsPage extends Component {
                                 </a>
                             </div>
 
-                            <CarPartList data={this.state.currentPageData}></CarPartList>
+                            <CarPartList data={this.state.currentPageData} onItemListChange={this.setStateOnItemChange}></CarPartList>
 
                             <div className="navigation-buttons pl-5 d-flex flex-row">
                                 <ReactPaginate
@@ -94,18 +125,20 @@ class CarPartsPage extends Component {
                             <ModalWindow title="Add new car item" id="carItemAddModalWindow" inCenter={true}>
                                 <Form id="carItemAddForm">
                                     <div className="form-group">
+                                        <label>Detail name</label>
                                         <input
-                                            name="title"
+                                            name="name"
                                             type="text"
                                             className="form-control input-lg"
-                                            placeholder="Title"
+                                            placeholder="Name"
                                             required
-                                            data-parsley-type="email" />
+                                        />
                                     </div>
 
                                     <div className="form-group">
+                                        <label>Price</label>
                                         <input
-                                            name="price"
+                                            name="priceOfDetail"
                                             type="text"
                                             className="form-control input-lg"
                                             placeholder="Price"
@@ -115,14 +148,23 @@ class CarPartsPage extends Component {
                                     </div>
 
                                     <div className="form-group">
-                                        <input type="date" min="1900-01-01" max="2100-12-31" defaultValue="2020-11-26"
+                                        <label>Replaced</label>
+                                        <input type="date" name="replaced" min="1900-01-01" max="2100-12-31" defaultValue="2020-11-26"
                                             className="form-control" />
 
                                     </div>
 
                                     <div className="form-group">
+                                        <label>Replace at</label>
+                                        <input type="date" name="replaceAt" min="1900-01-01" max="2100-12-31" defaultValue="2021-12-13"
+                                            className="form-control" />
+
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label>Recomended replace</label>
                                         <input
-                                            name="date"
+                                            name="recomendedReplace"
                                             type="text"
                                             className="form-control input-lg"
                                             placeholder="Recommended ride"
@@ -137,6 +179,17 @@ class CarPartsPage extends Component {
                         </div>
                     </>
                 }
+                <ToastContainer
+                    position="top-right"
+                    autoClose={5000}
+                    hideProgressBar={false}
+                    newestOnTop
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                />
             </>
         );
     }

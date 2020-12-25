@@ -3,9 +3,6 @@ import React, { Component } from 'react';
 
 import { Router, Route, NavLink } from 'react-router-dom';
 
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-
 import ModalWindow from '../components/forms/ModalWindow.js';
 import HomePage from '../components/routes/homePage/HomePage.js';
 
@@ -62,22 +59,6 @@ class App extends Component {
     this.shouldCancel = true;
   }
 
-  getToast = () => {
-
-    toast.success("Success Notification !", {
-    });
-
-    // toast.error("Error Notification !", {
-    // });
-
-    // toast.warn("Warning Notification !", {
-    // });
-
-    // toast.info("Info Notification !", {
-    // });
-
-  }
-
 
   render() {
 
@@ -88,7 +69,6 @@ class App extends Component {
           className={`nav-item nav-link ${route.disabled ? "disabled" : ""}`}
           to={route.route}
           key={route.name}
-          onClick={this.getToast}
           activeClassName="active">
           <i className="fas fa-fw fa-cog"></i>
           {route.name}
@@ -177,23 +157,11 @@ class App extends Component {
               <div className="modal-body">Select "Logout" below if you are ready to end your current session.</div>
               <div className="modal-footer">
                 <button className="btn btn-secondary text-white" type="button" data-dismiss="modal">Cancel</button>
-                <a className="btn btn-primary" onClick={this.logout}>Logout</a>
+                <span className="btn btn-primary" onClick={this.logout}>Logout</span>
               </div>
             </ModalWindow>
 
           </Router>
-
-          <ToastContainer
-            position="top-right"
-            autoClose={5000}
-            hideProgressBar={false}
-            newestOnTop
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-          />
 
         </div>
 

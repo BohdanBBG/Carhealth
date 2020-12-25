@@ -9,7 +9,7 @@ class ModalWindow extends Component {
 
         return (
             <div className="modal fade" id={this.props.id} role="dialog" aria-hidden="true">
-                <div className={`modal-dialog ${this.props.inCenter ? "modal-dialog-centered" : ""}`} role="document ">
+                <div className={`modal-dialog ${this.props.inCenter ? "modal-dialog-centered" : ""}`}>
                     <div className="modal-content">
 
                         <div className="modal-header">

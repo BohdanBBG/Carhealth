@@ -51,7 +51,7 @@ class Form extends Component {
 
                 {this.renderChildren()}
 
-                <div className="row justify-content-end ">
+                <div className="row justify-content-end mr-2">
                     <button type="button" className="btn btn-secondary col-2" data-dismiss="modal">Close</button>
                     <button type="submit" className="btn btn-primary col-2 ml-2">Save</button>
                 </div>
